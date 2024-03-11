@@ -1,0 +1,21 @@
+.a9s-annotationlayer .a9s-formatter-el,
+.a9s-annotationlayer .a9s-formatter-el foreignObject {
+  overflow:visible;
+  pointer-events:none;
+}
+
+.a9s-annotationlayer .a9s-formatter-el foreignObject .a9s-shape-label-wrapper {
+  position:relative;
+  padding-top:4px;
+  padding-left:4px;
+}
+
+.a9s-annotationlayer .a9s-formatter-el foreignObject .a9s-shape-label-wrapper .a9s-shape-label {
+  color:#f00;
+  font-weight:bold;
+  display:table;
+  padding:3px 5px;
+  white-space:nowrap;
+  /*background-color:rgba(255, 255, 255, 0.85);
+  border-radius:3px;*/
+}
