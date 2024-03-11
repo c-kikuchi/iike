@@ -20,7 +20,7 @@ const router = createRouter({
       component: () => import('./views/AboutView.vue')
     },*/
     {
-      path: "/viewer/:bookid",
+      path: "/viewer/:bookid/:page?",
       name: "viewer",
       component: Viewer,
       beforeEnter(to, from, next){

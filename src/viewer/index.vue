@@ -26,6 +26,11 @@
 .ii-toolbar-controls button:active{
   background-color:#0771c2;
 }
+.ii-toolbar-controls button:disabled{
+  background-color:rgb(134, 171, 196);
+  color:#666;
+}
+
 .ii-zoom-control button{
   width:22px;
   height:22px;
@@ -127,6 +132,7 @@ input[type=checkbox]:checked.togglebutton+span {
       return {
         is_taggingmode:false,
         is_annotating:false,
+        is_internal_routing:false,
         currentPage:"0001",
         viewer:null,
         anno:null,
@@ -146,6 +152,9 @@ input[type=checkbox]:checked.togglebutton+span {
       },
       bookid(){
         return this.$route.params.bookid;
+      },
+      routerpage(){
+        return this.$route.params.page;
       },
       meta(){
         const currentid = this.bookid;
@@ -209,6 +218,8 @@ input[type=checkbox]:checked.togglebutton+span {
       },
       setPage(){
         this.openViewer();
+        this.is_internal_routing = true;
+        this.$router.replace({path:`/viewer/${this.bookid}/${this.currentPage}`});
         this.anno.setAnnotations(this.currentAnnotations);
       },
       gotoPage(page){
@@ -259,8 +270,18 @@ input[type=checkbox]:checked.togglebutton+span {
     },
     watch:{
       $route(to,from){
-        console.log(to,from);
-        this.currentPage = this.meta.pages[0];
+        //console.log(to,from);
+        if(this.is_internal_routing){
+          this.is_internal_routing = false;
+          //console.log("internal");
+          return;
+        }
+        if(to.params.page != from.params.page){
+          this.currentPage = to.params.page;
+        }
+        if(to.params.bookid != from.params.bookid){
+          this.currentPage = to.params.page||this.meta.pages[0];
+        }
         this.setPage();
       }
     },
@@ -280,6 +301,10 @@ input[type=checkbox]:checked.togglebutton+span {
           return app.currentPage;
         }
       };
+
+      if(this.routerpage){
+        this.currentPage = this.routerpage;
+      }
 
       this.viewer = OpenSeadragon({
         element:this.$refs.osd_elm,
