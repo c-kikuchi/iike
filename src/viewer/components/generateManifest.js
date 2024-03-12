@@ -15,6 +15,9 @@ const utils = {
     return xywh;
   },
 }
+const describing_keys = ["見出し語","読み","原文表記","肩書き","メモ","巻","頁","番号","枝番", "備考"];
+const describing_keys_dic = {};
+describing_keys.forEach((v,i)=>describing_keys_dic[v]=i);
 
 function generateIIIFPresentationManifest({
     annotations=[], bookid="", strict=false, iiifserver="http://localhost:5173/", iiifprefix="iiif/"
@@ -40,7 +43,7 @@ function generateIIIFPresentationManifest({
       )
     );
   });
-  //console.log(current_annots);
+  console.log(current_annots);
   if(current_annots.length < 1){
     return;
   }
@@ -84,12 +87,15 @@ function generateIIIFPresentationManifest({
 
   current_annots.forEach(anno=>{
     const pageRaw = anno["_page"] || (strict?"":(new RegExp(`^${imageUrlRoot}(.+)${meta.imageUrl.extension}$`)).exec(anno.target.source)?RegExp.$1:"");
+    console.log("pageraw",pageRaw);
     if(!pageRaw) return;
     const page = pagedic[pageRaw];
-    if(!page) return;
+    console.log("page", page);
+    if(typeof page != "number") return;
     const canvasId = iiifRoot + bookid + "/canvas/" + page
 
     const idx = canvases[page].annotations[0].items.length;
+    console.log(page, canvasId, idx);
     canvases[page].annotations[0].items.push({ //個別Annotation出力
       type:"Annotation",
       id:canvasId + "/annos/" + idx,
@@ -103,6 +109,12 @@ function generateIIIFPresentationManifest({
           motivation:"commenting",
           value:b.value
         }
+      }).sort((a,b)=>{
+        const [idxA, idxB] = [a,b].map(v=>
+            (describing_keys_dic[/^(.+?): /.test(v.value)?RegExp.$1:""]+1)||9999
+          );
+          //console.log(idxA,idxB);
+        return idxA-idxB;
       })
     });//Annotation出力終わり
   }); 

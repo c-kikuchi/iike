@@ -167,7 +167,7 @@ input[type=checkbox]:checked.togglebutton+span {
         return meta;
       },
       annotations(){
-        console.log("a");
+        //console.log("a");
         return this.$store.state.annotations;
       },
       jsonUrlRoot(){
@@ -188,7 +188,7 @@ input[type=checkbox]:checked.togglebutton+span {
       },
       currentAnnotations(){
         //console.log(this.currentPageUrl);
-        console.log("c")
+        //console.log("c")
         return this.annotations.filter(annotation=>{
           return (new RegExp("^"+this.currentImageUrl)).test(annotation.target.source);
         });
