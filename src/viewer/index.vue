@@ -104,8 +104,9 @@ input[type=checkbox]:checked.togglebutton+span {
     {{ currentImageUrl }}<br>
     <button @click="exportAnnotationToJSON">Export JSON</button>
     <button @click="exportManifest">Export Manifest</button>
+    <button @click="openManifest">Open Manifest</button>
     <input type="file" @change="loadAnnotationFromJSON">
-    <button @click="getPageDimension">page size</button><br>
+    <!--<button @click="getPageDimension">page size</button>--><br>
     Annotations: {{this.annotations.length}} (in this page: {{this.currentAnnotations.length}})
   </div>
   <div>
@@ -206,7 +207,7 @@ input[type=checkbox]:checked.togglebutton+span {
         link.click();
         URL.revokeObjectURL(blob);
       },
-      exportManifest(){
+      generateManifest(){
         if(this.annotations.length<=0){
           return;
         }
@@ -216,6 +217,10 @@ input[type=checkbox]:checked.togglebutton+span {
           iiifserver:"https://c-kikuchi.github.io/",
           iiifprefix:"iiif/"
         });
+        return manifest
+      },
+      exportManifest(){
+        const manifest = this.generateManifest();
         if(!manifest) return;
         const blob = new Blob([JSON.stringify(manifest,null,2)], {type:"application/json"});
         const link = document.createElement("a");
@@ -223,6 +228,12 @@ input[type=checkbox]:checked.togglebutton+span {
         link.href = URL.createObjectURL(blob);
         link.click();
         URL.revokeObjectURL(blob);
+      },
+      openManifest(){
+        const manifest = this.generateManifest();
+        if(!manifest) return;
+        const blob = new Blob([JSON.stringify(manifest,null,2)], {type:"application/json"});
+        window.open(URL.createObjectURL(blob));
       },
       async loadAnnotationFromJSON(e){
         const file = e.target.files[0];

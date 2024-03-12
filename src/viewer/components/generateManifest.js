@@ -15,7 +15,7 @@ const utils = {
     return xywh;
   },
 }
-const describing_keys = ["見出し語","読み","原文表記","肩書き","メモ","巻","頁","番号","枝番", "備考"];
+const describing_keys = ["見出し語","読み","原文表記","肩書き","メモ","巻","頁","番号","枝番","備考"];
 const describing_keys_dic = {};
 describing_keys.forEach((v,i)=>describing_keys_dic[v]=i);
 
@@ -102,11 +102,11 @@ function generateIIIFPresentationManifest({
       motivation:"commenting",
       target:canvasId+"#xywh="+utils.getXYWHFromTarget(anno.target).join(","),
       body:anno.body.filter(b=>{
-        return b.purpose=="describing"
+        return b.purpose=="describing" || b.purpose=="linking"
       }).map(b=>{
         return {
           type:"TextualBody",
-          motivation:"commenting",
+          purpose:b.purpose,
           value:b.value
         }
       }).sort((a,b)=>{

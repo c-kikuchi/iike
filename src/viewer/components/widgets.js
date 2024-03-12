@@ -15,7 +15,7 @@ const utils = {
   },
 }
 
-const describing_keys = ["見出し語","読み","原文表記","肩書き","メモ","巻","頁","番号","枝番", "備考"];
+const describing_keys = ["見出し語","読み","原文表記","肩書き","メモ","巻","頁","番号","枝番","備考"];
 
 function simpleCommentingWidget(obj){
   const elm = document.createElement("div");
@@ -175,7 +175,7 @@ function IIPageTaggingWidgetBuilder(bridge){
 function create_describing_body (label, value){
   const body = {
     "type": "TextualBody",
-    "motivation":"commenting",
+//    "motivation":"commenting",
     "purpose": "describing",
     "value": `${label}: ${value}`
   };
@@ -400,6 +400,68 @@ function IIKanPageWidgetBuilder(bridge){
   return MultiInputCommentingWidgetBuilder(labels,setDefaultValue,bridge);
 }
 
+function IILinkingWidget(obj){
+  const container = document.createElement("div");
+  const link_body = obj.annotation.bodies.find(body=>body.purpose=="linking");
+  if(link_body){
+    const link = document.createElement("a");
+    link.href=`https://wwwap.hi.u-tokyo.ac.jp/ships/w30/detail/3001${link_body.value}?dispid=disp02&type=2`;
+    link.target="_blank";
+    link.innerText="link_body.value";
+    const p = document.createElement("p");
+    p.append("🔗",link);
+    container.append(p);
+  }
+  return container;
+}
+
+function apply_candidate(obj,cand){
+  const diffs = [];
+  describing_keys.forEach(key=>{
+    const dat_value = cand.data[key];
+    if(annot["_type"]=="describing" || obj.annotation.bodies.every(body=>body.purpose!="tagging")){
+      const current_body = obj.annotation.bodies.find(body=>body.purpose=="describing"&&(new RegExp(`^${key}: `)).test(body.value));
+      if(current_body){
+        diffs.push({
+          action:"update",
+          previous:current_body,
+          updated:create_describing_body(key, dat_value)
+        });
+      }
+      else{
+        diffs.push({
+          action:"append",
+          body:create_describing_body(key, dat_value)
+        });
+      }
+    }
+  });
+  if(cand.data["DB-ID"]){
+    const new_body = {
+      "type": "TextualBody",
+      "purpose": "linking",
+      "value": cand.data["DB-ID"]
+    };
+    const link_body = obj.annotation.bodies.find(body=>body.purpose=="linking");
+    if(link_body){
+      diffs.push({
+        action:"update",
+        previous:link_body,
+        updated:new_body
+      })
+    }
+    else{
+      diffs.push({
+        action:"append",
+        body:new_body
+      });
+    }
+  }
+  if(diffs.length>0){
+    obj.onBatchModify(diffs);
+  }
+}
+
 function candidateSelectorWidget(obj){
   const container = document.createElement("div");
   const annot = obj.annotation.underlying;
@@ -427,31 +489,7 @@ function candidateSelectorWidget(obj){
       const apply_button = document.createElement("button");
       apply_button.setAttribute("type", "button");
       apply_button.innerText = "Apply";
-      apply_button.addEventListener("click", e=>{
-        const diffs = [];
-        describing_keys.forEach(key=>{
-          const dat_value = cand.data[key];
-          if(annot["_type"]=="describing" || obj.annotation.bodies.every(body=>body.purpose!="tagging")){
-            const current_body = obj.annotation.bodies.find(body=>body.purpose=="describing"&&(new RegExp(`^${key}: `)).test(body.value));
-            if(current_body){
-              diffs.push({
-                action:"update",
-                previous:current_body,
-                updated:create_describing_body(key, dat_value)
-              });
-            }
-            else{
-              diffs.push({
-                action:"append",
-                body:create_describing_body(key, dat_value)
-              });
-            }
-          }
-        });
-        if(diffs.length>0){
-          obj.onBatchModify(diffs);
-        }
-      })
+      apply_button.addEventListener("click", ()=>apply_candidate(obj, cand))
       btn_wrapper.append(apply_button);
 
       wrapper.append(details,btn_wrapper);
@@ -475,6 +513,7 @@ function IIWidgetsBuilder(bridge){
     LabeledCommentWidgetBuilder("備考"),
     IIBangoWidgetBuilder(bridge),
     IIKanPageWidgetBuilder(bridge),
+    IILinkingWidget,
     simpleCommentingWidget,
     candidateSelectorWidget
   ];
