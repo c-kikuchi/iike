@@ -102,7 +102,8 @@ input[type=checkbox]:checked.togglebutton+span {
   <div>
     {{ currentPageUrl }}<br>
     {{ currentImageUrl }}<br>
-    <button @click="exportAnnotationToJSON">Export</button>
+    <button @click="exportAnnotationToJSON">Export JSON</button>
+    <button @click="exportManifest">Export Manifest</button>
     <input type="file" @change="loadAnnotationFromJSON">
     <button @click="getPageDimension">page size</button><br>
     Annotations: {{this.annotations.length}} (in this page: {{this.currentAnnotations.length}})
@@ -124,6 +125,7 @@ input[type=checkbox]:checked.togglebutton+span {
   import Tako from './components/tako.js';
   import widgetBuilder from "./components/widgets.js";
   import formatterBuilder from "./components/formatter.js";
+  import manifestGenerator from "./components/generateManifest.js";
   import metalist from "../metalist.js";
   import {RouterLink} from "vue-router";
 
@@ -133,7 +135,7 @@ input[type=checkbox]:checked.togglebutton+span {
         is_taggingmode:false,
         is_annotating:false,
         is_internal_routing:false,
-        currentPage:"0001",
+        currentPage:"",
         viewer:null,
         anno:null,
         metalist:metalist,
@@ -158,7 +160,11 @@ input[type=checkbox]:checked.togglebutton+span {
       },
       meta(){
         const currentid = this.bookid;
-        return metalist.list.find(meta=>meta.bookid==currentid);
+        const meta = metalist.list.find(meta=>meta.bookid==currentid);
+        if(!this.currentPage){
+          this.currentPage = meta.pages[0];
+        }
+        return meta;
       },
       annotations(){
         console.log("a");
@@ -196,6 +202,24 @@ input[type=checkbox]:checked.togglebutton+span {
         const blob = new Blob([JSON.stringify(this.annotations)], {type:"application/json"})
         const link = document.createElement("a");
         link.download = `annotation-${Date.now()}.json`;
+        link.href = URL.createObjectURL(blob);
+        link.click();
+        URL.revokeObjectURL(blob);
+      },
+      exportManifest(){
+        if(this.annotations.length<=0){
+          return;
+        }
+        const manifest = manifestGenerator({
+          annotations:this.annotations,
+          bookid:this.bookid,
+          iiifserver:"https://c-kikuchi.github.io/",
+          iiifprefix:"iiif/"
+        });
+        if(!manifest) return;
+        const blob = new Blob([JSON.stringify(manifest,null,2)], {type:"application/json"});
+        const link = document.createElement("a");
+        link.download = `manifest-${Date.now()}.json`;
         link.href = URL.createObjectURL(blob);
         link.click();
         URL.revokeObjectURL(blob);
@@ -241,6 +265,9 @@ input[type=checkbox]:checked.togglebutton+span {
         if(!annotation["_page"]){
           //const page = this.getPageFromAnnotation(annotation);
           annotation["_page"] = this.currentPage;
+        }
+        if(!annotation["_bookid"]){
+          annotation["_bookid"] = this.meta.bookid;
         }
         if(!(new RegExp(`^${this.meta.imageUrlBase}`)).test(annotation.target.source)){
           annotation.target.source = this.currentImageUrl;
