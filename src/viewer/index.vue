@@ -1,4 +1,20 @@
 <style>
+.ii-root {
+  display:flex;
+  flex-direction: row;
+}
+.ii-main-pane {
+  flex-grow:1;
+}
+.ii-side-pane {
+  display:none;
+}
+.ii-side-pane.show {
+  display: flex;
+  min-width:200px;
+}
+
+
 .ii-toolbar {
   background-color:#0B8BEE;
   height:30px;
@@ -64,9 +80,13 @@ input[type=checkbox]:checked.togglebutton+span {
 
 </style>
 <template>
-<main class="app-root">
-  <div>
+<main class="ii-root">
+<div class="ii-main-pane">
+  <div class="ii-header">
     <div style="float:left;"><RouterLink to="/"><strong>&lt;Home</strong></RouterLink></div>
+    <!--<div style="float:right">
+      <input type="checkbox" v-model="is_sidepane_shown">
+    </div>-->
     <!--<div style="float:right;">
       <details>
         <summary><strong>…</strong></summary>
@@ -121,6 +141,8 @@ input[type=checkbox]:checked.togglebutton+span {
       </details>
     </div>
   </div>
+</div>
+<div class="ii-side-pane" :class="{show:is_sidepane_shown}"></div>
 </main>
 </template>
 <script>
@@ -140,6 +162,7 @@ input[type=checkbox]:checked.togglebutton+span {
         is_taggingmode:false,
         is_annotating:false,
         is_internal_routing:false,
+        is_sidepane_shown:false,
         currentPage:"",
         viewer:null,
         anno:null,
