@@ -43,7 +43,7 @@ function generateIIIFPresentationManifest({
       )
     );
   });
-  console.log(current_annots);
+  //console.log(current_annots);
   if(current_annots.length < 1){
     return;
   }
@@ -57,6 +57,8 @@ function generateIIIFPresentationManifest({
       type:"Canvas",
       id:canvasId,
       label:{ none:[pageRaw]},
+      width:meta.width,
+      height:meta.height,
       items:[  //Image用AnnotationPage
         {
           type:"AnnotationPage",
@@ -69,6 +71,8 @@ function generateIIIFPresentationManifest({
               target:canvasId,
               body:{
                 type:"Image",
+                width:meta.width,
+                height:meta.height,
                 id:imageUrlRoot + pageRaw + ".jpg" //meta.imageUrl.extension
               }
             }
@@ -87,15 +91,15 @@ function generateIIIFPresentationManifest({
 
   current_annots.forEach(anno=>{
     const pageRaw = anno["_page"] || (strict?"":(new RegExp(`^${imageUrlRoot}(.+)${meta.imageUrl.extension}$`)).exec(anno.target.source)?RegExp.$1:"");
-    console.log("pageraw",pageRaw);
+    //console.log("pageraw",pageRaw);
     if(!pageRaw) return;
     const page = pagedic[pageRaw];
-    console.log("page", page);
+    //console.log("page", page);
     if(typeof page != "number") return;
     const canvasId = iiifRoot + bookid + "/canvas/" + page
 
     const idx = canvases[page].annotations[0].items.length;
-    console.log(page, canvasId, idx);
+    //console.log(page, canvasId, idx);
     canvases[page].annotations[0].items.push({ //個別Annotation出力
       type:"Annotation",
       id:canvasId + "/annos/" + idx,

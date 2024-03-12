@@ -100,16 +100,20 @@ input[type=checkbox]:checked.togglebutton+span {
   </div>
   <div ref="osd_elm" style="width:100%; height: 800px; background-color: #ccc;"></div>
   <div>
-    {{ currentPageUrl }}<br>
-    {{ currentImageUrl }}<br>
-    <button @click="exportAnnotationToJSON">Export JSON</button>
-    <button @click="exportManifest">Export Manifest</button>
-    <button @click="openManifest">Open Manifest</button>
-    <input type="file" @change="loadAnnotationFromJSON">
-    <!--<button @click="getPageDimension">page size</button>--><br>
-    Annotations: {{this.annotations.length}} (in this page: {{this.currentAnnotations.length}})
+    <div>
+      {{ currentPageUrl }}<br>
+      {{ currentImageUrl }}
+    </div>
+    <div>
+      <button @click="exportAnnotationToJSON">Export JSON</button>
+      <button @click="exportManifest">Export Manifest</button>
+      <button @click="openManifest">Open Manifest</button>
+      <input type="file" @change="loadAnnotationFromJSON">
+      <button @click="getPageDimension">page size</button>
+    </div>
   </div>
   <div>
+    <div>Annotations: {{this.annotations.length}} (in this page: {{this.currentAnnotations.length}})</div>
     <div v-for="anno in annotations" :key="anno.id">
       <details>
         <summary>{{anno.id}}</summary>
