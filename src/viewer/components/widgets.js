@@ -405,17 +405,19 @@ function IILinkingWidget(obj){
   const link_body = obj.annotation.bodies.find(body=>body.purpose=="linking");
   if(link_body){
     const link = document.createElement("a");
-    link.href=`https://wwwap.hi.u-tokyo.ac.jp/ships/w30/detail/3001${link_body.value}?dispid=disp02&type=2`;
+    link.href=link_body.value;
     link.target="_blank";
-    link.innerText="link_body.value";
-    const p = document.createElement("p");
+    link.innerText="近世史編纂支援データベース";
+    const p = document.createElement("div");
     p.append("🔗",link);
+    p.style.fontSize="small";
     container.append(p);
   }
   return container;
 }
 
-function apply_candidate(obj,cand){
+function apply_candidate(obj, cand){
+  const annot = obj.annotation.underlying;
   const diffs = [];
   describing_keys.forEach(key=>{
     const dat_value = cand.data[key];
@@ -440,7 +442,7 @@ function apply_candidate(obj,cand){
     const new_body = {
       "type": "TextualBody",
       "purpose": "linking",
-      "value": cand.data["DB-ID"]
+      "value": `https://wwwap.hi.u-tokyo.ac.jp/ships/w30/detail/3001${cand.data["DB-ID"]}?dispid=disp02&type=2`
     };
     const link_body = obj.annotation.bodies.find(body=>body.purpose=="linking");
     if(link_body){
