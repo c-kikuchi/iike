@@ -128,7 +128,8 @@ input[type=checkbox]:checked.togglebutton+span {
       <button @click="exportManifest">Export Manifest</button>
       <button @click="openManifest">Show Manifest</button>
       <input type="file" @change="loadAnnotationFromJSON">
-      <button @click="getPageDimension">page size</button>
+      <!--<button @click="getPageDimension">page size</button>-->
+      <button @click="demo_openDefault">(DEMO)load demo json</button>
     </div>
   </div>
   <div>
@@ -336,6 +337,12 @@ input[type=checkbox]:checked.togglebutton+span {
         //const viewport_content = this.viewer.world.getItemAt(0).getContent();
         console.log("dimensions |", dimensions.x, dimensions.y);
         //console.log("viewport |", viewport_content.x, viewport_content.y);
+      },
+      async demo_openDefault(){
+        const annotations = await fetch("/iike/default.json").then(resp=>resp.json());
+        app.$store.commit("addAnnotationByList", annotations);
+        this.setPage();
+        console.log("default loaded");
       }
     },
     watch:{

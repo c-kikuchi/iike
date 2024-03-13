@@ -11,3 +11,12 @@ app.use(router);
 app.use(store);
 
 app.mount('#app')
+
+/*
+async function hoge(){
+  const annotations = await fetch("/iike/default.json").then(resp=>resp.json());
+  app.$store.commit("addAnnotationByList", annotations);
+  console.log("default load");
+}
+
+hoge();*/
