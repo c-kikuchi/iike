@@ -1,29 +1,3 @@
-# ii-annote
+# iike
 
-This template should help get you started developing with Vue 3 in Vite.
-
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+井伊氏（いいし）は、武家・華族だった日本の氏族。近世大名としての祖・井伊直政は徳川家康に仕え、新参ながら若くして徳川家中最大の所領を与えられるまでになり徳川四天王に数えられた。子孫も近江国彦根藩の主家として譜代大名中最大の石高を有し、幕府大老を輩出した。維新後華族に列し伯爵家となる。

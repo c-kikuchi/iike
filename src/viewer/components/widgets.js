@@ -108,7 +108,7 @@ function IIPageTaggingWidgetBuilder(bridge){
         obj.onSetProperty("_type", "tagging");
       }
       const create_body = function(bango, eda){
-        const value = [bango,eda].join("-");
+        const value = bango + (eda?("-"+eda):"");
         return {
           "type": "TextualBody",
           "motivation":"commenting",
