@@ -127,7 +127,7 @@ input[type=checkbox]:checked.togglebutton+span {
     <div>
       <button @click="exportAnnotationToJSON">Export JSON</button>
       <button @click="exportManifest">Export Manifest</button>
-      <button @click="openManifest">Open Manifest</button>
+      <button @click="openManifest">Show Manifest</button>
       <input type="file" @change="loadAnnotationFromJSON">
       <button @click="getPageDimension">page size</button>
     </div>
