@@ -27,7 +27,6 @@
   height:100%;
   gap:18px;
 }
-
 .ii-toolbar-controls button{
   background-color:#0B8BEE;
   border: solid 1px #ccc;
