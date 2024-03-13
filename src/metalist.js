@@ -18,7 +18,11 @@ export default {
         "prefix":"/api/image/idata/",
         "suffix":"/",
         "extension":".tif"
-      }
+      },
+      "width":2112,
+      "height":3200,
+      "width_excep":[],
+      "height_excep":[]
     },
     {
       "bookid":"iike-20",
@@ -37,7 +41,11 @@ export default {
         "prefix":"/api/image/idata/",
         "suffix":"/",
         "extension":".tif"
-      }
+      },
+      "width":2112,
+      "height":3200,
+      "width_excep":[],
+      "height_excep":[]
     },
     {
       "bookid":"iike-30",
@@ -57,6 +65,10 @@ export default {
         "suffix":"/supple/",
         "extension":".tif"
       },
+      "width":3492,
+      "height":4967,
+      "width_excep":[],
+      "height_excep":[],
     },
     {
       "bookid":"akiyasu-02",
@@ -75,7 +87,11 @@ export default {
         "prefix":"/api/image/idata/",
         "suffix":"/",
         "extension":".tif"
-      }
+      },
+      "width":8256,
+      "height":5504,
+      "width_excep":[],
+      "height_excep":[],
     },
     {
       "bookid":"akiyasu-02-kaitai",
@@ -94,7 +110,11 @@ export default {
         "prefix":"/api/image/idata/",
         "suffix":"/",
         "extension":".tif"
-      }
+      },
+      "width":8256,
+      "height":5504,
+      "width_excep":[],
+      "height_excep":[],
     },
     {
       "bookid":"akiyasu-02-touka",
@@ -113,7 +133,11 @@ export default {
         "prefix":"/api/image/idata/",
         "suffix":"/",
         "extension":".tif"
-      }
+      },
+      "width":8256,
+      "height":5504,
+      "width_excep":[],
+      "height_excep":[],
     },
     {
       "bookid":"akiyasu-02-kaitaimae",
@@ -132,7 +156,11 @@ export default {
         "prefix":"/api/image/idata/",
         "suffix":"/",
         "extension":".tif"
-      }
+      },
+      "width":5760,
+      "height":3840,
+      "width_excep":[],
+      "height_excep":[],
     }
   ]
 }
