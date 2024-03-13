@@ -30,7 +30,7 @@ function simpleCommentingWidget(obj){
 function IDShowingWidget(obj){
   const elm = document.createElement("div");
   if(obj.annotation.id){
-    elm.innerText = obj.annotation.id;
+    elm.innerText = "ID: " + obj.annotation.id;
     elm.style.cssText = `
       font-size:x-small;
       color:#666;
@@ -184,9 +184,10 @@ function create_describing_body (label, value){
 };
 
 function LabeledCommentWidgetBuilder(_label, bridge){
+  _label = _label || "見出し語";
   return function LabeledCommentWidget(obj){
-    bridge.meta;
-    const label = _label || "見出し語";
+    const container = document.createElement("div");
+    const label = _label;
     const label_exp = new RegExp(`^${label}: ([\\s\\S]*)$`);
     //console.log("render", label);
     
@@ -209,8 +210,10 @@ function LabeledCommentWidgetBuilder(_label, bridge){
         obj.onAppendBody(create_describing_body(label, e.target.value));
       }
     };
-
-    const container = document.createElement("div");
+    if(bridge.meta.is_taggingmode){
+      label = label + "";
+    }
+    
     container.className = "r6o-widget comment editable ii-comment";
     container.style.cssText = `
       display:flex;
@@ -271,12 +274,10 @@ function LabeledCommentWidgetBuilder(_label, bridge){
       window.open(url);
     })
     searcher_elm.append(searcher_btn);
-
-
     container.append(label_elm, input_elm, searcher_elm);
     
     return container;
-  };
+  }
 }
 
 function MultiInputCommentingWidgetBuilder(labels, setDefaultValue=function(obj,bodies,values){}, bridge){  
