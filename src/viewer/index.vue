@@ -114,7 +114,7 @@ input[type=checkbox]:checked.togglebutton+span {
       </div>
       <div class="ii-tag-control">
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_annotating" @change="startAnnotationMode()"><span>⌖索引の作成</span></label>
-        <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_taggingmode"><span>文書番号指定</span></label>
+        <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_taggingmode" @change="startTagAnnotationMode()"><span>文書番号指定</span></label>
       </div>
     </div>
   </div>
@@ -326,6 +326,12 @@ input[type=checkbox]:checked.togglebutton+span {
       startAnnotationMode(){
         if(this.is_annotating) this.anno.setDrawingEnabled(true);
       },
+      startTagAnnotationMode(){
+        if(this.is_taggingmode){
+          //this.is_annotating = true;
+          this.anno.setDrawingEnabled(true);
+        }
+      },
       getPageDimension(){
         const dimensions = this.viewer.source.dimensions;
         //const viewport_content = this.viewer.world.getItemAt(0).getContent();
@@ -389,6 +395,7 @@ input[type=checkbox]:checked.togglebutton+span {
       anno.on("createAnnotation", annotation=>{
         this.addAnnotation(annotation);
         this.is_annotating = false;
+        this.is_taggingmode = false;
       });
       anno.on("updateAnnotation", (annotation,previous)=>{
         this.updateAnnotation(annotation, previous);
@@ -399,6 +406,7 @@ input[type=checkbox]:checked.togglebutton+span {
       })
       anno.on("cancelSelected", ()=>{
         this.is_annotating = false;
+        this.is_taggingmode = false;
       });
       
       this.anno = anno;
