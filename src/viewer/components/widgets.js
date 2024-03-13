@@ -243,10 +243,10 @@ function LabeledCommentWidgetBuilder(_label, bridge){
     input_elm.value = current_value;
     const textarea_default_height = function(el){
       el.style.height = "46px";
-    }
+    };
     const textarea_auto_height = function(el){
       el.style.height = el.scrollHeight + "px"; 
-    }
+    };
     input_elm.addEventListener("change", add_comment); 
     input_elm.addEventListener("input", e=>textarea_auto_height(e.target));
     input_elm.addEventListener("focus", e=>textarea_auto_height(e.target));
@@ -261,18 +261,18 @@ function LabeledCommentWidgetBuilder(_label, bridge){
       display:flex;
       justify-content:center;
       align-items:center;
-    `
+    `;
     const searcher_btn = document.createElement("button");
     searcher_btn.setAttribute("type", "button");
-    searcher_btn.innerHTML = "🔍&#xFE0E;"
-    searcher_btn.title = "索引型で検索"
+    searcher_btn.innerHTML = "🔍&#xFE0E;";
+    searcher_btn.title = "索引型で検索";
     searcher_btn.addEventListener("click", e=>{
       const search_word = input_elm.value;
       const search_url = "https://wwwap.hi.u-tokyo.ac.jp/ships/w30/search";
       const search_query = `?keyword=${search_word}&book=井伊家史料&searchtarget=索引型&expand=true&type=2&page=1&itemsperpage=200&sortby=title_word roll_page&sortdesc=false&sortitem=見出し語：昇順`;
       const url = search_url + encodeURI(search_query);
       window.open(url);
-    })
+    });
     searcher_elm.append(searcher_btn);
     container.append(label_elm, input_elm, searcher_elm);
     
