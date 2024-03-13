@@ -185,6 +185,7 @@ function create_describing_body (label, value){
 
 function LabeledCommentWidgetBuilder(_label, bridge){
   return function LabeledCommentWidget(obj){
+    bridge.meta;
     const label = _label || "見出し語";
     const label_exp = new RegExp(`^${label}: ([\\s\\S]*)$`);
     //console.log("render", label);
