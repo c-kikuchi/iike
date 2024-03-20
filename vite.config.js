@@ -15,7 +15,7 @@ export default defineConfig({
   },
   base:"/iike",
   build: {
-    outDir:"docs",
+    outDir:"dist",
     //minify:false
   },
   //optimizeDeps:{
