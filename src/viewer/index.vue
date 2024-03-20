@@ -363,6 +363,7 @@ input[type=checkbox]:checked.togglebutton+span {
       }
     },
     async mounted(){
+      console.log("viewer mounted")
       const app = this;
       const bridge = {
         get is_taggingmode(){

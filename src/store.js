@@ -25,6 +25,26 @@ const store = createStore({
     },
     addAnnotationByList(state, list){
       state.annotations.push(...list);      
+    },
+    updateAnnotationByList(state, list){ //list = [{annotation:{}, previous:{}}]
+      const listMap = new Map();
+      list.forEach(item=>{
+        const {annotation, previous} = item;
+        listMap.set(previous.id, annotation);
+      });
+      state.annotations.forEach((item, index)=>{
+        if(listMap.has(item.id)){
+          state.annotations[index] = listMap.get(item.id);
+        }
+      });
+    }
+  },
+  actions:{
+    loadDefaultJSON(state){
+      fetch("/iike/default.json").then(resp=>resp.json()).then(json=>{
+        console.log("load default");
+        state.commit("addAnnotationByList", json);
+      })
     }
   }
 });

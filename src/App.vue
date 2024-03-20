@@ -1,5 +1,15 @@
 <script setup>
-import { RouterView } from 'vue-router'
+import { onMounted } from 'vue';
+import { RouterView } from 'vue-router';
+import { useStore } from 'vuex';
+
+const store = useStore();
+
+
+onMounted(()=>{
+  console.log("root mounted");
+  store.dispatch("loadDefaultJSON");
+})
 </script>
 
 <template>
