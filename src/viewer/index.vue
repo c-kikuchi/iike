@@ -195,7 +195,7 @@ input[type=checkbox]:checked.togglebutton+span {
         return meta;
       },
       annotations(){
-        //console.log("a");
+        console.log("a");
         return this.$store.state.annotations;
       },
       jsonUrlRoot(){
@@ -216,13 +216,21 @@ input[type=checkbox]:checked.togglebutton+span {
       },
       currentAnnotations(){
         //console.log(this.currentPageUrl);
-        //console.log("c")
+        console.log("c")
         return this.annotations.filter(annotation=>{
-          return (new RegExp("^"+this.currentImageUrl)).test(annotation.target.source);
+          return this.isCurrentAnnotation(annotation);
         });
       }
     },
     methods:{
+      isCurrentAnnotation(annotation){
+        if(annotation["_bookid"]&&annotation["_page"]){
+          return annotation["_bookid"] == this.bookid && annotation["_page"] == this.currentPage
+        }
+        else{
+          return (new RegExp("^"+this.currentImageUrl)).test(annotation.target.source)
+        }
+      },
       exportAnnotationToJSON(){
         if(this.annotations.length<=0){
           return;
@@ -332,15 +340,14 @@ input[type=checkbox]:checked.togglebutton+span {
           this.anno.setDrawingEnabled(true);
         }
       },
-      getPageDimension(){
+      getPageDimension(){// remove on production
         const dimensions = this.viewer.source.dimensions;
         //const viewport_content = this.viewer.world.getItemAt(0).getContent();
         console.log("dimensions |", dimensions.x, dimensions.y);
         //console.log("viewport |", viewport_content.x, viewport_content.y);
       },
-      async demo_openDefault(){
-        const annotations = await fetch("/iike/default.json").then(resp=>resp.json());
-        app.$store.commit("addAnnotationByList", annotations);
+      async demo_openDefault(){// remove on production
+        await app.$store.dispatch("loadDefaultJSON");
         this.setPage();
         console.log("default loaded");
       }

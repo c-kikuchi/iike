@@ -210,9 +210,7 @@ function LabeledCommentWidgetBuilder(_label, bridge){
         obj.onAppendBody(create_describing_body(label, e.target.value));
       }
     };
-    if(bridge.meta.is_taggingmode){
-      label = label + "";
-    }
+    
     
     container.className = "r6o-widget comment editable ii-comment";
     container.style.cssText = `
