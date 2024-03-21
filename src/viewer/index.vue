@@ -167,6 +167,7 @@ input[type=checkbox]:checked.togglebutton+span {
         viewer:null,
         anno:null,
         metalist:metalist,
+        show_ocrs:true,
       };
     },
     computed:{
@@ -196,7 +197,9 @@ input[type=checkbox]:checked.togglebutton+span {
       },
       annotations(){
         console.log("a");
-        return this.$store.state.annotations;
+        return !this.show_ocrs?
+          this.$store.state.annotations
+          :this.$store.state.annotations.concat(this.$store.state.ocrs);
       },
       jsonUrlRoot(){
         return this.meta.jsonUrl.server+this.meta.jsonUrl.prefix+this.meta.identifier+this.meta.jsonUrl.suffix;
@@ -276,7 +279,7 @@ input[type=checkbox]:checked.togglebutton+span {
         const annotations = JSON.parse(text);
         if(annotations.length>0 /*&& confirm("Overwrite Annotations?")*/){
           //this.annotations = annotations;
-          this.$store.commit("addAnnotationByList", annotations);
+          this.$store.commit("loadJSON", {json:annotations, saveDB:true});
           this.setPage();
         }
       },

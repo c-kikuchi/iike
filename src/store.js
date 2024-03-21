@@ -118,7 +118,8 @@ const store = createStore({
       state.commit("loadAnnotationsLocal", {list:annots, forceUpdate:true});
       state.commit("loadOcrsLocal", {list:ocrs, forceUpdate:true});
       if(saveDB){
-        state.dispatch()
+        state.dispatch("saveAnnotationsDB", annots);
+        state.dispatch("saveOcrsDB", ocrs);
       }
     }
   },
@@ -126,7 +127,7 @@ const store = createStore({
     loadDefaultJSON(state){
       fetch("/iike/default.json").then(resp=>resp.json()).then(json=>{
         console.log("load default");
-        state.commit("loadJSON", json);
+        state.commit("loadJSON", {json, saveDB:false});
       })
     },
     loadAnnotationsDB(state, {forceUpdate=false, bookid=""}){
