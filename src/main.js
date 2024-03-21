@@ -20,7 +20,7 @@ app.mount('#app')
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 async function firebasetest(){
-  const docRef = await addDoc(collection(db, "annotations"), {
+  const docRef = await addDoc(collection(db, "test"), "mogera", {
     hoge:"tanaka",
     soge:"yamada"
   });

@@ -135,7 +135,7 @@ const store = createStore({
       const list = [];//db_get(bookid);
       state.commit("loadAnnotationsLocal", {list, forceUpdate});
     },
-    loadOCRsDB(state, {forceUpdate=false, bookid=""}){
+    loadOcrsDB(state, {forceUpdate=false, bookid=""}){
       console.log("load OCRs from db");
       const list = [];//db_get(bookid);
       state.commit("loadOcrsLocal", {list, forceUpdate});
