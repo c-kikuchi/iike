@@ -143,16 +143,18 @@ const store = createStore({
       const list = await dbconnection.getAnnotations(bookid);
       context.dispatch("loadAnnotationsLocal", {list, forceUpdate});
     },
-    loadOcrsDB(context, {forceUpdate=false, bookid=""}){
+    async loadOcrsDB(context, {forceUpdate=false, bookid=""}){
       console.log("load OCRs from db");
-      const list = [];//db_get(bookid);
+      const list = await dbconnection.getOcrs(bookid);
       context.dispatch("loadOcrsLocal", {list, forceUpdate});
     },
     saveAnnotationsDB(context, list){
       console.log("save annotations to db");
+      dbconnection.setAnnotations(list);
     },
     saveOcrsDB(context, list){
       console.log("save ocrs to db");
+      dbconnection.setOcrs(list);
     },
     deleteAnnotationsDB(context, list){
       console.log("delete annotations on db")
