@@ -138,9 +138,9 @@ const store = createStore({
         context.dispatch("loadOcrsDB", {forceUpdate, bookid});
       }
     },
-    loadAnnotationsDB(context, {forceUpdate=false, bookid=""}){
+    async loadAnnotationsDB(context, {forceUpdate=false, bookid=""}){
       console.log("load annotations from db")
-      const list = [];//db_get(bookid);
+      const list = await dbconnection.getAnnotations(bookid);
       context.dispatch("loadAnnotationsLocal", {list, forceUpdate});
     },
     loadOcrsDB(context, {forceUpdate=false, bookid=""}){
