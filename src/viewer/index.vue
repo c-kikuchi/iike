@@ -114,6 +114,7 @@ input[type=checkbox]:checked.togglebutton+span {
       <div class="ii-tag-control">
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_annotating" @change="startAnnotationMode()"><span>⌖索引の作成</span></label>
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_taggingmode" @change="startTagAnnotationMode()"><span>文書番号指定</span></label>
+        <button title="refresh" @change="setPage">⮔</button>
       </div>
     </div>
   </div>
@@ -420,9 +421,9 @@ input[type=checkbox]:checked.togglebutton+span {
         widgets:widgetBuilder(bridge),
         formatter:formatterBuilder(bridge)
       });
-      anno.on("createSelection", selection=>{
+      /*anno.on("createSelection", selection=>{
         console.log(selection);
-      })
+      })*/
       anno.on("createAnnotation", annotation=>{
         this.addAnnotation(annotation);
         this.is_annotating = false;
@@ -441,7 +442,9 @@ input[type=checkbox]:checked.togglebutton+span {
       });
       
       this.anno = anno;
-      this.loadAnnotationFromDB().then(()=>this.setPage());
+      this.loadAnnotationFromDB().then(()=>{
+        this.setPage();
+      });
       //this.setPage();
       window.app = this;
     }

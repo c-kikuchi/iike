@@ -133,10 +133,12 @@ const store = createStore({
       })
     },
     loadAnnotations(context, {forceUpdate=false, bookid="", loadOcrs=true}){
-      context.dispatch("loadAnnotationsDB", {forceUpdate, bookid});
+      const p = [];
+      p.push(context.dispatch("loadAnnotationsDB", {forceUpdate, bookid}));
       if(loadOcrs){
-        context.dispatch("loadOcrsDB", {forceUpdate, bookid});
+        p.push(context.dispatch("loadOcrsDB", {forceUpdate, bookid}));
       }
+      return Promise.all(p);
     },
     async loadAnnotationsDB(context, {forceUpdate=false, bookid=""}){
       console.log("load annotations from db")
