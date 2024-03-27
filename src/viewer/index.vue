@@ -130,6 +130,8 @@ input[type=checkbox]:checked.togglebutton+span {
       <input type="file" @change="loadAnnotationFromJSON">
       <!--<button @click="getPageDimension">page size</button>-->
       <button @click="demo_openDefault">(DEMO)load demo json</button>
+      <button @click="saveTest">save all to test</button>
+      <button @click="loadTest">load all from test</button>
     </div>
   </div>
   <div>
@@ -279,7 +281,7 @@ input[type=checkbox]:checked.togglebutton+span {
         const annotations = JSON.parse(text);
         if(annotations.length>0 /*&& confirm("Overwrite Annotations?")*/){
           //this.annotations = annotations;
-          this.$store.commit("loadJSON", {json:annotations, saveDB:true});
+          await this.$store.dispatch("loadJSON", {json:annotations, saveDB:true});
           this.setPage();
         }
       },
@@ -324,15 +326,15 @@ input[type=checkbox]:checked.togglebutton+span {
       },
       addAnnotation(annotation){
         this.insertIdentifierAndPage(annotation);
-        this.$store.commit("addAnnotation", annotation);
+        this.$store.dispatch("addAnnotation", annotation);
       },
       updateAnnotation(annotation, previous){
         //console.log(annotation, previous);
         this.insertIdentifierAndPage(annotation);
-        this.$store.commit("updateAnnotation", {annotation, previous});
+        this.$store.dispatch("updateAnnotation", {annotation, previous});
       },
       deleteAnnotation(annotation){
-        this.$store.commit("deleteAnnotation", annotation);
+        this.$store.dispatch("deleteAnnotation", annotation);
       },
       startAnnotationMode(){
         if(this.is_annotating) this.anno.setDrawingEnabled(true);
@@ -353,6 +355,12 @@ input[type=checkbox]:checked.togglebutton+span {
         await app.$store.dispatch("loadDefaultJSON");
         this.setPage();
         console.log("default loaded");
+      },
+      saveTest(){
+        app.$store.dispatch("saveAllToTestDB");
+      },
+      loadTest(){
+        app.$store.dispatch("loadAllFromTestDB").then(()=>this.setPage());
       }
     },
     watch:{

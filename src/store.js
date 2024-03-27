@@ -1,4 +1,10 @@
-import {createStore} from "vuex"
+import {createStore} from "vuex";
+import { initializeApp } from "firebase/app";
+import firebaseConfig from './firebaseconfig';
+import { getFirestore, addDoc, collection, doc, writeBatch } from "firebase/firestore";
+
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp);
 
 const store = createStore({
   state(){
@@ -9,7 +15,7 @@ const store = createStore({
   },
   getters:{
     ocrsIdSet(state){
-      return new Set(state.ocrs.map=>anno=>anno.id);
+      return new Set(state.ocrs.map(anno=>anno.id));
     },
     isOcrLoaded(state){
       return id=>state.ocrsIdSet.has(id);
@@ -31,14 +37,6 @@ const store = createStore({
     addAnnotationsLocal(state, list){
       state.annotations.push(...list);
     },
-    addAnnotation(state, annotation){
-      state.commit("addAnnotationsLocal", [annotation])
-      state.dispatch("saveAnnotationsDB", [annotation]);
-    },
-    addAnnotationByList(state, list){
-      state.commit("addAnnotationsLocal", list);
-      state.dispatch("saveAnnotationsDB", list);
-    },
     updateAnnotationLocal(state, payload){
       const {annotation, previous} = payload;
       if(!annotation || !previous) return;
@@ -46,10 +44,6 @@ const store = createStore({
         return item.id == previous.id;
       });
       state.annotations[index] = annotation;
-    },
-    updateAnnotation(state, payload){
-      state.commit("updateAnnotationLocal", payload);
-      state.dispatch("saveAnnotationsDB", [{previous, annotation}]);
     },
     updateAnnotationsLocal(state, list){ //list = [{annotation:{}, previous:{}}]
       const listMap = new Map();
@@ -65,10 +59,6 @@ const store = createStore({
         });
       }
     },
-    updateAnnotationByList(state, list){
-      state.commit("updateAnnotationsLocal", list);
-      state.dispatch("saveAnnotationsDB", list);
-    },
     deleteAnnotationsLocal(state, list){
       list.forEach(annotation=>{
         const index = state.annotations.findIndex(item=>{
@@ -77,35 +67,54 @@ const store = createStore({
         state.annotations.splice(index,1);
       })
     },
-    deleteAnnotation(state, annotation){
-      state.commit("deleteAnnotationsLocal", [annotation])
-      state.dispatch("deleteAnnotationsDB", [annotation]);
+  },
+  actions:{
+    addAnnotation(context, annotation){
+      context.commit("addAnnotationsLocal", [annotation])
+      context.dispatch("saveAnnotationsDB", [annotation]);
     },
-    loadAnnotationsLocal(state, {list=[], forceUpdate=false}){
+    addAnnotationByList(context, list){
+      context.commit("addAnnotationsLocal", list);
+      context.dispatch("saveAnnotationsDB", list);
+    },
+    updateAnnotation(context, payload){
+      const {annotation, previous} = payload;
+      context.commit("updateAnnotationLocal", {previous, annotation});
+      context.dispatch("saveAnnotationsDB", [{previous, annotation}]);
+    },
+    updateAnnotationByList(context, list){
+      context.commit("updateAnnotationsLocal", list);
+      context.dispatch("saveAnnotationsDB", list);
+    },
+    deleteAnnotation(context, annotation){
+      context.commit("deleteAnnotationsLocal", [annotation])
+      context.dispatch("deleteAnnotationsDB", [annotation]);
+    },
+    loadAnnotationsLocal(context, {list=[], forceUpdate=false}){
       const appends = [], updates = [];
       list.forEach(item=>{
-        if(state.isAnnotationLoaded(item.id)&&forceUpdate){
+        if(!context.getters.isAnnotationLoaded(item.id)){
+          appends.push(item);
+        }
+        else if(forceUpdate){
           updates.push({annotation:item, previous:{id:item.id}});
         }
-        else{
+      });
+      context.commit("addAnnotationsLocal", appends);
+      if(updates.length>0){
+        context.commit("updateAnnotationsLocal", updates)
+      }
+    },
+    loadOcrsLocal(context, {list=[], forceUpdate=false}){
+      const appends = [];
+      list.forEach(item=>{
+        if(!context.getters.isOcrLoaded(item.id)){
           appends.push(item);
         }
       });
-      state.commit("addAnnotationsLocal", appends);
-      if(updates.length>0){
-        state.commit("updateAnnotationsLocal", updates)
-      }
+      context.commit("addOcrs", appends);
     },
-    loadOcrsLocal(state, {list=[], forceUpdate=false}){
-      const appends = [];
-      list.forEach(item=>{
-        if(!state.isOcrLoaded(item.id){
-          appends.push(item);
-        })
-      });
-      state.commit("addOcrs", appends);
-    },
-    loadJSON(state, {json:[], saveDB:false}){ //Annotation, OCR混在したArray
+    loadJSON(context, {json=[], saveDB=false}){ //Annotation, OCR混在したArray
       const annots = [], ocrs = [];
       json.forEach(item=>{
         if(item["_type"]=="describing" || item["_type"]=="tagging"){
@@ -115,41 +124,58 @@ const store = createStore({
           ocrs.push(item);
         }
       });
-      state.commit("loadAnnotationsLocal", {list:annots, forceUpdate:true});
-      state.commit("loadOcrsLocal", {list:ocrs, forceUpdate:true});
+      context.dispatch("loadAnnotationsLocal", {list:annots, forceUpdate:true});
+      context.dispatch("loadOcrsLocal", {list:ocrs, forceUpdate:true});
       if(saveDB){
-        state.dispatch("saveAnnotationsDB", annots);
-        state.dispatch("saveOcrsDB", ocrs);
+        context.dispatch("saveAnnotationsDB", annots);
+        context.dispatch("saveOcrsDB", ocrs);
       }
-    }
-  },
-  actions:{
-    loadDefaultJSON(state){
+    },
+    loadDefaultJSON(context){
       fetch("/iike/default.json").then(resp=>resp.json()).then(json=>{
         console.log("load default");
-        state.commit("loadJSON", {json, saveDB:false});
+        context.dispatch("loadJSON", {json, saveDB:false});
       })
     },
-    loadAnnotationsDB(state, {forceUpdate=false, bookid=""}){
+    loadAnnotationsDB(context, {forceUpdate=false, bookid=""}){
       console.log("load annotations from db")
       const list = [];//db_get(bookid);
-      state.commit("loadAnnotationsLocal", {list, forceUpdate});
+      context.dispatch("loadAnnotationsLocal", {list, forceUpdate});
     },
-    loadOcrsDB(state, {forceUpdate=false, bookid=""}){
+    loadOcrsDB(context, {forceUpdate=false, bookid=""}){
       console.log("load OCRs from db");
       const list = [];//db_get(bookid);
-      state.commit("loadOcrsLocal", {list, forceUpdate});
+      context.dispatch("loadOcrsLocal", {list, forceUpdate});
     },
-    saveAnnotationsDB(state, list){
+    saveAnnotationsDB(context, list){
       console.log("save annotations to db");
     },
-    saveOcrsDB(state, list){
+    saveOcrsDB(context, list){
       console.log("save ocrs to db");
     },
-    deleteAnnotationsDB(state, list){
+    deleteAnnotationsDB(context, list){
       console.log("delete annotations on db")
     },
+    saveAllToTestDB(context){
+      console.log("saving start");
+      const test_coll = collection(db, "annotation-test");
+      const batch = writeBatch(db);
+      context.state.annotations.forEach(item=>{
+        const docref = doc(test_coll, item.id);
+        batch.set(docref, item);
+      })
+      batch.commit().then(()=>{
+        console.log("saving end.");
+      })
 
+    },
+    async loadAllFromTestDB(context){
+      console.log("loading start");
+      const test_coll = collection(db, "annotation-test");
+      const querySnapshot = await getDocs(test_coll);
+      const list = querySnapshot.docs.map(doc=>doc.data());
+      context.dispatch("loadAnnotationsLocal", {list});
+    }
   }
 });
 
