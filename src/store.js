@@ -1,7 +1,7 @@
 import {createStore} from "vuex";
 import { initializeApp } from "firebase/app";
 import firebaseConfig from './firebaseconfig';
-import { getFirestore, addDoc, collection, doc, writeBatch } from "firebase/firestore";
+import { getFirestore, getDocs, collection, doc, writeBatch } from "firebase/firestore";
 
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
@@ -17,17 +17,17 @@ const store = createStore({
     ocrsIdSet(state){
       return new Set(state.ocrs.map(anno=>anno.id));
     },
-    isOcrLoaded(state){
-      return id=>state.ocrsIdSet.has(id);
+    isOcrLoaded(state, getters){
+      return id=>getters.ocrsIdSet.has(id);
     },
     annotationsIdSet(state){
       return new Set(state.annotations.map(anno=>anno.id));
     },
-    isAnnotationLoaded(state){
-      return id=>state.annotationsIdSet.has(id);
+    isAnnotationLoaded(state, getters){
+      return id=>getters.annotationsIdSet.has(id);
     },
-    isAnnotationOrOcrLoaded(state){
-      return id=>state.isAnnotationLoaded(id) || state.isOcrLoaded(id);
+    isAnnotationOrOcrLoaded(state, getters){
+      return id=>getters.isAnnotationLoaded(id) || getters.isOcrLoaded(id);
     }
   },
   mutations:{
