@@ -1,7 +1,7 @@
 
 import { initializeApp } from "firebase/app";
 import firebaseConfig from './firebaseconfig';
-import { getFirestore, getDocs, setDoc, collection, doc, writeBatch, query, where, or } from "firebase/firestore";
+import { getFirestore, getDocs, setDoc, collection, doc, writeBatch, query, where, or, and } from "firebase/firestore";
 
 function splitArray(array, num){
   const newarray = [];
@@ -30,16 +30,19 @@ const dbconnection = {
     }
     const coll = collection(db, annotationCollectionPath);
     const q = query(coll,
-      or(
-        where("_type", "==", "describing"),
-        where("_type", "==", "tagging")
-      ),
-      where("_bookid", "==", bookid)
+      and(
+        where("_bookid", "==", bookid),
+        or(
+          where("_type", "==", "describing"),
+          where("_type", "==", "tagging")
+        )
+      )
     );
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map(doc=>doc.data());
   },
   setAnnotation(annotation){
+    console.log("set annotation");
     if(!annotation._bookid){
       throw new Error("_bookid is invalid");
     }
@@ -52,8 +55,10 @@ const dbconnection = {
     return setDoc(docref, annotation);
   },
   setAnnotations(list){
+    console.log("set annotations");
     const coll = collection(db, annotationCollectionPath);
-    return Promise.all(splitArray(list).map(slist=>{
+    return Promise.all(splitArray(list,500).map(slist=>{
+      console.log("slist", slist);
       const batch = writeBatch(db);
       slist.forEach(item=>{
         if(!item._bookid){
@@ -63,6 +68,7 @@ const dbconnection = {
           throw new Error("_type must be describing or tagging")
         }
         const id = item.id || generateID();
+        console.log("saving", id);
         const docref = doc(coll, id);
         batch.set(docref, item);
       });
@@ -102,7 +108,7 @@ const dbconnection = {
   },
   setOcrs(list){
     const coll = collection(db, ocrCollectionPath);
-    return Promise.all(splitArray(list).map(slist=>{
+    return Promise.all(splitArray(list,500).map(slist=>{
       const batch = writeBatch(db);
       slist.forEach(item=>{
         if(!item._bookid){
@@ -118,10 +124,10 @@ const dbconnection = {
       return batch.commit();
     }));
   },
-  saveTest(){
+  saveTest(annotations){
     const test_coll = collection(db, annotationCollectionTestPath);
     const batch = writeBatch(db);
-    context.state.annotations.forEach(item=>{
+    annotations.forEach(item=>{
       const docref = doc(test_coll, item.id);
       batch.set(docref, item);
     })

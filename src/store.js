@@ -75,7 +75,7 @@ const store = createStore({
     updateAnnotation(context, payload){
       const {annotation, previous} = payload;
       context.commit("updateAnnotationLocal", {previous, annotation});
-      context.dispatch("saveAnnotationsDB", [{previous, annotation}]);
+      context.dispatch("saveAnnotationsDB", [annotation]);
     },
     updateAnnotationByList(context, list){
       context.commit("updateAnnotationsLocal", list);
@@ -161,7 +161,7 @@ const store = createStore({
     },
     saveAllToTestDB(context){
       console.log("saving start");
-      dbconnection.saveTest().then(()=>{
+      dbconnection.saveTest(context.state.annotations).then(()=>{
         console.log("saving end.")
       });
     },
