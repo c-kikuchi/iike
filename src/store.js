@@ -1,10 +1,5 @@
 import {createStore} from "vuex";
-import { initializeApp } from "firebase/app";
-import firebaseConfig from './firebaseconfig';
-import { getFirestore, getDocs, collection, doc, writeBatch } from "firebase/firestore";
-
-const firebaseApp = initializeApp(firebaseConfig);
-const db = getFirestore(firebaseApp);
+import {dbconnection} from "./firebaseconnetcion"
 
 const store = createStore({
   state(){
@@ -137,6 +132,12 @@ const store = createStore({
         context.dispatch("loadJSON", {json, saveDB:false});
       })
     },
+    loadAnnotations(context, {forceUpdate=false, bookid="", loadOcrs=true}){
+      context.dispatch("loadAnnotationsDB", {forceUpdate, bookid});
+      if(loadOcrs){
+        context.dispatch("loadOcrsDB", {forceUpdate, bookid});
+      }
+    },
     loadAnnotationsDB(context, {forceUpdate=false, bookid=""}){
       console.log("load annotations from db")
       const list = [];//db_get(bookid);
@@ -158,22 +159,13 @@ const store = createStore({
     },
     saveAllToTestDB(context){
       console.log("saving start");
-      const test_coll = collection(db, "annotation-test");
-      const batch = writeBatch(db);
-      context.state.annotations.forEach(item=>{
-        const docref = doc(test_coll, item.id);
-        batch.set(docref, item);
-      })
-      batch.commit().then(()=>{
-        console.log("saving end.");
-      })
-
+      dbconnection.saveTest().then(()=>{
+        console.log("saving end.")
+      });
     },
     async loadAllFromTestDB(context){
       console.log("loading start");
-      const test_coll = collection(db, "annotation-test");
-      const querySnapshot = await getDocs(test_coll);
-      const list = querySnapshot.docs.map(doc=>doc.data());
+      const list = await dbconnection.loadTest();
       context.dispatch("loadAnnotationsLocal", {list});
     }
   }

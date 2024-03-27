@@ -184,6 +184,7 @@ input[type=checkbox]:checked.togglebutton+span {
         return (prevIndex>=0)?pages[prevIndex]:"";
       },
       bookid(){
+        console.log("i");
         return this.$route.params.bookid;
       },
       routerpage(){
@@ -324,6 +325,9 @@ input[type=checkbox]:checked.togglebutton+span {
           annotation.target.source = this.currentImageUrl;
         }
       },
+      loadAnnotationFromDB(){
+        return this.$store.dispatch("loadAnnotations", {bookid: this.bookid})
+      },
       addAnnotation(annotation){
         this.insertIdentifierAndPage(annotation);
         this.$store.dispatch("addAnnotation", annotation);
@@ -375,6 +379,8 @@ input[type=checkbox]:checked.togglebutton+span {
           this.currentPage = to.params.page;
         }
         if(to.params.bookid != from.params.bookid){
+          console.log("change book");
+          this.loadAnnotationFromDB().then(()=>this.setPage());
           this.currentPage = to.params.page||this.meta.pages[0];
         }
         this.setPage();
@@ -435,7 +441,8 @@ input[type=checkbox]:checked.togglebutton+span {
       });
       
       this.anno = anno;
-      this.setPage();
+      this.loadAnnotationFromDB().then(()=>this.setPage());
+      //this.setPage();
       window.app = this;
     }
   };
