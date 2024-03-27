@@ -114,8 +114,8 @@ input[type=checkbox]:checked.togglebutton+span {
       <div class="ii-tag-control">
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_annotating" @change="startAnnotationMode()"><span>⌖索引の作成</span></label>
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_taggingmode" @change="startTagAnnotationMode()"><span>文書番号指定</span></label>
-        <button title="refresh" @click="setPage">⮔</button>
-        <label style="color:#fff;font-size:small;"><input type="checkbox" v-model="show_ocrs" @change="setPage">OCR結果を表示</label>
+        &nbsp;<button title="refresh" @click="setPage">⮔</button>
+        &nbsp;<label style="color:#fff;font-size:small;"><input type="checkbox" v-model="show_ocrs" @change="setPage">OCR結果を表示</label>
       </div>
     </div>
   </div>
@@ -171,7 +171,7 @@ input[type=checkbox]:checked.togglebutton+span {
         viewer:null,
         anno:null,
         metalist:metalist,
-        show_ocrs:true,
+        show_ocrs:false,
       };
     },
     computed:{
@@ -361,15 +361,15 @@ input[type=checkbox]:checked.togglebutton+span {
         //console.log("viewport |", viewport_content.x, viewport_content.y);
       },
       async demo_openDefault(){// remove on production
-        await app.$store.dispatch("loadDefaultJSON");
+        await this.$store.dispatch("loadDefaultJSON");
         this.setPage();
         console.log("default loaded");
       },
       saveTest(){
-        app.$store.dispatch("saveAllToTestDB");
+        this.$store.dispatch("saveAllToTestDB");
       },
       loadTest(){
-        app.$store.dispatch("loadAllFromTestDB").then(()=>this.setPage());
+        this.$store.dispatch("loadAllFromTestDB").then(()=>this.setPage());
       }
     },
     watch:{
@@ -450,7 +450,7 @@ input[type=checkbox]:checked.togglebutton+span {
         this.setPage();
       });
       //this.setPage();
-      window.app = this;
+      //window.app = this;
     }
   };
 

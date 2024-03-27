@@ -4,6 +4,7 @@ import firebaseConfig from './firebaseconfig';
 import { getFirestore, getDocs, setDoc, collection, doc, writeBatch, query, where, or, and } from "firebase/firestore";
 
 function splitArray(array, num){
+  num = num || 1;
   const newarray = [];
   for (let i=0; i<array.length; i+=num){
     newarray.push(array.slice(i,i+num));

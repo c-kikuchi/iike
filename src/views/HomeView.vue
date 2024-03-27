@@ -10,9 +10,9 @@ import metalist from "../metalist.js"
       <div v-for="meta in metalist.list">
         <RouterLink :to="'/viewer/'+meta.bookid">{{ meta.title }}</RouterLink>
       </div>
-      <div>
+      <!--<div>
         <a href="https://c-kikuchi.github.io/iiif/iike-15/manifest.json" target="_blank">Test Manifest</a>
-      </div>
+      </div>-->
     </nav>
   </main>
 </template>
