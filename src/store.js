@@ -127,9 +127,9 @@ const store = createStore({
       }
     },
     loadDefaultJSON(context){
-      fetch("/iike/default.json").then(resp=>resp.json()).then(json=>{
+      return fetch("/iike/default.json").then(resp=>resp.json()).then(json=>{
         console.log("load default");
-        context.dispatch("loadJSON", {json, saveDB:false});
+        return context.dispatch("loadJSON", {json, saveDB:false});
       })
     },
     loadAnnotations(context, {forceUpdate=false, bookid="", loadOcrs=true}){

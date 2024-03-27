@@ -114,7 +114,8 @@ input[type=checkbox]:checked.togglebutton+span {
       <div class="ii-tag-control">
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_annotating" @change="startAnnotationMode()"><span>⌖索引の作成</span></label>
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_taggingmode" @change="startTagAnnotationMode()"><span>文書番号指定</span></label>
-        <button title="refresh" @change="setPage">⮔</button>
+        <button title="refresh" @click="setPage">⮔</button>
+        <label style="color:#fff;font-size:small;"><input type="checkbox" v-model="show_ocrs" @change="setPage">OCR結果を表示</label>
       </div>
     </div>
   </div>
@@ -311,7 +312,7 @@ input[type=checkbox]:checked.togglebutton+span {
         return (new RegExp(`^${this.imageUrlRoot}(.+?)${this.meta.imageUrl.extension}`))
           .test(annotation.target.source)?RegExp.$1:"";
       },
-      insertIdentifierAndPage(annotation){
+      insertProperties(annotation){
         if(!annotation["_identifier"]){
           annotation["_identifier"] = this.meta.identifier;
         }
@@ -330,15 +331,18 @@ input[type=checkbox]:checked.togglebutton+span {
         return this.$store.dispatch("loadAnnotations", {bookid: this.bookid})
       },
       addAnnotation(annotation){
-        this.insertIdentifierAndPage(annotation);
+        if(annotation._type=="ocrtext") return;
+        this.insertProperties(annotation);
         this.$store.dispatch("addAnnotation", annotation);
       },
       updateAnnotation(annotation, previous){
+        if(annotation._type=="ocrtext") return;
         //console.log(annotation, previous);
-        this.insertIdentifierAndPage(annotation);
+        this.insertProperties(annotation);
         this.$store.dispatch("updateAnnotation", {annotation, previous});
       },
       deleteAnnotation(annotation){
+        if(annotation._type=="ocrtext") return;
         this.$store.dispatch("deleteAnnotation", annotation);
       },
       startAnnotationMode(){
