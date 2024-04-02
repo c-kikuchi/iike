@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from './views/HomeView.vue'
 import Viewer from "./viewer/index.vue"
 import Meta from "./views/metaView.vue"
+import Login from "./views/loginView.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,6 +32,11 @@ const router = createRouter({
       path: "/meta/:bookid",
       name: "meta",
       component: Meta
+    },
+    {
+      path: "/login",
+      name:"login",
+      component: Login
     }
   ]
 })

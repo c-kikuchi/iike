@@ -1,15 +1,34 @@
 <script setup>
-//import { onMounted } from 'vue';
-import { RouterView } from 'vue-router';
+import { onMounted, provide, ref } from 'vue';
+import { RouterView, useRouter } from 'vue-router';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
 //import { useStore } from 'vuex';
-
 //const store = useStore();
-
-
 /*onMounted(()=>{
   console.log("root mounted");
   store.dispatch("loadDefaultJSON");
 })*/
+
+const router = useRouter();
+const auth = getAuth();
+
+const loggedin = ref(false);
+provide("loggedin", loggedin);
+
+onMounted(()=>{
+  onAuthStateChanged(auth, user=>{
+    if(!user){
+      console.log("logged out");
+      loggedin.value = false;
+      router.replace("/login");
+    }
+    else{
+      loggedin.value = true;
+      console.log("logged in");
+    }
+  })
+})
 </script>
 
 <template>
