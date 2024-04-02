@@ -1,5 +1,6 @@
 export default {
-  "version":"0.0.1",
+  "version":"0.1.1",
+  "categories":["井伊家史料（索引作成）","松平昭休往復書翰留:原本（テスト）"],
   "list":[
     {
       "bookid":"iike-15",
@@ -22,7 +23,8 @@ export default {
       "width":2112,
       "height":3200,
       "width_excep":[],
-      "height_excep":[]
+      "height_excep":[],
+      "category":"井伊家史料（索引作成）"
     },
     {
       "bookid":"iike-20",
@@ -45,7 +47,8 @@ export default {
       "width":2112,
       "height":3200,
       "width_excep":[],
-      "height_excep":[]
+      "height_excep":[],
+      "category":"井伊家史料（索引作成）"
     },
     {
       "bookid":"iike-30",
@@ -69,6 +72,7 @@ export default {
       "height":4967,
       "width_excep":[],
       "height_excep":[],
+      "category":"井伊家史料（索引作成）"
     },
     {
       "bookid":"akiyasu-02",
@@ -92,6 +96,7 @@ export default {
       "height":5504,
       "width_excep":[],
       "height_excep":[],
+      "category":"松平昭休往復書翰留:原本（テスト）"
     },
     {
       "bookid":"akiyasu-02-kaitai",
@@ -115,6 +120,7 @@ export default {
       "height":5504,
       "width_excep":[],
       "height_excep":[],
+      "category":"松平昭休往復書翰留:原本（テスト）"
     },
     {
       "bookid":"akiyasu-02-touka",
@@ -138,6 +144,7 @@ export default {
       "height":5504,
       "width_excep":[],
       "height_excep":[],
+      "category":"松平昭休往復書翰留:原本（テスト）"
     },
     {
       "bookid":"akiyasu-02-kaitaimae",
@@ -161,6 +168,7 @@ export default {
       "height":3840,
       "width_excep":[],
       "height_excep":[],
+      "category":"松平昭休往復書翰留:原本（テスト）"
     }
   ]
 }
