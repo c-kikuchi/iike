@@ -30,7 +30,7 @@
 <div class="loginform">
   <h1>
     <img src="/ii-icon_256.png" style="width:64px; height:64px; vertical-align: bottom;">
-    ii Annote
+    ii Annoter
   </h1>
   <p>
     <input type="password" v-model="pw" class="pwinput"><br>

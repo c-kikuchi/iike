@@ -55,7 +55,7 @@ const metalist_categorized = ref(metalist.categories.map(cat=>{
   <main>
     <h1>
       <img src="/ii-icon_256.png" style="width:64px; height:64px; vertical-align: bottom;">
-      ii Annote
+      ii Annoter
     </h1>
     <nav class="ii-nav">
       <div v-for="category in metalist_categorized">
