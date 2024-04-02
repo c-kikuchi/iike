@@ -127,7 +127,7 @@ const store = createStore({
       }
     },
     loadDefaultJSON(context){
-      return fetch("/iike/default.json").then(resp=>resp.json()).then(json=>{
+      return fetch("./default.json").then(resp=>resp.json()).then(json=>{
         console.log("load default");
         return context.dispatch("loadJSON", {json, saveDB:false});
       })

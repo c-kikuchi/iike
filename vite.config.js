@@ -13,7 +13,7 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-  base:"/iike",
+  //base:"/iike",
   build: {
     outDir:"dist",
     minify:false
