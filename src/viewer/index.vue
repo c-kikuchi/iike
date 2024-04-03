@@ -1,10 +1,17 @@
 <style>
+body {
+  margin:0;
+}
+
 .ii-root {
   display:flex;
-  flex-direction: row;
+  flex-direction: row;  
 }
 .ii-main-pane {
   flex-grow:1;
+  display:flex;
+  flex-direction: column;
+  height:100vh;
 }
 .ii-side-pane {
   display:none;
@@ -42,13 +49,21 @@
   background-color:#0771c2;
 }
 .ii-toolbar-controls button:disabled{
-  background-color:rgb(134, 171, 196);
+  background-color:rgb(148, 177, 200);
   color:#666;
 }
 
 .ii-zoom-control button{
   width:22px;
   height:22px;
+}
+
+.ii-image-viewer {
+	width: 100%;
+	min-height: 800px;
+	background-color: rgb(204, 204, 204);
+	position: relative;
+	flex-grow: 1;
 }
 
 label{
@@ -82,10 +97,7 @@ input[type=checkbox]:checked.togglebutton+span {
 <main class="ii-root">
 <div class="ii-main-pane">
   <div class="ii-header">
-    <div style="float:left;"><RouterLink to="/"><strong>&lt;Home</strong></RouterLink></div>
-    <!--<div style="float:right">
-      <input type="checkbox" v-model="is_sidepane_shown">
-    </div>-->
+    <div style="float:left;padding:10px;"><RouterLink to="/"><strong>&lt;Home</strong></RouterLink></div>
     <!--<div style="float:right;">
       <details>
         <summary><strong>…</strong></summary>
@@ -94,18 +106,32 @@ input[type=checkbox]:checked.togglebutton+span {
         </div>
       </details>
     </div>-->
-    <div style="float:right">
-      <!--<button @click="authLogout">Logout</button>-->
+    <div style="float:right;display:flex;padding:10px;">
+      <popmenu right>
+          <li @click="exportAnnotationToJSON">Export JSON</li>
+          <li @click="exportManifest">Export Manifest</li>
+          <!--<li><button @click="openManifest">Show Manifest</button></li>-->
+          <li><label><input type="file" style="display:none" @change="loadAnnotationFromJSON">Load JSON</label></li>
+          <!--<li><button @click="getPageDimension">page size</button></li>-->
+          <!--<li><button @click="demo_openDefault">(DEMO)load demo json</button></li>-->
+          <li @click="saveTest">Save All</li>
+          <!--<li><button @click="loadTest">load all from test</button></li>-->
+          <li @click="authLogout">Logout</li>
+      </popmenu>
+      <!--<input type="checkbox" v-model="is_sidepane_shown">-->
     </div>
     <h1 style="text-align:center;font-size:large">{{ meta.title }}</h1>
   </div>
   <div ref="toolbar_elm" class="ii-toolbar">
     <div class="ii-toolbar-controls">
       <div class="ii-zoom-control">
-        <button ref="zoominbutton" title="zoom in">+</button>
-        <button ref="zoomoutbutton" title="zoom out">-</button>
+        <button ref="zoominbutton" title="zoom in">＋</button>
+        <button ref="zoomoutbutton" title="zoom out">－</button>
         <button ref="homebutton" title="reset zoom">🏠&#xFE0E;</button>
         <button ref="fullpagebutton" title="full screen">⛶</button>
+      </div>
+      <div>
+        <button title="refresh" @click="setPage">更新</button>
       </div>
       <div class="ii-page-control">
         <button :disabled="!this.nextPage" @click="this.currentPage=this.nextPage;setPage()">next</button>
@@ -117,35 +143,30 @@ input[type=checkbox]:checked.togglebutton+span {
       <div class="ii-tag-control">
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_annotating" @change="startAnnotationMode()"><span>⌖索引の作成</span></label>
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_taggingmode" @change="startTagAnnotationMode()"><span>文書番号指定</span></label>
-        &nbsp;<button title="refresh" @click="setPage">⮔</button>
         &nbsp;<label style="color:#fff;font-size:small;"><input type="checkbox" v-model="show_ocrs" @change="setPage">OCR結果を表示</label>
       </div>
     </div>
   </div>
-  <div ref="osd_elm" style="width:100%; height: 800px; background-color: #ccc;"></div>
-  <div>
+  <div class="ii-image-viewer" ref="osd_elm"></div>
+  <!--<div>
     <div>
       {{ currentPageUrl }}<br>
       {{ currentImageUrl }}
     </div>
+  </div>-->
+  <div style="padding:0 20px;">
     <div>
-      <button @click="exportAnnotationToJSON">Export JSON</button>
-      <button @click="exportManifest">Export Manifest</button>
-      <button @click="openManifest">Show Manifest</button>
-      <input type="file" @change="loadAnnotationFromJSON">
-      <!--<button @click="getPageDimension">page size</button>-->
-      <button @click="demo_openDefault">(DEMO)load demo json</button>
-      <button @click="saveTest">save all to test</button>
-      <button @click="loadTest">load all from test</button>
+      Annotations: {{this.annotations.length}} 
+      (in this page: {{this.currentAnnotations.length}})
+      <input type="checkbox" v-model="show_annotation_list">
     </div>
-  </div>
-  <div>
-    <div>Annotations: {{this.annotations.length}} (in this page: {{this.currentAnnotations.length}})</div>
-    <div v-for="anno in annotations" :key="anno.id">
-      <details>
-        <summary>{{anno.id}}</summary>
-        <pre>{{JSON.stringify(anno, null, 2)}}</pre>
-      </details>
+    <div v-if="show_annotation_list">
+      <div v-for="anno in annotations" :key="anno.id">
+        <details>
+          <summary>{{anno.id}}</summary>
+          <pre>{{JSON.stringify(anno, null, 2)}}</pre>
+        </details>
+      </div>
     </div>
   </div>
 </div>
@@ -161,16 +182,21 @@ input[type=checkbox]:checked.togglebutton+span {
   import formatterBuilder from "./components/formatter.js";
   import manifestGenerator from "./components/generateManifest.js";
   import metalist from "../metalist.js";
+  import popmenu from "../components/popmenu.vue";
   import {RouterLink} from "vue-router";
 
   export default {
     inject:["logout","loggedin"],
+    components:{
+      popmenu
+    },
     data(){
       return {
         is_taggingmode:false,
         is_annotating:false,
         is_internal_routing:false,
         is_sidepane_shown:false,
+        show_annotation_list:false,
         currentPage:"",
         viewer:null,
         anno:null,
