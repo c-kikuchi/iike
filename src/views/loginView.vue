@@ -30,7 +30,7 @@
 <div class="loginform">
   <h1>
     <img src="/ii-icon_256.png" style="width:64px; height:64px; vertical-align: bottom;">
-    ii Annoter
+    Login
   </h1>
   <p>
     <input type="password" v-model="pw" class="pwinput"><br>
@@ -67,7 +67,13 @@ export default {
       const email = "iike@ii-annote.web.app";
       const password = this.pw;
       signInWithEmailAndPassword(auth, email, password).then(userCredential=>{
-        this.$router.replace("/");
+        let path = "/";
+        const savedPath = sessionStorage.getItem("backPath");
+        if(savedPath!=null){
+          path = savedPath;
+          sessionStorage.removeItem("backPath");
+        }
+        this.$router.replace(path);
       }).catch(error=>{
         this.code = error.code;
         this.message = error.message;

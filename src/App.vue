@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, provide, ref } from 'vue';
-import { RouterView, useRouter } from 'vue-router';
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { RouterView, useRouter, useRoute } from 'vue-router';
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
 //import { useStore } from 'vuex';
 //const store = useStore();
@@ -11,15 +11,24 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 })*/
 
 const router = useRouter();
+const route = useRoute();
 const auth = getAuth();
 
 const loggedin = ref(false);
+const logout = ()=>{
+  signOut(auth);
+};
+
 provide("loggedin", loggedin);
+provide("logout", logout);
 
 onMounted(()=>{
   onAuthStateChanged(auth, user=>{
     if(!user){
       console.log("logged out");
+      if(route.fullPath != "/"){
+        sessionStorage.setItem("backPath", route.fullPath);
+      }
       loggedin.value = false;
       router.replace("/login");
     }

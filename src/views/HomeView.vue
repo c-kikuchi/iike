@@ -24,23 +24,19 @@ h3::before {
   margin: 0 30px;
 }
 .ii-link {
-  color: #293F47
+  color: #333
 }
 
 </style>
 <script setup>
 import { inject, ref } from "vue"
 import { RouterLink } from "vue-router"
-import { getAuth, signOut } from "firebase/auth";
 import metalist from "../metalist.js"
 
 //const envMode = import.meta.env.MODE
 
 const loggedin = inject("loggedin");
-const logout = function(){
-  const auth = getAuth();
-  signOut(auth);
-}
+const logout = inject("logout");
 
 const metalist_categorized = ref(metalist.categories.map(cat=>{
   return {
@@ -55,7 +51,7 @@ const metalist_categorized = ref(metalist.categories.map(cat=>{
   <main>
     <h1>
       <img src="/ii-icon_256.png" style="width:64px; height:64px; vertical-align: bottom;">
-      ii Annoter
+      ii Annotator
     </h1>
     <nav class="ii-nav">
       <div v-for="category in metalist_categorized">

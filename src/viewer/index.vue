@@ -94,6 +94,9 @@ input[type=checkbox]:checked.togglebutton+span {
         </div>
       </details>
     </div>-->
+    <div style="float:right">
+      <!--<button @click="authLogout">Logout</button>-->
+    </div>
     <h1 style="text-align:center;font-size:large">{{ meta.title }}</h1>
   </div>
   <div ref="toolbar_elm" class="ii-toolbar">
@@ -161,6 +164,7 @@ input[type=checkbox]:checked.togglebutton+span {
   import {RouterLink} from "vue-router";
 
   export default {
+    inject:["logout","loggedin"],
     data(){
       return {
         is_taggingmode:false,
@@ -353,6 +357,9 @@ input[type=checkbox]:checked.togglebutton+span {
           //this.is_annotating = true;
           this.anno.setDrawingEnabled(true);
         }
+      },
+      authLogout(){
+        this.logout();
       },
       getPageDimension(){// remove on production
         const dimensions = this.viewer.source.dimensions;
