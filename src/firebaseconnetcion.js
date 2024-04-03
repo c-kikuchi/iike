@@ -21,7 +21,7 @@ const db = getFirestore(firebaseApp);
 
 const annotationCollectionPath = "annotation-test";
 const annotationCollectionTestPath = "annotation-test";
-const ocrCollectionPath = "ocr-test";
+const ocrCollectionPath = "ocr";
 const ocrCollectionTestPath = "ocr-test";
 
 const dbconnection = {
@@ -84,6 +84,7 @@ const dbconnection = {
     return deleteDoc(docref);
   },
   async getOcrs(bookid){
+    return [];
     if(!bookid){
       throw new Error("bookid is invalid");
     }
@@ -96,6 +97,7 @@ const dbconnection = {
     return querySnapshot.docs.map(doc=>doc.data());
   },
   setOcr(ocrannot){
+    return;
     if(!ocrannot._bookid){
       throw new Error("_bookid is invalid");
     }
@@ -108,6 +110,7 @@ const dbconnection = {
     return setDoc(docref, ocrannot);
   },
   setOcrs(list){
+    return;
     const coll = collection(db, ocrCollectionPath);
     return Promise.all(splitArray(list,500).map(slist=>{
       const batch = writeBatch(db);
