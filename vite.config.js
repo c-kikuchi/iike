@@ -16,7 +16,7 @@ export default defineConfig({
   //base:"/iike",
   build: {
     outDir:"dist",
-    minify:false
+    //minify:false
   },
   //optimizeDeps:{
   //  disabled :true
