@@ -30,12 +30,34 @@ function simpleCommentingWidget(obj){
 function IDShowingWidget(obj){
   const elm = document.createElement("div");
   if(obj.annotation.id){
-    elm.innerText = "ID: " + obj.annotation.id;
+    const id = obj.annotation.id;
+
+    const ipt = document.createElement("input");
+    ipt.setAttribute("type", "text");
+    ipt.readOnly = true;
+    ipt.value = id;
+    ipt.style.cssText= `
+      width: 320px;
+      background-color: inherit;
+      color: #333;
+      border: 1px solid #999;
+    `;
+    ipt.addEventListener("focus", e=>e.target.select());
+    
+    const btn = document.createElement("button");
+    btn.setAttribute("type","button");
+    btn.innerHTML ="📋";
+    btn.title="Copy ID";
+    btn.addEventListener("click", e=>{
+      navigator.clipboard.writeText(id);
+    })
+
+    elm.append("ID: ", ipt, btn);
     elm.style.cssText = `
-      font-size:x-small;
-      color:#666;
+      font-size:small;
+      color:#333;
       background-color:#ccc;
-      padding-left:15px;
+      padding-left:5px;
       line-height:1.8em;
     `
   }
