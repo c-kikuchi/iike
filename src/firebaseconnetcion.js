@@ -19,10 +19,11 @@ const firebaseApp = initializeApp(firebaseConfig);
 console.log("firebase initialized");
 const db = getFirestore(firebaseApp);
 
-const annotationCollectionPath = "annotation-test";
-const annotationCollectionTestPath = "annotation-test";
-const ocrCollectionPath = "ocr";
-const ocrCollectionTestPath = "ocr-test";
+const envMode = import.meta.env.MODE;
+const isDev = envMode=="development";
+
+const annotationCollectionPath = isDev?"annotation-test":"annotation";
+const ocrCollectionPath = isDev?"ocr-test":"ocr";
 
 const dbconnection = {
   async getAnnotations(bookid){
