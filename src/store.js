@@ -87,8 +87,10 @@ const store = createStore({
     },
     loadAnnotationsLocal(context, {list=[], forceUpdate=false}){
       const appends = [], updates = [];
+      const annoIdSet = new Set(context.state.annotations.map(anno=>anno.id));
       list.forEach(item=>{
-        if(!context.getters.isAnnotationLoaded(item.id)){
+        if(!annoIdSet.has(item.id)){
+          annoIdSet.add(item.id);
           appends.push(item);
         }
         else if(forceUpdate){

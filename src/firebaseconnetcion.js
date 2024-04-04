@@ -39,7 +39,9 @@ const dbconnection = {
         )
       )
     );
+    console.time("getdoc");
     const querySnapshot = await getDocs(q);
+    console.timeEnd("getdoc");
     return querySnapshot.docs.map(doc=>doc.data());
   },
   setAnnotation(annotation){
@@ -129,7 +131,7 @@ const dbconnection = {
     }));
   },
   saveTest(annotations){
-    const test_coll = collection(db, annotationCollectionTestPath);
+    const test_coll = collection(db, annotationCollectionPath);
     const batch = writeBatch(db);
     annotations.forEach(item=>{
       const docref = doc(test_coll, item.id);
@@ -138,7 +140,7 @@ const dbconnection = {
     return batch.commit()
   },
   async loadTest(){
-    const test_coll = collection(db, annotationCollectionTestPath);
+    const test_coll = collection(db, annotationCollectionPath);
     const querySnapshot = await getDocs(test_coll);
     const list = querySnapshot.docs.map(doc=>doc.data());
     return list;
