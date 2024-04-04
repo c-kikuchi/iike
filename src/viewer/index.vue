@@ -482,7 +482,7 @@ input[type=checkbox]:checked.togglebutton+span {
       this.loadAnnotationFromDB().then(()=>{
         this.setPage();
       });
-      //this.setPage();
+      this.setPage();
       //window.app = this;
     }
   };
