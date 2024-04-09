@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
+import { dbconnection } from "firestoreconnection.js"
 
 export const useAnnotationsStore = defineStore("annotations", ()=>{
   const annotations = ref([]);
@@ -88,7 +89,7 @@ export const useAnnotationsStore = defineStore("annotations", ()=>{
         annotations.value[index] = item;
       }
       else{
-        annotations.push(item);
+        annotations.value.push(item);
       }
     })
   }
@@ -128,6 +129,18 @@ export const useAnnotationsStore = defineStore("annotations", ()=>{
     annotations.value.splice(index,1);
     return deleteAnnotationDB(annotation);
   }
+  function deleteAnnotationsLocal(list){
+    const listIdSet = new Set(list.map(item=>item.id));
+    for (let i=0; i<annotations.value.length && listIdSet.size;){
+      const id = annotations.value[i].id;
+      if(listIdSet.delete(id)){
+        annotations.value.splice(i,1);
+      }
+      else{
+        i++;
+      }
+    }
+  }
 
   /**
    * 
@@ -163,15 +176,54 @@ export const useAnnotationsStore = defineStore("annotations", ()=>{
     return await loadJSON(json, false);
   }
 
-  const setAnnotationDB = (annotation)=>{
+  /**
+   * Load Annotations from DB.
+   * @param {string} bookid 
+   * @param {boolean} forceUpdate 
+   * @param {boolean} loadOcrs 
+   * @returns {Promise}
+   */
+  function loadAnnotations(bookid="", forceUpdate=false, loadOcrs=false){
+    const p = [];
+    p.push(loadAnnotationsDB(bookid, forceUpdate));
+    if(loadOcrs){
+      p.push(loadOcrsDB(bookid));
+    }
+    return Promise.all(p);
+  }
 
-  };
-  const setAnnotationsDB = (list)=>{
+  const dbloadedlist = new Set();
+  const dbdiffs = {};
+  const dbsetlist = new Set();
+  const dbdeletelist = new Set();
 
-  };
-  const deleteAnnotationDB = (annotation)=>{
-
-  };
+  function setAnnotationDB(annotation){
+    if(!annotation) return Promise.reject();
+    dbsetlist.add(annotation.id);
+    return dbconnection.setAnnotation(annotation);
+  }
+  function setAnnotationsDB(list){
+    if(!list.length) return Promise.reject();
+    list.forEach(item=>dbsetlist.add(item.id));
+    return dbconnection.setAnnotations(list);
+  }
+  function deleteAnnotationDB (annotation){
+    if(!annotation) return Promise.reject();
+    dbdeletelist.add(annotation.id);
+    return dbconnection.deleteAnnotation(annotation);
+  }
+  function loadAnnotationsDB(bookid, forceUpdate){
+    if(dbloadedlist.has(bookid)){
+      setAnnotations(dbdiffs[bookid].appends, forceUpdate);
+      deleteAnnotationsLocal(dbdiffs[bookid].deletes);
+    }
+    else{
+      dbconnection.startLoadingAnnotation(bookid, ()=>{
+        //todo
+      })
+    }
+  }
+  function loadOcrsDB(){}
 
   return {
     annotations,
@@ -183,6 +235,7 @@ export const useAnnotationsStore = defineStore("annotations", ()=>{
     deleteAnnotation,
     loadJSON,
     loadDefaultJSON,
+    loadAnnotations,
     setOcrs,
   }
 });
