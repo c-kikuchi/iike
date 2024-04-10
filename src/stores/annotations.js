@@ -93,12 +93,31 @@ export const useAnnotationsStore = defineStore("annotations", ()=>{
       }
     })
   }
+  /**
+   * Delete Annotations (local)
+   * @private
+   * @param {Object[]} list List of Annotations
+   * @param {string} list[].id Unique ID of Annotation
+   */
+  function removeAnnotations(list){
+    const listIdSet = new Set(list.map(item=>item.id));
+    for (let i=0; i<annotations.value.length && listIdSet.size;){
+      const id = annotations.value[i].id;
+      if(listIdSet.delete(id)){
+        annotations.value.splice(i,1);
+      }
+      else{
+        i++;
+      }
+    }
+  }
 
   /**
    * Append or Update Ocr Annotation (local)
+   * @private
    * @param {Object[]} list List of Ocr Annotation
    * @param {string} list[].id Unique ID of Annotation
-   * @param {boolean} forceUpdate 
+   * @param {boolean} [forceUpdate=false] 
    */
   function setOcrs(list=[], forceUpdate=false){
     const ocrsIdMap = new Map();
@@ -129,25 +148,14 @@ export const useAnnotationsStore = defineStore("annotations", ()=>{
     annotations.value.splice(index,1);
     return deleteAnnotationDB(annotation);
   }
-  function deleteAnnotationsLocal(list){
-    const listIdSet = new Set(list.map(item=>item.id));
-    for (let i=0; i<annotations.value.length && listIdSet.size;){
-      const id = annotations.value[i].id;
-      if(listIdSet.delete(id)){
-        annotations.value.splice(i,1);
-      }
-      else{
-        i++;
-      }
-    }
-  }
+
 
   /**
-   * 
+   * Load Annotation and Ocr List JSON
    * @param {Object[]} json List of Annotation or Ocr Annotation
    * @param {string} json[].id Unique ID of Annotation
    * @param {string} json[]._type Type of Annotation: "describing" | "tagging" | "ocrtext"
-   * @param {boolean} saveDB 
+   * @param {boolean} [saveDB=false] Flag for saving to DB.
    * @returns {Promise} 
    */
   function loadJSON (json=[], saveDB=false){
@@ -169,6 +177,10 @@ export const useAnnotationsStore = defineStore("annotations", ()=>{
     return Promise.resolve();
   }
 
+  /**
+   * Load Default JSON
+   * @returns {Promise}
+   */
   async function loadDefaultJSON(){
     const resp = await fetch("./default.json");
     const json = await resp.json();
@@ -177,10 +189,10 @@ export const useAnnotationsStore = defineStore("annotations", ()=>{
   }
 
   /**
-   * Load Annotations from DB.
+   * Load Annotations and Ocrs from DB.
    * @param {string} bookid 
-   * @param {boolean} forceUpdate 
-   * @param {boolean} loadOcrs 
+   * @param {boolean} [forceUpdate=false]
+   * @param {boolean} [loadOcrs=false] 
    * @returns {Promise}
    */
   function loadAnnotations(bookid="", forceUpdate=false, loadOcrs=false){
@@ -194,36 +206,74 @@ export const useAnnotationsStore = defineStore("annotations", ()=>{
 
   const dbloadedlist = new Set();
   const dbdiffs = {};
-  const dbsetlist = new Set();
-  const dbdeletelist = new Set();
+  //const dbsetlist = new Set();
+  //const dbdeletelist = new Set();
 
   function setAnnotationDB(annotation){
     if(!annotation) return Promise.reject();
-    dbsetlist.add(annotation.id);
+    //dbsetlist.add(annotation.id);
     return dbconnection.setAnnotation(annotation);
   }
   function setAnnotationsDB(list){
     if(!list.length) return Promise.reject();
-    list.forEach(item=>dbsetlist.add(item.id));
+    //list.forEach(item=>dbsetlist.add(item.id));
     return dbconnection.setAnnotations(list);
   }
   function deleteAnnotationDB (annotation){
     if(!annotation) return Promise.reject();
-    dbdeletelist.add(annotation.id);
+    //dbdeletelist.add(annotation.id);
     return dbconnection.deleteAnnotation(annotation);
   }
-  function loadAnnotationsDB(bookid, forceUpdate){
+  /**
+   * Save All Annotation to DB.
+   * @returns {Promise}
+   */
+  function saveAll(){
+    return dbconnection.setAnnotations(annotations.value);
+  }
+
+  /**
+   * Load Annotations from DB.
+   * @private
+   * @param {string} bookid 
+   * @param {boolean} [forceUpdate]
+   * @returns {Promise}
+   */
+  function loadAnnotationsDB(bookid, forceUpdate=false){
+    if(!bookid){
+      throw new Error("bookid is invalid");
+    }
     if(dbloadedlist.has(bookid)){
       setAnnotations(dbdiffs[bookid].appends, forceUpdate);
-      deleteAnnotationsLocal(dbdiffs[bookid].deletes);
+      removeAnnotations(dbdiffs[bookid].deletes);
+      dbdiffs[bookid].appends = [];
+      dbdiffs[bookid].deletes = [];
+      return Promise.resolve();
     }
     else{
-      dbconnection.startLoadingAnnotation(bookid, ()=>{
-        //todo
+      const firsttime = true;
+      dbloadedlist.add(bookid);
+      dbdiffs[bookid] = {appends:[], deletes:[]};
+      return dbconnection.startLoadingAnnotation(bookid, (type, annotation, source)=>{
+        if(source=="server"){
+          if(type=="added" || type=="modified"){
+            dbdiffs[bookid].appends.push(annotation);
+          }
+          else if(type=="removed"){
+            dbdiffs[bookid].deletes.push(annotation);
+          }
+        }
+      }).then(()=>{
+        setAnnotations(dbdiffs[bookid].appends, true);
+        removeAnnotations(dbdiffs[bookid].deletes);
+        dbdiffs[bookid].appends = [];
+        dbdiffs[bookid].deletes = [];
       })
     }
   }
-  function loadOcrsDB(){}
+  function loadOcrsDB(){
+    return Promise.resolve();
+  }
 
   return {
     annotations,
@@ -237,5 +287,6 @@ export const useAnnotationsStore = defineStore("annotations", ()=>{
     loadDefaultJSON,
     loadAnnotations,
     setOcrs,
+    saveAll
   }
 });
