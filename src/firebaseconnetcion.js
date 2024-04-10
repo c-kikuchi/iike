@@ -1,6 +1,4 @@
-
-import { initializeApp } from "firebase/app";
-import firebaseConfig from './firebaseconfig';
+import fbApp from "./firebaseinit";
 import { getFirestore, getDocs, setDoc, collection, doc, writeBatch, query, where, or, and } from "firebase/firestore";
 
 function splitArray(array, num){
@@ -15,9 +13,7 @@ function generateID(){
   return (Date.now()+(Math.floor(Math.random()*100000)+""))
 }
 
-const firebaseApp = initializeApp(firebaseConfig);
-console.log("firebase initialized");
-const db = getFirestore(firebaseApp);
+const db = getFirestore(fbApp);
 
 const envMode = import.meta.env.MODE;
 const isDev = envMode=="development";

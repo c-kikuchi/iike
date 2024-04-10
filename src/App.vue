@@ -1,7 +1,9 @@
 <script setup>
 import { onMounted, provide, ref } from 'vue';
 import { RouterView, useRouter, useRoute } from 'vue-router';
+import fbApp from "./firebaseinit";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import {useAnnotationsStore} from "@/stores/annotations";
 
 //import { useStore } from 'vuex';
 //const store = useStore();
@@ -12,7 +14,8 @@ import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
 const router = useRouter();
 const route = useRoute();
-const auth = getAuth();
+const auth = getAuth(fbApp);
+const annotStore = useAnnotationsStore();
 
 const loggedin = ref(false);
 const logout = ()=>{
@@ -21,6 +24,7 @@ const logout = ()=>{
 
 provide("loggedin", loggedin);
 provide("logout", logout);
+provide("annotStore", annotStore);
 
 onMounted(()=>{
   onAuthStateChanged(auth, user=>{

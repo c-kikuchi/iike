@@ -43,6 +43,7 @@
 
 </template>
 <script>
+import fbApp from "../firebaseinit";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 
@@ -63,7 +64,7 @@ export default {
     login(){
       this.code="";
       this.message="";
-      const auth = getAuth();
+      const auth = getAuth(fbApp);
       const email = "iike@ii-annote.web.app";
       const password = this.pw;
       signInWithEmailAndPassword(auth, email, password).then(userCredential=>{
