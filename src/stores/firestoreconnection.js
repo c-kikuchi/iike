@@ -1,5 +1,5 @@
 import fbApp from "../firebaseinit";
-import { getFirestore, onSnapshot, setDoc, collection, doc, writeBatch, query, where, or, and } from "firebase/firestore";
+import { getFirestore, deleteDoc, onSnapshot, setDoc, collection, doc, writeBatch, query, where, or, and } from "firebase/firestore";
 
 function splitArray(array, num){
   num = num || 1;
@@ -10,7 +10,7 @@ function splitArray(array, num){
   return newarray;
 }
 function generateID(){
-  return (Date.now()+(Math.floor(Math.random()*100000)+""))
+  return "#" + crypto.randomUUID();
 }
 
 const db = getFirestore(fbApp);
@@ -80,13 +80,13 @@ const dbconnection = {
     );
     return new Promise(resolve=>{
       onSnapshot(q, snapshot=>{
-        snapshot.docChanges.forEach(change=>{
+        snapshot.docChanges().forEach(change=>{
           const type = change.type;
           const annotation = change.doc.data();
           const source = change.doc.metadata.hasPendingWrites ? "local" : "server";
           callback(type, annotation, source);
-          resolve();
         })
+        resolve();
       })
     })
 

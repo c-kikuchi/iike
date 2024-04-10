@@ -1,8 +1,10 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
-import { dbconnection } from "firestoreconnection.js"
+import { dbconnection } from "./firestoreconnection.js"
 
 export const useAnnotationsStore = defineStore("annotations", ()=>{
+  console.log("initializing annotation store");
+
   const annotations = ref([]);
   const ocrs = ref([]);
   
@@ -244,6 +246,7 @@ export const useAnnotationsStore = defineStore("annotations", ()=>{
       throw new Error("bookid is invalid");
     }
     if(dbloadedlist.has(bookid)){
+      console.log("re-loading", bookid, dbdiffs[bookid].appends.length, dbdiffs[bookid].deletes.length);
       setAnnotations(dbdiffs[bookid].appends, forceUpdate);
       removeAnnotations(dbdiffs[bookid].deletes);
       dbdiffs[bookid].appends = [];
@@ -251,7 +254,7 @@ export const useAnnotationsStore = defineStore("annotations", ()=>{
       return Promise.resolve();
     }
     else{
-      const firsttime = true;
+      console.log("first time loading", bookid)
       dbloadedlist.add(bookid);
       dbdiffs[bookid] = {appends:[], deletes:[]};
       return dbconnection.startLoadingAnnotation(bookid, (type, annotation, source)=>{
@@ -264,6 +267,7 @@ export const useAnnotationsStore = defineStore("annotations", ()=>{
           }
         }
       }).then(()=>{
+        console.log("loading end!")
         setAnnotations(dbdiffs[bookid].appends, true);
         removeAnnotations(dbdiffs[bookid].deletes);
         dbdiffs[bookid].appends = [];

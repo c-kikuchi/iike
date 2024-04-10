@@ -115,7 +115,6 @@ input[type=checkbox]:checked.togglebutton+span {
           <!--<li><button @click="getPageDimension">page size</button></li>-->
           <!--<li><button @click="demo_openDefault">(DEMO)load demo json</button></li>-->
           <li @click="saveTest">Save All</li>
-          <!--<li><button @click="loadTest">load all from test</button></li>-->
           <li @click="authLogout">Logout</li>
       </popmenu>
       <!--<input type="checkbox" v-model="is_sidepane_shown">-->
@@ -185,8 +184,10 @@ input[type=checkbox]:checked.togglebutton+span {
   import popmenu from "../components/popmenu.vue";
   import {RouterLink} from "vue-router";
 
+  
+
   export default {
-    inject:["logout","loggedin"],
+    inject:["logout","loggedin", "annotStore"],
     components:{
       popmenu
     },
@@ -201,7 +202,7 @@ input[type=checkbox]:checked.togglebutton+span {
         viewer:null,
         anno:null,
         metalist:metalist,
-        show_ocrs:false,
+        show_ocrs:false,        
       };
     },
     computed:{
@@ -233,8 +234,8 @@ input[type=checkbox]:checked.togglebutton+span {
       annotations(){
         console.log("a");
         return !this.show_ocrs?
-          this.$store.state.annotations
-          :this.$store.state.annotations.concat(this.$store.state.ocrs);
+          this.annotStore.annotations
+          :this.annotStore.annotations.concat(this.annotStore.ocrs);
       },
       jsonUrlRoot(){
         return this.meta.jsonUrl.server+this.meta.jsonUrl.prefix+this.meta.identifier+this.meta.jsonUrl.suffix;
@@ -314,7 +315,7 @@ input[type=checkbox]:checked.togglebutton+span {
         const annotations = JSON.parse(text);
         if(annotations.length>0 /*&& confirm("Overwrite Annotations?")*/){
           //this.annotations = annotations;
-          await this.$store.dispatch("loadJSON", {json:annotations, saveDB:true});
+          await this.annotStore.loadJSON(annotations, true);
           this.setPage();
         }
       },
@@ -358,22 +359,22 @@ input[type=checkbox]:checked.togglebutton+span {
         }
       },
       loadAnnotationFromDB(){
-        return this.$store.dispatch("loadAnnotations", {bookid: this.bookid})
+        return this.annotStore.loadAnnotations(this.bookid);
       },
       addAnnotation(annotation){
         if(annotation._type=="ocrtext") return;
         this.insertProperties(annotation);
-        this.$store.dispatch("addAnnotation", annotation);
+        this.annotStore.addAnnotation(annotation);
       },
       updateAnnotation(annotation, previous){
         if(annotation._type=="ocrtext") return;
         //console.log(annotation, previous);
         this.insertProperties(annotation);
-        this.$store.dispatch("updateAnnotation", {annotation, previous});
+        this.annotStore.updateAnnotation(annotation);
       },
       deleteAnnotation(annotation){
         if(annotation._type=="ocrtext") return;
-        this.$store.dispatch("deleteAnnotation", annotation);
+        this.annotStore.deleteAnnotation(annotation);
       },
       startAnnotationMode(){
         if(this.is_annotating) this.anno.setDrawingEnabled(true);
@@ -394,15 +395,12 @@ input[type=checkbox]:checked.togglebutton+span {
         //console.log("viewport |", viewport_content.x, viewport_content.y);
       },
       async demo_openDefault(){// remove on production
-        await this.$store.dispatch("loadDefaultJSON");
+        await this.annotStore.loadDefaultJSON();
         this.setPage();
         console.log("default loaded");
       },
       saveTest(){
-        this.$store.dispatch("saveAllToTestDB");
-      },
-      loadTest(){
-        this.$store.dispatch("loadAllFromTestDB").then(()=>this.setPage());
+        this.annotStore.saveAll();
       }
     },
     watch:{
