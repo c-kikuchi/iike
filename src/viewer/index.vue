@@ -98,7 +98,7 @@ input[type=checkbox]:checked.togglebutton+span {
 <template>
 <main class="ii-root">
 <div class="ii-main-pane">
-  <div class="ii-header">
+  <div class="ii-header" v-show="show_header">
     <div style="float:left;padding:10px;"><RouterLink to="/"><strong>&lt;Home</strong></RouterLink></div>
     <!--<div style="float:right;">
       <details>
@@ -130,6 +130,7 @@ input[type=checkbox]:checked.togglebutton+span {
         <button ref="zoomoutbutton" title="zoom out">－</button>
         <button ref="homebutton" title="reset zoom">🏠&#xFE0E;</button>
         <button ref="fullpagebutton" title="full screen">⛶</button>
+        <button @click="show_header = !show_header" title="expand view">○</button>
       </div>
       <div>
         <button title="refresh" @click="setPage">更新</button>
@@ -155,7 +156,7 @@ input[type=checkbox]:checked.togglebutton+span {
       {{ currentImageUrl }}
     </div>
   </div>-->
-  <div style="padding:0 20px;">
+  <div style="padding:0 20px;" v-if="isDev">
     <div>
       Annotations: {{this.annotations.length}} 
       (in this page: {{this.currentAnnotations.length}})
@@ -189,7 +190,7 @@ input[type=checkbox]:checked.togglebutton+span {
   
 
   export default {
-    inject:["logout","loggedin", "annotStore"],
+    inject:["logout","loggedin", "annotStore", "isDev"],
     components:{
       popmenu
     },
@@ -204,7 +205,8 @@ input[type=checkbox]:checked.togglebutton+span {
         viewer:null,
         anno:null,
         metalist:metalist,
-        show_ocrs:false,        
+        show_ocrs:false,     
+        show_header:true,   
       };
     },
     computed:{
