@@ -22,9 +22,13 @@ const logout = ()=>{
   signOut(auth);
 };
 
+const envMode = import.meta.env.MODE;
+const isDev = ref(envMode=="development");
+
 provide("loggedin", loggedin);
 provide("logout", logout);
 provide("annotStore", annotStore);
+provide("isDev", isDev);
 
 onMounted(()=>{
   onAuthStateChanged(auth, user=>{

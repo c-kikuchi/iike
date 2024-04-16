@@ -155,7 +155,7 @@ input[type=checkbox]:checked.togglebutton+span {
       {{ currentImageUrl }}
     </div>
   </div>-->
-  <div style="padding:0 20px;">
+  <div style="padding:0 20px;" v-if="isDev">
     <div>
       Annotations: {{this.annotations.length}} 
       (in this page: {{this.currentAnnotations.length}})
@@ -189,7 +189,7 @@ input[type=checkbox]:checked.togglebutton+span {
   
 
   export default {
-    inject:["logout","loggedin", "annotStore"],
+    inject:["logout","loggedin", "annotStore", "isDev"],
     components:{
       popmenu
     },
