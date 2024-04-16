@@ -1,8 +1,8 @@
 <style scoped>
-.menuwrapper {
+.popmenuwrapper {
   position:relative;
 }
-.menuopener {
+.popmenuopener {
 	background-color: #0090ff;
 	padding: 5px;
 	display: inline-block;
@@ -44,8 +44,8 @@
 }
 </style>
 <template>
-<div class="menuwrapper">
-  <label class="menuopener">
+<div class="popmenuwrapper">
+  <label class="popmenuopener">
     <input type="checkbox" v-model="showmenu" style="display:none;">…
   </label>
   <menu class="popmenu" v-show="showmenu" :class="{'right':right}">
@@ -62,4 +62,10 @@ const props = defineProps({
   }
 })
 const showmenu = ref(false);
+
+document.addEventListener("click", e=>{
+  if(!e.target.closest(".popmenuwrapper")){
+    showmenu.value = false;
+  }
+})
 </script>
