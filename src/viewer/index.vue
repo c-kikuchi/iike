@@ -5,7 +5,9 @@ body {
 
 .ii-root {
   display:flex;
-  flex-direction: row;  
+  flex-direction: row;
+  position:fixed;
+  inset:0;
 }
 .ii-main-pane {
   flex-grow:1;
