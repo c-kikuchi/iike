@@ -9,9 +9,9 @@ function IIFormatterBuilder(bridge){
     const annot = annotation.underlying;
     //console.log("formatter |", annotation)
     let tag_value = "";
-    const has_tag = (!!annot && annot["_type"]=="tagging") || annotation.bodies.find(
+    const has_tag = annotation.bodies.find(
         body=>body.purpose=="tagging"&&(tag_value=body.value)&&true
-      );
+      )||(!!annot && annot["_type"]=="tagging");
     //const has_describing = annotation.bodies.some(body=>body.purpose("describing")) || annot["_type"]=="describing";
     const is_ocrtext = annot["_type"]=="ocrtext";
 
