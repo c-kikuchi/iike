@@ -1,6 +1,6 @@
 export default {
   "version":"0.1.1",
-  "categories":["井伊家史料（索引作成）","松平昭休往復書翰留:原本（テスト）"],
+  "categories":["井伊家史料（索引作成）","松平昭休往復書翰留:原本（テスト）","松平昭休往復書翰留:刊本（テスト）"],
   "list":[
     {
       "bookid":"iike-7",
@@ -272,6 +272,54 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"松平昭休往復書翰留:原本（テスト）"
+    },
+    {
+      "bookid":"matsu-1-01",
+      "title":"松平昭休往復書簡留一　第一冊",
+      "volume":"1",
+      "identifier":"matsu-1",
+      "pages": ["matsu-1_01.jp2","matsu-1_02.jp2","matsu-1_03.jp2","matsu-1_04.jp2","matsu-1_05.jp2","matsu-1_06.jp2","matsu-1_07.jp2","matsu-1_08.jp2","matsu-1_09.jp2","matsu-1_10.jp2","matsu-1_11.jp2","matsu-1_12.jp2","matsu-1_13.jp2","matsu-1_14.jp2","matsu-1_15.jp2","matsu-1_16.jp2","matsu-1_17.jp2","matsu-1_18.jp2","matsu-1_19.jp2","matsu-1_20.jp2","matsu-1_21.jp2","matsu-1_22.jp2","matsu-1_23.jp2","matsu-1_24.jp2","matsu-1_25.jp2","matsu-1_26.jp2","matsu-1_27.jp2","matsu-1_28.jp2","matsu-1_29.jp2"],
+      "jsonUrl": {
+        "server":"http://localhost:8080",
+        "prefix":"/iiif/",
+        "suffix":"/",
+        "extension":"/info.json"
+      },
+      "imageUrl": {
+        "server":"http://localhost:8080",
+        "prefix":"/iiif/",
+        "suffix":"/",
+        "extension":"full/max/0/default.jpg"
+      },
+      "width":1570,
+      "height":2479,
+      "width_excep":[],
+      "height_excep":[],
+      "category":"松平昭休往復書翰留:刊本（テスト）"
+    },
+    {
+      "bookid":"matsu-1-02",
+      "title":"松平昭休往復書簡留一　第二冊",
+      "volume":"2",
+      "identifier":"matsu-1",
+      "pages": ["matsu-1_30.jp2","matsu-1_31.jp2","matsu-1_32.jp2","matsu-1_33.jp2","matsu-1_34.jp2","matsu-1_35.jp2","matsu-1_36.jp2","matsu-1_37.jp2","matsu-1_38.jp2","matsu-1_39.jp2","matsu-1_40.jp2","matsu-1_41.jp2","matsu-1_42.jp2","matsu-1_43.jp2","matsu-1_44.jp2","matsu-1_45.jp2","matsu-1_46.jp2","matsu-1_47.jp2","matsu-1_48.jp2","matsu-1_49.jp2","matsu-1_50.jp2","matsu-1_51.jp2","matsu-1_52.jp2","matsu-1_53.jp2","matsu-1_54.jp2","matsu-1_55.jp2"],
+      "jsonUrl": {
+        "server":"http://localhost:8080",
+        "prefix":"/iiif/",
+        "suffix":"/",
+        "extension":"/info.json"
+      },
+      "imageUrl": {
+        "server":"http://localhost:8080",
+        "prefix":"/iiif/",
+        "suffix":"/",
+        "extension":"full/max/0/default.jpg"
+      },
+      "width":1570,
+      "height":2479,
+      "width_excep":[],
+      "height_excep":[],
+      "category":"松平昭休往復書翰留:刊本（テスト）"
     },
     {
       "bookid":"akiyasu8",
