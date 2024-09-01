@@ -31,7 +31,7 @@ const dbconnection = {
     }
     const id = annotation.id || generateID();
     const coll = collection(db, annotationCollectionPath);
-    const docref = doc(coll, id);
+    const docref = doc(coll, encodeURIComponent(id));
     return setDoc(docref, annotation);
   },
   setAnnotations(list){
@@ -49,7 +49,7 @@ const dbconnection = {
         }
         const id = item.id || generateID();
         console.log("saving", id);
-        const docref = doc(coll, id);
+        const docref = doc(coll, encodeURIComponent(id));
         batch.set(docref, item);
       });
       return batch.commit();
@@ -60,7 +60,7 @@ const dbconnection = {
     if(!annotation.id){
       throw new Error("id is invalid");
     }
-    const docref = doc(db, annotationCollectionPath, annotation.id);
+    const docref = doc(db, annotationCollectionPath, encodeURIComponent(annotation.id));
     return deleteDoc(docref);
   },
   startLoadingAnnotation(bookid, callback=(type, annotation, source)=>{}){

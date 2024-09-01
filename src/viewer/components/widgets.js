@@ -425,21 +425,60 @@ function IIKanPageWidgetBuilder(bridge){
 
 function IILinkingWidget(obj){
   const container = document.createElement("div");
-  const link_body = obj.annotation.bodies.find(body=>body.purpose=="linking");
-  if(link_body){
-    const link = document.createElement("a");
-    link.href=link_body.value;
-    link.target="_blank";
-    link.innerText="近世史編纂支援データベース";
-    const p = document.createElement("div");
-    p.append("🔗",link);
-    p.style.fontSize="small";
-    container.append(p);
-  }
+  const link_bodies = obj.annotation.bodies.filter(body=>body.purpose=="linking");
+  link_bodies.forEach(link_body=>{
+    if(link_body){
+      const url = link_body.value;
+      const link = document.createElement("a");
+      link.href = url;
+      link.target="_blank";
+      if(url.match(/^https\:\/\/wwwap\.hi\.u\-tokyo\.ac\.jp\/ships\/w30/)){
+        link.innerText="近世史編纂支援データベース";
+      }
+      else{
+        link.innerText = url.slice(0, 30);
+      }
+      const btn = document.createElement("button");
+      btn.innerText="☆"
+      btn.addEventListener("click",e=>{
+        let new_url = prompt("input new url",url);
+        if(new_url && new_url!=url){
+          if((/^\d{8}$/).test(new_url)){
+            new_url = `https://wwwap.hi.u-tokyo.ac.jp/ships/w30/detail/3001${new_url}?dispid=disp02&type=2`
+          }
+          obj.onUpdateBody(link_body,{
+            "type": "TextualBody",
+            "purpose": "linking",
+            "value": new_url
+          });
+        }
+      })
+      const p = document.createElement("div");
+      p.append("🔗",link,btn);
+      p.style.fontSize="small";
+      container.append(p);
+    }
+  })
+  const append_btn = document.createElement("button");
+  append_btn.innerText = "+";
+  append_btn.addEventListener("click",e=>{
+    let new_url = prompt("input new url");
+    if(new_url){
+      if((/^\d{8}$/).test(new_url)){
+        new_url = `https://wwwap.hi.u-tokyo.ac.jp/ships/w30/detail/3001${new_url}?dispid=disp02&type=2`
+      }
+      obj.onAppendBody({
+        "type": "TextualBody",
+        "purpose": "linking",
+        "value": new_url
+      });
+    }
+  })
+  container.append(append_btn);
   return container;
 }
 
-function apply_candidate(obj, cand){
+function apply_candidate(obj, cand, join_mode = false){
   const annot = obj.annotation.underlying;
   const diffs = [];
   describing_keys.forEach(key=>{
@@ -447,11 +486,23 @@ function apply_candidate(obj, cand){
     if(annot["_type"]=="describing" || obj.annotation.bodies.every(body=>body.purpose!="tagging")){
       const current_body = obj.annotation.bodies.find(body=>body.purpose=="describing"&&(new RegExp(`^${key}: `)).test(body.value));
       if(current_body){
-        diffs.push({
-          action:"update",
-          previous:current_body,
-          updated:create_describing_body(key, dat_value)
-        });
+        if(join_mode && ["巻","頁","番号","枝番"].every(k=>k!=key)){
+          const label_exp = new RegExp(`^${key}: ([\\s\\S]*)$`);
+          const current_value = current_body ? (label_exp.exec(current_body.value)?RegExp.$1:"") : "";
+          const new_value = (current_value?(current_value+ "・"):"")  + dat_value;
+          diffs.push({
+            action:"update",
+            previous:current_body,
+            updated:create_describing_body(key, new_value)
+          });
+        }
+        else{
+          diffs.push({
+            action:"update",
+            previous:current_body,
+            updated:create_describing_body(key, dat_value)
+          });
+        }
       }
       else{
         diffs.push({
@@ -468,7 +519,7 @@ function apply_candidate(obj, cand){
       "value": `https://wwwap.hi.u-tokyo.ac.jp/ships/w30/detail/3001${cand.data["DB-ID"]}?dispid=disp02&type=2`
     };
     const link_body = obj.annotation.bodies.find(body=>body.purpose=="linking");
-    if(link_body){
+    if(link_body && !join_mode){
       diffs.push({
         action:"update",
         previous:link_body,
@@ -485,6 +536,10 @@ function apply_candidate(obj, cand){
   if(diffs.length>0){
     obj.onBatchModify(diffs);
   }
+}
+
+function join_candidate(obj, cand){
+  apply_candidate(obj,cand,true);
 }
 
 function candidateSelectorWidget(obj){
@@ -515,7 +570,13 @@ function candidateSelectorWidget(obj){
       apply_button.setAttribute("type", "button");
       apply_button.innerText = "Apply";
       apply_button.addEventListener("click", ()=>apply_candidate(obj, cand))
-      btn_wrapper.append(apply_button);
+      const join_button = document.createElement("button");
+      join_button.setAttribute("type", "button");
+      join_button.innerText ="Join";
+      join_button.addEventListener("click",e=>{
+        join_candidate(obj, cand);
+      });
+      btn_wrapper.append(apply_button,join_button);
 
       wrapper.append(details,btn_wrapper);
       container.append(wrapper);
