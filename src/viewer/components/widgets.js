@@ -425,6 +425,14 @@ function IIKanPageWidgetBuilder(bridge){
 
 function IILinkingWidget(obj){
   const container = document.createElement("div");
+  container.style.cssText = `
+    display:flex;
+    flex-direction:row;
+  `;
+  const link_container = document.createElement("div");
+  link_container.style.cssText =`
+    flex-grow:1;
+  `;
   const link_bodies = obj.annotation.bodies.filter(body=>body.purpose=="linking");
   link_bodies.forEach(link_body=>{
     if(link_body){
@@ -439,7 +447,7 @@ function IILinkingWidget(obj){
         link.innerText = url.slice(0, 30);
       }
       const btn = document.createElement("button");
-      btn.innerText="☆"
+      btn.innerText="Edit"
       btn.addEventListener("click",e=>{
         let new_url = prompt("input new url",url);
         if(new_url && new_url!=url){
@@ -456,7 +464,7 @@ function IILinkingWidget(obj){
       const p = document.createElement("div");
       p.append("🔗",link,btn);
       p.style.fontSize="small";
-      container.append(p);
+      link_container.append(p);
     }
   })
   const append_btn = document.createElement("button");
@@ -474,7 +482,7 @@ function IILinkingWidget(obj){
       });
     }
   })
-  container.append(append_btn);
+  container.append(link_container,append_btn);
   return container;
 }
 
@@ -545,42 +553,67 @@ function join_candidate(obj, cand){
 function candidateSelectorWidget(obj){
   const container = document.createElement("div");
   const annot = obj.annotation.underlying;
-  if(annot["_candidate"]&&annot["_candidate"].length>0){
-    annot["_candidate"].forEach(cand=>{
-      const wrapper = document.createElement("div");
-      wrapper.style.cssText = `
-        display:flex;
-        flex-direction:row;
-      `;
-      const details = document.createElement("details");
-      details.style.fontSize = "small";
-      const summary = document.createElement("summary");
-      summary.innerText = cand.title;
-      const list = document.createElement("ul");
-      for(const [key, value] of Object.entries(cand.data)){
-        //const key = v[0], value = v[1];
-        const list_item = document.createElement("li");
-        list_item.innerText = `${key}: ${value}`;
-        list.append(list_item);
-      };
-      details.append(summary,list);
+  if(annot["_candidate"]){
+    if(annot["_candidate"].length>0){
+      annot["_candidate"].forEach(cand=>{
+        const wrapper = document.createElement("div");
+        wrapper.style.cssText = `
+          display:flex;
+          flex-direction:row;
+        `;
+        const details = document.createElement("details");
+        details.style.fontSize = "small";
+        const summary = document.createElement("summary");
+        summary.innerText = cand.title;
+        const list = document.createElement("ul");
+        for(const [key, value] of Object.entries(cand.data)){
+          //const key = v[0], value = v[1];
+          const list_item = document.createElement("li");
+          list_item.innerText = `${key}: ${value}`;
+          list.append(list_item);
+        };
+        details.append(summary,list);
 
-      const btn_wrapper = document.createElement("div");
-      const apply_button = document.createElement("button");
-      apply_button.setAttribute("type", "button");
-      apply_button.innerText = "Apply";
-      apply_button.addEventListener("click", ()=>apply_candidate(obj, cand))
-      const join_button = document.createElement("button");
-      join_button.setAttribute("type", "button");
-      join_button.innerText ="Join";
-      join_button.addEventListener("click",e=>{
-        join_candidate(obj, cand);
-      });
-      btn_wrapper.append(apply_button,join_button);
+        const btn_wrapper = document.createElement("div");
+        const apply_button = document.createElement("button");
+        apply_button.setAttribute("type", "button");
+        apply_button.innerText = "Apply";
+        apply_button.addEventListener("click", ()=>{
+          apply_candidate(obj, cand)
+        });
+        const join_button = document.createElement("button");
+        join_button.setAttribute("type", "button");
+        join_button.innerText ="Join";
+        join_button.addEventListener("click",e=>{
+          join_candidate(obj, cand);
+        });
+        const copy_btn = document.createElement("button");
+        copy_btn.innerText = "◎";
+        copy_btn.addEventListener("click", e=>{
+          navigator.clipboard.writeText(JSON.stringify(cand));
+        })
+        btn_wrapper.append(apply_button,join_button,copy_btn);
 
-      wrapper.append(details,btn_wrapper);
-      container.append(wrapper);
+        wrapper.append(details,btn_wrapper);
+        container.append(wrapper);
+      })
+    }
+    const btnwrapper = document.createElement("div");
+    btnwrapper.style.cssText = `text-align:right`;
+    const paste_btn = document.createElement("button");
+    paste_btn.innerText = "Paste";
+    paste_btn.addEventListener("click",e=>{
+      const text = prompt("input candidate json","");
+      if(text){
+        let json = JSON.parse(text);
+        if(typeof json.title == "undefined"){
+          json = {title:"",data:json};
+        }
+        apply_candidate(obj, json);
+      }
     })
+    btnwrapper.append(paste_btn);
+    container.append(btnwrapper);
   }
 
   return container;
