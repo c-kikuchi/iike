@@ -489,7 +489,7 @@ function apply_candidate(obj, cand, join_mode = false){
         if(join_mode && ["巻","頁","番号","枝番"].every(k=>k!=key)){
           const label_exp = new RegExp(`^${key}: ([\\s\\S]*)$`);
           const current_value = current_body ? (label_exp.exec(current_body.value)?RegExp.$1:"") : "";
-          const new_value = (current_value?(current_value+ "・"):"")  + dat_value;
+          const new_value = ((current_value&&current_value!=dat_value)?(current_value+ "・"):"")  + dat_value;
           diffs.push({
             action:"update",
             previous:current_body,
