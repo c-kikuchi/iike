@@ -545,9 +545,28 @@ function apply_candidate(obj, cand, join_mode = false){
     obj.onBatchModify(diffs);
   }
 }
-
 function join_candidate(obj, cand){
   apply_candidate(obj,cand,true);
+}
+function create_candidate(obj){
+  const annot = obj.annotation.underlying;
+  const cand = {
+    title:"",
+    data:{}
+  }
+  if(annot["_type"]=="describing" || obj.annotation.bodies.every(body=>body.purpose!="tagging")){
+    describing_keys.forEach(key=>{
+      const current_body = obj.annotation.bodies.find(body=>body.purpose=="describing"&&(new RegExp(`^${key}: `)).test(body.value));
+      const label_exp = new RegExp(`^${key}: ([\\s\\S]*)$`);
+      const current_value = current_body ? (label_exp.exec(current_body.value)?RegExp.$1:"") : "";
+      cand.data[key] = current_value;
+    });
+    const link_body = obj.annotation.bodies.find(body=>body.purpose=="linking"&&(/https\:\/\/wwwap\.hi\.u\-tokyo\.ac\.jp\/ships\/w30\/detail\/3001(\d{8})\?dispid=disp02&type=2/).test(body.value));
+    if(link_body){
+      cand.data["DB-ID"] = RegExp.$1;
+    }
+  }
+  return cand;
 }
 
 function candidateSelectorWidget(obj){
@@ -612,7 +631,13 @@ function candidateSelectorWidget(obj){
         apply_candidate(obj, json);
       }
     })
-    btnwrapper.append(paste_btn);
+    const candcopy_btn = document.createElement("button");
+    candcopy_btn.innerText = "Copy Cand";
+    candcopy_btn.addEventListener("click", e=>{
+      const cand = create_candidate(obj);
+      navigator.clipboard.writeText(JSON.stringify(cand));
+    })
+    btnwrapper.append(paste_btn, candcopy_btn);
     container.append(btnwrapper);
   }
 
