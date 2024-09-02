@@ -572,57 +572,57 @@ function create_candidate(obj){
 function candidateSelectorWidget(obj){
   const container = document.createElement("div");
   const annot = obj.annotation.underlying;
-  if(annot["_candidate"]){
-    if(annot["_candidate"].length>0){
-      annot["_candidate"].forEach(cand=>{
-        const wrapper = document.createElement("div");
-        wrapper.style.cssText = `
-          display:flex;
-          flex-direction:row;
-        `;
-        const details = document.createElement("details");
-        details.style.fontSize = "small";
-        const summary = document.createElement("summary");
-        summary.innerText = cand.title;
-        const list = document.createElement("ul");
-        for(const [key, value] of Object.entries(cand.data)){
-          //const key = v[0], value = v[1];
-          const list_item = document.createElement("li");
-          list_item.innerText = `${key}: ${value}`;
-          list.append(list_item);
-        };
-        details.append(summary,list);
+  if(annot["_candidate"] && annot["_candidate"].length>0){
+    annot["_candidate"].forEach(cand=>{
+      const wrapper = document.createElement("div");
+      wrapper.style.cssText = `
+        display:flex;
+        flex-direction:row;
+      `;
+      const details = document.createElement("details");
+      details.style.fontSize = "small";
+      const summary = document.createElement("summary");
+      summary.innerText = cand.title;
+      const list = document.createElement("ul");
+      for(const [key, value] of Object.entries(cand.data)){
+        //const key = v[0], value = v[1];
+        const list_item = document.createElement("li");
+        list_item.innerText = `${key}: ${value}`;
+        list.append(list_item);
+      };
+      details.append(summary,list);
 
-        const btn_wrapper = document.createElement("div");
-        const apply_button = document.createElement("button");
-        apply_button.setAttribute("type", "button");
-        apply_button.innerText = "Apply";
-        apply_button.addEventListener("click", ()=>{
-          apply_candidate(obj, cand)
-        });
-        const join_button = document.createElement("button");
-        join_button.setAttribute("type", "button");
-        join_button.innerText ="Join";
-        join_button.addEventListener("click",e=>{
-          join_candidate(obj, cand);
-        });
-        const copy_btn = document.createElement("button");
-        copy_btn.innerText = "◎";
-        copy_btn.addEventListener("click", e=>{
-          navigator.clipboard.writeText(JSON.stringify(cand));
-        })
-        btn_wrapper.append(apply_button,join_button,copy_btn);
-
-        wrapper.append(details,btn_wrapper);
-        container.append(wrapper);
+      const btn_wrapper = document.createElement("div");
+      const apply_button = document.createElement("button");
+      apply_button.setAttribute("type", "button");
+      apply_button.innerText = "Apply";
+      apply_button.addEventListener("click", ()=>{
+        apply_candidate(obj, cand)
+      });
+      const join_button = document.createElement("button");
+      join_button.setAttribute("type", "button");
+      join_button.innerText ="Join";
+      join_button.addEventListener("click",e=>{
+        join_candidate(obj, cand);
+      });
+      const copy_btn = document.createElement("button");
+      copy_btn.innerText = "◎";
+      copy_btn.addEventListener("click", e=>{
+        navigator.clipboard.writeText(JSON.stringify(cand));
       })
-    }
+      btn_wrapper.append(apply_button,join_button,copy_btn);
+
+      wrapper.append(details,btn_wrapper);
+      container.append(wrapper);
+    })
+  }
+  if(annot["_type"]=="describing" || obj.annotation.bodies.every(body=>body.purpose!="tagging")){
     const btnwrapper = document.createElement("div");
     btnwrapper.style.cssText = `text-align:right`;
     const paste_btn = document.createElement("button");
-    paste_btn.innerText = "Paste";
+    paste_btn.innerText = "Paste Data";
     paste_btn.addEventListener("click",e=>{
-      const text = prompt("input candidate json","");
+      const text = prompt("input data json","");
       if(text){
         let json = JSON.parse(text);
         if(typeof json.title == "undefined"){
@@ -632,15 +632,14 @@ function candidateSelectorWidget(obj){
       }
     })
     const candcopy_btn = document.createElement("button");
-    candcopy_btn.innerText = "Copy Cand";
+    candcopy_btn.innerText = "Copy Data";
     candcopy_btn.addEventListener("click", e=>{
       const cand = create_candidate(obj);
       navigator.clipboard.writeText(JSON.stringify(cand));
     })
     btnwrapper.append(paste_btn, candcopy_btn);
     container.append(btnwrapper);
-  }
-
+    }
   return container;
 }
 
