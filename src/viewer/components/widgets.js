@@ -416,8 +416,9 @@ function IIKanPageWidgetBuilder(bridge){
   const labels = ["巻","頁"];
   const setDefaultValue = function(obj, bodies, values){    
     if(!values[0] && !values[1] && !bridge.is_taggingmode){
-      const page = parseInt(bridge.currentPage, 10)+"";
-      return [bridge.meta.volume, page];
+      let page = parseInt(bridge.currentPage, 10);
+      if(isNaN(page)){ page = ""}
+      return [bridge.meta.volume, page+""];
     }
   }
   return MultiInputCommentingWidgetBuilder(labels,setDefaultValue,bridge);
