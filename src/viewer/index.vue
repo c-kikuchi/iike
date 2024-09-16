@@ -157,6 +157,9 @@ input[type=checkbox]:checked.togglebutton+span {
     </div>
   </div>-->
   <div style="padding:0 20px;" v-if="isDev">
+    <div style="float:right">
+      <label><input type="checkbox" v-model="is_widget_simple_mode"><small>Simple mode</small></label>
+    </div>
     <div>
       Annotations: {{this.annotations.length}} 
       (in this page: {{this.currentAnnotations.length}})
@@ -200,6 +203,7 @@ input[type=checkbox]:checked.togglebutton+span {
         is_annotating:false,
         is_internal_routing:false,
         is_sidepane_shown:false,
+        is_widget_simple_mode:false,
         show_annotation_list:false,
         currentPage:"",
         viewer:null,
@@ -441,6 +445,9 @@ input[type=checkbox]:checked.togglebutton+span {
         },
         get currentPage(){
           return app.currentPage;
+        },
+        get is_simplemode(){
+          return app.is_widget_simple_mode;
         }
       };
 

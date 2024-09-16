@@ -296,6 +296,11 @@ function LabeledCommentWidgetBuilder(_label, bridge){
       searcher_elm.append(searcher_btn);
       container.append(label_elm, input_elm, searcher_elm);
       
+      console.log("simple mode:", bridge.is_simplemode)
+      if(bridge.is_simplemode){
+        container.style.display="none";
+      }
+
       return container;
     }
   }
