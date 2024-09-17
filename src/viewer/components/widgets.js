@@ -408,7 +408,8 @@ function IIBangoWidgetBuilder(bridge){
             const tag_bango = tag_body["_bango"] || tag_body.value.split("-")[0];            
             const tag_bango_eda = tag_body["_bango_eda"] ||
               (/.+?\-(.+)/.test(tag_body.value) ? RegExp.$1 : "");
-            return ([tag_bango, tag_bango_eda]);
+            if(tag_bango || tag_bango_eda)
+              return ([tag_bango, tag_bango_eda]);
           }
         }
       }
