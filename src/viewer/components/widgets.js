@@ -490,6 +490,10 @@ function IILinkingWidget(obj){
     }
   })
   container.append(link_container,append_btn);
+  console.log("simple mode:", bridge.is_simplemode)
+  if(bridge.is_simplemode){
+    container.style.display="none";
+  }
   return container;
 }
 
@@ -646,7 +650,11 @@ function candidateSelectorWidget(obj){
     })
     btnwrapper.append(paste_btn, candcopy_btn);
     container.append(btnwrapper);
-    }
+  }
+  console.log("simple mode:", bridge.is_simplemode)
+  if(bridge.is_simplemode){
+    container.style.display="none";
+  }
   return container;
 }
 
