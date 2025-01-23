@@ -490,10 +490,6 @@ function IILinkingWidget(obj){
     }
   })
   container.append(link_container,append_btn);
-  console.log("simple mode:", bridge.is_simplemode)
-  if(bridge.is_simplemode){
-    container.style.display="none";
-  }
   return container;
 }
 
@@ -651,13 +647,19 @@ function candidateSelectorWidget(obj){
     btnwrapper.append(paste_btn, candcopy_btn);
     container.append(btnwrapper);
   }
-  console.log("simple mode:", bridge.is_simplemode)
-  if(bridge.is_simplemode){
-    container.style.display="none";
-  }
   return container;
 }
 
+function hide_if_simplemode(widget,bridge){
+  return function(obj){
+    const container = widget(obj);
+    console.log("simple mode:", bridge.is_simplemode)
+    if(bridge.is_simplemode){
+      container.style.display="none";
+    }
+    return container;
+  }
+}
 
 function IIWidgetsBuilder(bridge){
   return [
@@ -671,9 +673,9 @@ function IIWidgetsBuilder(bridge){
     LabeledCommentWidgetBuilder("備考",bridge),
     IIBangoWidgetBuilder(bridge),
     IIKanPageWidgetBuilder(bridge),
-    IILinkingWidget,
+    hide_if_simplemode(IILinkingWidget,bridge),
     simpleCommentingWidget,
-    candidateSelectorWidget
+    hide_if_simplemode(candidateSelectorWidget,bridge)
   ];
 }
 
