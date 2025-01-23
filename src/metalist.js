@@ -25,7 +25,8 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"井伊家史料（索引作成）",
-      "ocrtext":"/ocrtext/iike-7/manifest.json"
+      "ocrtext":"/ocrtext/iike-7/manifest.json",
+      "simplemode":true
     },
     {
       "bookid":"iike-13",
@@ -50,7 +51,8 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"井伊家史料（索引作成）",
-      "ocrtext":"/ocrtext/iike-13/manifest.json"
+      "ocrtext":"/ocrtext/iike-13/manifest.json",
+      "simplemode":true
     },
     {
       "bookid":"iike-15",
@@ -75,7 +77,8 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"井伊家史料（索引作成）",
-      "ocrtext":"/ocrtext/iike-15/manifest.json"
+      "ocrtext":"/ocrtext/iike-15/manifest.json",
+      "simplemode":false
     },
     {
       "bookid":"iike-17",
@@ -100,7 +103,8 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"井伊家史料（索引作成）",
-      "ocrtext":"/ocrtext/iike-17/manifest.json"
+      "ocrtext":"/ocrtext/iike-17/manifest.json",
+      "simplemode":true
     },
     {
       "bookid":"iike-20",
@@ -125,7 +129,8 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"井伊家史料（索引作成）",
-      "ocrtext":"/ocrtext/iike-20/manifest.json"
+      "ocrtext":"/ocrtext/iike-20/manifest.json",
+      "simplemode":true
     },
     {
       "bookid":"iike-23",
@@ -150,7 +155,8 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"井伊家史料（索引作成）",
-      "ocrtext":"/ocrtext/iike-23/manifest.json"
+      "ocrtext":"/ocrtext/iike-23/manifest.json",
+      "simplemode":true
     },
     {
       "bookid":"iike-30",
@@ -175,7 +181,8 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"井伊家史料（索引作成）",
-      "ocrtext":"/ocrtext/iike-30/manifest.json"
+      "ocrtext":"/ocrtext/iike-30/manifest.json",
+      "simplemode":false
     },
     {
       "bookid":"akiyasu-02",
