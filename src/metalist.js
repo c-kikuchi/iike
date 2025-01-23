@@ -1,6 +1,6 @@
 export default {
   "version":"0.1.1",
-  "categories":["井伊家史料（索引作成）","松平昭休往復書翰留:原本（テスト）"],
+  "categories":["井伊家史料（索引作成）","松平昭休往復書翰留:原本（テスト）","松平昭休往復書翰留:刊本（テスト）"],
   "list":[
     {
       "bookid":"iike-7",
@@ -25,7 +25,8 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"井伊家史料（索引作成）",
-      "ocrtext":"/ocrtext/iike-7/manifest.json"
+      "ocrtext":"/ocrtext/iike-7/manifest.json",
+      "simplemode":true
     },
     {
       "bookid":"iike-13",
@@ -50,7 +51,8 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"井伊家史料（索引作成）",
-      "ocrtext":"/ocrtext/iike-13/manifest.json"
+      "ocrtext":"/ocrtext/iike-13/manifest.json",
+      "simplemode":true
     },
     {
       "bookid":"iike-15",
@@ -75,7 +77,8 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"井伊家史料（索引作成）",
-      "ocrtext":"/ocrtext/iike-15/manifest.json"
+      "ocrtext":"/ocrtext/iike-15/manifest.json",
+      "simplemode":false
     },
     {
       "bookid":"iike-17",
@@ -100,7 +103,8 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"井伊家史料（索引作成）",
-      "ocrtext":"/ocrtext/iike-17/manifest.json"
+      "ocrtext":"/ocrtext/iike-17/manifest.json",
+      "simplemode":true
     },
     {
       "bookid":"iike-20",
@@ -125,7 +129,8 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"井伊家史料（索引作成）",
-      "ocrtext":"/ocrtext/iike-20/manifest.json"
+      "ocrtext":"/ocrtext/iike-20/manifest.json",
+      "simplemode":true
     },
     {
       "bookid":"iike-23",
@@ -150,7 +155,8 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"井伊家史料（索引作成）",
-      "ocrtext":"/ocrtext/iike-23/manifest.json"
+      "ocrtext":"/ocrtext/iike-23/manifest.json",
+      "simplemode":true
     },
     {
       "bookid":"iike-30",
@@ -175,7 +181,8 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"井伊家史料（索引作成）",
-      "ocrtext":"/ocrtext/iike-30/manifest.json"
+      "ocrtext":"/ocrtext/iike-30/manifest.json",
+      "simplemode":false
     },
     {
       "bookid":"akiyasu-02",
@@ -272,6 +279,150 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"松平昭休往復書翰留:原本（テスト）"
+    },
+    {
+      "bookid":"matsu-1-01",
+      "title":"松平昭休往復書簡留一　第一冊",
+      "volume":"1",
+      "identifier":"matsu-1",
+      "pages": ["matsu-1_01.jp2","matsu-1_02.jp2","matsu-1_03.jp2","matsu-1_04.jp2","matsu-1_05.jp2","matsu-1_06.jp2","matsu-1_07.jp2","matsu-1_08.jp2","matsu-1_09.jp2","matsu-1_10.jp2","matsu-1_11.jp2","matsu-1_12.jp2","matsu-1_13.jp2","matsu-1_14.jp2","matsu-1_15.jp2","matsu-1_16.jp2","matsu-1_17.jp2","matsu-1_18.jp2","matsu-1_19.jp2","matsu-1_20.jp2","matsu-1_21.jp2","matsu-1_22.jp2","matsu-1_23.jp2","matsu-1_24.jp2","matsu-1_25.jp2","matsu-1_26.jp2","matsu-1_27.jp2","matsu-1_28.jp2","matsu-1_29.jp2"],
+      "jsonUrl": {
+        "server":"http://localhost:8080",
+        "prefix":"/iiif/",
+        "suffix":"/",
+        "extension":"/info.json"
+      },
+      "imageUrl": {
+        "server":"http://localhost:8080",
+        "prefix":"/iiif/",
+        "suffix":"/",
+        "extension":"full/max/0/default.jpg"
+      },
+      "width":1570,
+      "height":2479,
+      "width_excep":[],
+      "height_excep":[],
+      "category":"松平昭休往復書翰留:刊本（テスト）"
+    },
+    {
+      "bookid":"matsu-1-02",
+      "title":"松平昭休往復書簡留一　第二冊",
+      "volume":"2",
+      "identifier":"matsu-1",
+      "pages": ["matsu-1_30.jp2","matsu-1_31.jp2","matsu-1_32.jp2","matsu-1_33.jp2","matsu-1_34.jp2","matsu-1_35.jp2","matsu-1_36.jp2","matsu-1_37.jp2","matsu-1_38.jp2","matsu-1_39.jp2","matsu-1_40.jp2","matsu-1_41.jp2","matsu-1_42.jp2","matsu-1_43.jp2","matsu-1_44.jp2","matsu-1_45.jp2","matsu-1_46.jp2","matsu-1_47.jp2","matsu-1_48.jp2","matsu-1_49.jp2","matsu-1_50.jp2","matsu-1_51.jp2","matsu-1_52.jp2","matsu-1_53.jp2","matsu-1_54.jp2","matsu-1_55.jp2"],
+      "jsonUrl": {
+        "server":"http://localhost:8080",
+        "prefix":"/iiif/",
+        "suffix":"/",
+        "extension":"/info.json"
+      },
+      "imageUrl": {
+        "server":"http://localhost:8080",
+        "prefix":"/iiif/",
+        "suffix":"/",
+        "extension":"full/max/0/default.jpg"
+      },
+      "width":1570,
+      "height":2479,
+      "width_excep":[],
+      "height_excep":[],
+      "category":"松平昭休往復書翰留:刊本（テスト）"
+    },
+    {
+      "bookid":"matsu-1-03",
+      "title":"松平昭休往復書簡留一　第三冊",
+      "volume":"3",
+      "identifier":"matsu-1",
+      "pages": ["matsu-1_056.jp2", "matsu-1_057.jp2", "matsu-1_058.jp2", "matsu-1_059.jp2", "matsu-1_060.jp2", "matsu-1_061.jp2", "matsu-1_062.jp2", "matsu-1_063.jp2", "matsu-1_064.jp2", "matsu-1_065.jp2", "matsu-1_066.jp2", "matsu-1_067.jp2", "matsu-1_068.jp2", "matsu-1_069.jp2", "matsu-1_070.jp2", "matsu-1_071.jp2", "matsu-1_072.jp2", "matsu-1_073.jp2", "matsu-1_074.jp2", "matsu-1_075.jp2", "matsu-1_076.jp2", "matsu-1_077.jp2", "matsu-1_078.jp2", "matsu-1_079.jp2", "matsu-1_080.jp2", "matsu-1_081.jp2", "matsu-1_082.jp2", "matsu-1_083.jp2", "matsu-1_084.jp2", "matsu-1_085.jp2", "matsu-1_086.jp2", "matsu-1_087.jp2", "matsu-1_088.jp2", "matsu-1_089.jp2", "matsu-1_090.jp2", "matsu-1_091.jp2", "matsu-1_092.jp2", "matsu-1_093.jp2", "matsu-1_094.jp2", "matsu-1_095.jp2", "matsu-1_096.jp2", "matsu-1_097.jp2", "matsu-1_098.jp2", "matsu-1_099.jp2", "matsu-1_100.jp2", "matsu-1_101.jp2", "matsu-1_102.jp2", "matsu-1_103.jp2", "matsu-1_104.jp2", "matsu-1_105.jp2", "matsu-1_106.jp2", "matsu-1_107.jp2", "matsu-1_108.jp2", "matsu-1_109.jp2", "matsu-1_110.jp2", "matsu-1_111.jp2", "matsu-1_112.jp2", "matsu-1_113.jp2", "matsu-1_114.jp2", "matsu-1_115.jp2", "matsu-1_116.jp2", "matsu-1_117.jp2", "matsu-1_118.jp2", "matsu-1_119.jp2", "matsu-1_120.jp2", "matsu-1_121.jp2", "matsu-1_122.jp2", "matsu-1_123.jp2", "matsu-1_124.jp2", "matsu-1_125.jp2", "matsu-1_126.jp2", "matsu-1_127.jp2", "matsu-1_128.jp2", "matsu-1_129.jp2", "matsu-1_130.jp2", "matsu-1_131.jp2", "matsu-1_132.jp2", "matsu-1_133.jp2", "matsu-1_134.jp2", "matsu-1_135.jp2", "matsu-1_136.jp2", "matsu-1_137.jp2", "matsu-1_138.jp2", "matsu-1_139.jp2", "matsu-1_140.jp2", "matsu-1_141.jp2", "matsu-1_142.jp2", "matsu-1_143.jp2", "matsu-1_144.jp2", "matsu-1_145.jp2", "matsu-1_146.jp2", "matsu-1_147.jp2", "matsu-1_148.jp2", "matsu-1_149.jp2"],
+      "jsonUrl": {
+        "server":"http://localhost:8080",
+        "prefix":"/iiif/",
+        "suffix":"/",
+        "extension":"/info.json"
+      },
+      "imageUrl": {
+        "server":"http://localhost:8080",
+        "prefix":"/iiif/",
+        "suffix":"/",
+        "extension":"full/max/0/default.jpg"
+      },
+      "width":1570,
+      "height":2479,
+      "width_excep":[],
+      "height_excep":[],
+      "category":"松平昭休往復書翰留:刊本（テスト）"
+    },
+    {
+      "bookid":"matsu-1-04",
+      "title":"松平昭休往復書簡留一　第四冊",
+      "volume":"4",
+      "identifier":"matsu-1",
+      "pages": ["matsu-1_150.jp2", "matsu-1_151.jp2", "matsu-1_152.jp2", "matsu-1_153.jp2", "matsu-1_154.jp2", "matsu-1_155.jp2", "matsu-1_156.jp2", "matsu-1_157.jp2", "matsu-1_158.jp2", "matsu-1_159.jp2", "matsu-1_160.jp2", "matsu-1_161.jp2", "matsu-1_162.jp2", "matsu-1_163.jp2", "matsu-1_164.jp2", "matsu-1_165.jp2", "matsu-1_166.jp2", "matsu-1_167.jp2", "matsu-1_168.jp2", "matsu-1_169.jp2", "matsu-1_170.jp2", "matsu-1_171.jp2", "matsu-1_172.jp2", "matsu-1_173.jp2", "matsu-1_174.jp2", "matsu-1_175.jp2", "matsu-1_176.jp2", "matsu-1_177.jp2", "matsu-1_178.jp2", "matsu-1_179.jp2", "matsu-1_180.jp2", "matsu-1_181.jp2", "matsu-1_182.jp2", "matsu-1_183.jp2", "matsu-1_184.jp2", "matsu-1_185.jp2", "matsu-1_186.jp2", "matsu-1_187.jp2", "matsu-1_188.jp2", "matsu-1_189.jp2", "matsu-1_190.jp2", "matsu-1_191.jp2", "matsu-1_192.jp2", "matsu-1_193.jp2", "matsu-1_194.jp2", "matsu-1_195.jp2", "matsu-1_196.jp2", "matsu-1_197.jp2", "matsu-1_198.jp2", "matsu-1_199.jp2", "matsu-1_200.jp2", "matsu-1_201.jp2", "matsu-1_202.jp2", "matsu-1_203.jp2", "matsu-1_204.jp2", "matsu-1_205.jp2", "matsu-1_206.jp2", "matsu-1_207.jp2", "matsu-1_208.jp2", "matsu-1_209.jp2", "matsu-1_210.jp2", "matsu-1_211.jp2", "matsu-1_212.jp2", "matsu-1_213.jp2", "matsu-1_214.jp2", "matsu-1_215.jp2", "matsu-1_216.jp2", "matsu-1_217.jp2", "matsu-1_218.jp2", "matsu-1_219.jp2", "matsu-1_220.jp2", "matsu-1_221.jp2", "matsu-1_222.jp2", "matsu-1_223.jp2", "matsu-1_224.jp2", "matsu-1_225.jp2", "matsu-1_226.jp2", "matsu-1_227.jp2", "matsu-1_228.jp2", "matsu-1_229.jp2"],
+      "jsonUrl": {
+        "server":"http://localhost:8080",
+        "prefix":"/iiif/",
+        "suffix":"/",
+        "extension":"/info.json"
+      },
+      "imageUrl": {
+        "server":"http://localhost:8080",
+        "prefix":"/iiif/",
+        "suffix":"/",
+        "extension":"full/max/0/default.jpg"
+      },
+      "width":1570,
+      "height":2479,
+      "width_excep":[],
+      "height_excep":[],
+      "category":"松平昭休往復書翰留:刊本（テスト）"
+    },
+    {
+      "bookid":"matsu-1-05",
+      "title":"松平昭休往復書簡留一　第五冊",
+      "volume":"5",
+      "identifier":"matsu-1",
+      "pages": ["matsu-1_230.jp2", "matsu-1_231.jp2", "matsu-1_232.jp2", "matsu-1_233.jp2", "matsu-1_234.jp2", "matsu-1_235.jp2", "matsu-1_236.jp2", "matsu-1_237.jp2", "matsu-1_238.jp2", "matsu-1_239.jp2", "matsu-1_240.jp2", "matsu-1_241.jp2", "matsu-1_242.jp2", "matsu-1_243.jp2", "matsu-1_244.jp2", "matsu-1_245.jp2", "matsu-1_246.jp2", "matsu-1_247.jp2", "matsu-1_248.jp2", "matsu-1_249.jp2", "matsu-1_250.jp2", "matsu-1_251.jp2", "matsu-1_252.jp2", "matsu-1_253.jp2", "matsu-1_254.jp2", "matsu-1_255.jp2", "matsu-1_256.jp2", "matsu-1_257.jp2", "matsu-1_258.jp2", "matsu-1_259.jp2", "matsu-1_260.jp2", "matsu-1_261.jp2", "matsu-1_262.jp2", "matsu-1_263.jp2", "matsu-1_264.jp2", "matsu-1_265.jp2", "matsu-1_266.jp2", "matsu-1_267.jp2", "matsu-1_268.jp2", "matsu-1_269.jp2", "matsu-1_270.jp2", "matsu-1_271.jp2", "matsu-1_272.jp2", "matsu-1_273.jp2", "matsu-1_274.jp2", "matsu-1_275.jp2", "matsu-1_276.jp2", "matsu-1_277.jp2", "matsu-1_278.jp2", "matsu-1_279.jp2", "matsu-1_280.jp2", "matsu-1_281.jp2", "matsu-1_282.jp2", "matsu-1_283.jp2", "matsu-1_284.jp2", "matsu-1_285.jp2", "matsu-1_286.jp2", "matsu-1_287.jp2", "matsu-1_288.jp2", "matsu-1_289.jp2", "matsu-1_290.jp2", "matsu-1_291.jp2", "matsu-1_292.jp2"],
+      "jsonUrl": {
+        "server":"http://localhost:8080",
+        "prefix":"/iiif/",
+        "suffix":"/",
+        "extension":"/info.json"
+      },
+      "imageUrl": {
+        "server":"http://localhost:8080",
+        "prefix":"/iiif/",
+        "suffix":"/",
+        "extension":"full/max/0/default.jpg"
+      },
+      "width":1570,
+      "height":2479,
+      "width_excep":[],
+      "height_excep":[],
+      "category":"松平昭休往復書翰留:刊本（テスト）"
+    },
+    {
+      "bookid":"matsu-1-06",
+      "title":"松平昭休往復書簡留一　第六冊",
+      "volume":"6",
+      "identifier":"matsu-1",
+      "pages": ["matsu-1_293.jp2", "matsu-1_294.jp2", "matsu-1_295.jp2", "matsu-1_296.jp2", "matsu-1_297.jp2", "matsu-1_298.jp2", "matsu-1_299.jp2", "matsu-1_300.jp2", "matsu-1_301.jp2", "matsu-1_302.jp2", "matsu-1_303.jp2", "matsu-1_304.jp2", "matsu-1_305.jp2", "matsu-1_306.jp2", "matsu-1_307.jp2", "matsu-1_308.jp2", "matsu-1_309.jp2", "matsu-1_310.jp2", "matsu-1_311.jp2", "matsu-1_312.jp2", "matsu-1_313.jp2", "matsu-1_314.jp2", "matsu-1_315.jp2", "matsu-1_316.jp2", "matsu-1_317.jp2", "matsu-1_318.jp2", "matsu-1_319.jp2", "matsu-1_320.jp2", "matsu-1_321.jp2", "matsu-1_322.jp2", "matsu-1_323.jp2", "matsu-1_324.jp2", "matsu-1_325.jp2", "matsu-1_326.jp2", "matsu-1_327.jp2", "matsu-1_328.jp2", "matsu-1_329.jp2", "matsu-1_330.jp2", "matsu-1_331.jp2", "matsu-1_332.jp2", "matsu-1_333.jp2", "matsu-1_334.jp2", "matsu-1_335.jp2", "matsu-1_336.jp2", "matsu-1_337.jp2", "matsu-1_338.jp2", "matsu-1_339.jp2", "matsu-1_340.jp2", "matsu-1_341.jp2", "matsu-1_342.jp2", "matsu-1_343.jp2", "matsu-1_344.jp2", "matsu-1_345.jp2", "matsu-1_346.jp2", "matsu-1_347.jp2", "matsu-1_348.jp2", "matsu-1_349.jp2", "matsu-1_350.jp2", "matsu-1_351.jp2", "matsu-1_352.jp2", "matsu-1_353.jp2", "matsu-1_354.jp2", "matsu-1_355.jp2", "matsu-1_356.jp2", "matsu-1_357.jp2", "matsu-1_358.jp2", "matsu-1_359.jp2", "matsu-1_360.jp2", "matsu-1_361.jp2", "matsu-1_362.jp2", "matsu-1_363.jp2", "matsu-1_364.jp2", "matsu-1_365.jp2", "matsu-1_366.jp2", "matsu-1_367.jp2", "matsu-1_368.jp2", "matsu-1_369.jp2", "matsu-1_370.jp2", "matsu-1_371.jp2", "matsu-1_372.jp2"],
+      "jsonUrl": {
+        "server":"http://localhost:8080",
+        "prefix":"/iiif/",
+        "suffix":"/",
+        "extension":"/info.json"
+      },
+      "imageUrl": {
+        "server":"http://localhost:8080",
+        "prefix":"/iiif/",
+        "suffix":"/",
+        "extension":"full/max/0/default.jpg"
+      },
+      "width":1570,
+      "height":2479,
+      "width_excep":[],
+      "height_excep":[],
+      "category":"松平昭休往復書翰留:刊本（テスト）"
     },
     {
       "bookid":"akiyasu8",

@@ -66,9 +66,9 @@ const metalist_categorized = ref(metalist.categories.map(cat=>{
         <a href="https://c-kikuchi.github.io/iiif/iike-15/manifest.json" target="_blank">Test Manifest</a>
       </div>-->
     </nav>
-    <div style="margin-top:50px;" v-if="isDev">
+    <!--<div style="margin-top:50px;" v-if="isDev">
       <RouterLink to="/storetest">storetest</RouterLink>
-    </div>
+    </div>-->
     <div style="margin-top:50px;" v-if="loggedin">
       <button @click="logout">Log out</button>
     </div>

@@ -110,6 +110,7 @@ input[type=checkbox]:checked.togglebutton+span {
     </div>-->
     <div style="float:right;display:flex;padding:10px;">
       <popmenu right>
+          <li><label><input type="checkbox" v-model="is_widget_simple_mode"><small>Simple mode</small></label></li>
           <li @click="exportAnnotationToJSON">Export JSON</li>
           <li @click="exportManifest">Export Manifest</li>
           <!--<li><button @click="openManifest">Show Manifest</button></li>-->
@@ -200,6 +201,7 @@ input[type=checkbox]:checked.togglebutton+span {
         is_annotating:false,
         is_internal_routing:false,
         is_sidepane_shown:false,
+        is_widget_simple_mode:false,
         show_annotation_list:false,
         currentPage:"",
         viewer:null,
@@ -422,6 +424,8 @@ input[type=checkbox]:checked.togglebutton+span {
           console.log("change book");
           this.loadAnnotationFromDB().then(()=>this.setPage());
           this.currentPage = to.params.page||this.meta.pages[0];
+          this.is_widget_simple_mode = this.meta.simplemode;
+      
         }
         this.setPage();
       }
@@ -441,12 +445,17 @@ input[type=checkbox]:checked.togglebutton+span {
         },
         get currentPage(){
           return app.currentPage;
+        },
+        get is_simplemode(){
+          return app.is_widget_simple_mode;
         }
       };
 
       if(this.routerpage){
         this.currentPage = this.routerpage;
       }
+
+      this.is_widget_simple_mode = this.meta.simplemode;
 
       this.viewer = OpenSeadragon({
         element:this.$refs.osd_elm,
