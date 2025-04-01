@@ -112,6 +112,7 @@ input[type=checkbox]:checked.togglebutton+span {
       <popmenu right>
           <li><label><input type="checkbox" v-model="is_widget_simple_mode"><small>Simple mode</small></label></li>
           <li @click="exportAnnotationToJSON">Export JSON</li>
+          <li @click="exportAnnotationToJSON_onlyThisBook">Export JSON <small>(only this book)</small></li>
           <li @click="exportManifest">Export Manifest</li>
           <!--<li><button @click="openManifest">Show Manifest</button></li>-->
           <li><label><input type="file" style="display:none" @change="loadAnnotationFromJSON">Load JSON</label></li>
@@ -146,7 +147,8 @@ input[type=checkbox]:checked.togglebutton+span {
       <div class="ii-tag-control">
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_annotating" @change="startAnnotationMode()"><span>⌖索引の作成</span></label>
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_taggingmode" @change="startTagAnnotationMode()"><span>文書番号指定</span></label>
-        <!--&nbsp;<label style="color:#fff;font-size:small;"><input type="checkbox" v-model="show_ocrs" @change="setPage">OCR結果を表示</label>-->
+        
+        &nbsp;<label style="color:#fff;font-size:small;"><input type="checkbox" v-model="show_ocrs" @change="loadOcr">OCR結果を表示</label>
       </div>
     </div>
   </div>
@@ -287,6 +289,20 @@ input[type=checkbox]:checked.togglebutton+span {
         link.click();
         URL.revokeObjectURL(blob);
       },
+      exportAnnotationToJSON_onlyThisBook(){
+        if(this.annotations.length<=0){
+          return;
+        }
+        const annot_thisbook = this.annotations.filter(annotation=>{
+          return annotation["_bookid"] == this.bookid;
+        })
+        const blob = new Blob([JSON.stringify(annot_thisbook)], {type:"application/json"})
+        const link = document.createElement("a");
+        link.download = `annotation-${this.bookid}-${Date.now()}.json`;
+        link.href = URL.createObjectURL(blob);
+        link.click();
+        URL.revokeObjectURL(blob);
+      },
       generateManifest(){
         if(this.annotations.length<=0){
           return;
@@ -365,7 +381,15 @@ input[type=checkbox]:checked.togglebutton+span {
         }
       },
       loadAnnotationFromDB(){
-        return this.annotStore.loadAnnotations(this.bookid);
+        console.log("ocr: ", this.show_ocrs);
+        return this.annotStore.loadAnnotations(this.bookid,false,this.show_ocrs);
+      },
+      async loadOcr(){
+        console.log("load ocr: ", this.show_ocrs);
+        if(this.show_ocrs){
+          await this.annotStore.loadAnnotations_onlyOCR(this.bookid);
+          this.setPage();
+        }
       },
       addAnnotation(annotation){
         if(annotation._type=="ocrtext") return;

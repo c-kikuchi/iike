@@ -25,7 +25,7 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"井伊家史料（索引作成）",
-      "ocrtext":"/ocrtext/iike-7/manifest.json",
+      "ocrtext":"https://dip.lab.hi.u-tokyo.ac.jp/v3/850/8500/08/0107/manifest.json",
       "simplemode":true
     },
     {
@@ -51,7 +51,7 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"井伊家史料（索引作成）",
-      "ocrtext":"/ocrtext/iike-13/manifest.json",
+      "ocrtext":"https://dip.lab.hi.u-tokyo.ac.jp/v3/850/8500/08/0113/manifest.json",
       "simplemode":true
     },
     {
@@ -77,7 +77,7 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"井伊家史料（索引作成）",
-      "ocrtext":"/ocrtext/iike-15/manifest.json",
+      "ocrtext":"https://dip.lab.hi.u-tokyo.ac.jp/v3/850/8500/08/0115/manifest.json",
       "simplemode":false
     },
     {
@@ -103,7 +103,7 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"井伊家史料（索引作成）",
-      "ocrtext":"/ocrtext/iike-17/manifest.json",
+      "ocrtext":"https://dip.lab.hi.u-tokyo.ac.jp/v3/850/8500/08/0117/manifest.json",
       "simplemode":true
     },
     {
@@ -129,7 +129,7 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"井伊家史料（索引作成）",
-      "ocrtext":"/ocrtext/iike-20/manifest.json",
+      "ocrtext":"https://dip.lab.hi.u-tokyo.ac.jp/v3/850/8500/08/0120/manifest.json",
       "simplemode":true
     },
     {
@@ -155,7 +155,7 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"井伊家史料（索引作成）",
-      "ocrtext":"/ocrtext/iike-23/manifest.json",
+      "ocrtext":"https://dip.lab.hi.u-tokyo.ac.jp/v3/850/8500/08/0123/manifest.json",
       "simplemode":true
     },
     {
@@ -181,7 +181,7 @@ export default {
       "width_excep":[],
       "height_excep":[],
       "category":"井伊家史料（索引作成）",
-      "ocrtext":"/ocrtext/iike-30/manifest.json",
+      //"ocrtext":"./ocrtext/iike-30/manifest.json",
       "simplemode":false
     },
     {
