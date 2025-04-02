@@ -72,6 +72,7 @@ body {
     border:1px solid #333;
   }
   .ii-side-pane .resizer {
+    width:0;
     display:none;
   }
 }
@@ -243,6 +244,7 @@ input[type=checkbox]:checked.togglebutton+span {
   </div>-->
   <div style="padding:0 20px;" v-if="isDev">
     <div>
+      <span v-show="is_mobile">●</span>
       Annotations: {{this.annotations.length}} 
       (in this page: {{this.currentAnnotations.length}})
       <input type="checkbox" v-model="show_annotation_list">
@@ -257,7 +259,7 @@ input[type=checkbox]:checked.togglebutton+span {
     </div>
   </div>
 </div>
-<div class="ii-side-pane" :class="{show:is_sidepane_shown}" :style="{ width: sidepane_width + 'px' }">
+<div class="ii-side-pane" :class="{show:is_sidepane_shown}" :style="{ width: sidepane_width_calc }">
   <div class="resizer" @pointermove="sidepane_resize($event)">
     <div class="resizer-handle"></div>
   </div>
@@ -302,6 +304,7 @@ input[type=checkbox]:checked.togglebutton+span {
         is_sidepane_shown:false,
         sidepane_width:350,
         sidepane_min_width:350,
+        is_mobile:false,
         is_widget_simple_mode:false,
         show_annotation_list:false,
         currentPage:"",
@@ -369,7 +372,13 @@ input[type=checkbox]:checked.togglebutton+span {
       },
       has_ocr(){
         return !!this.meta.ocrtext;
-      }
+      },
+      sidepane_width_calc(){
+        if(this.is_mobile){
+          return "calc(100vw - 10px)";
+        }
+        return this.sidepane_width + "px";
+      },
     },
     methods:{
       isCurrentAnnotation(annotation){
@@ -629,6 +638,13 @@ input[type=checkbox]:checked.togglebutton+span {
       });
       this.setPage();
       //window.app = this;
+
+      const mediaquery = window.matchMedia("(max-width: 480px)");
+      this.is_mobile = mediaquery.matches;
+            mediaquery.addEventListener("change", e=>{
+        this.is_mobile = e.matches;
+      })
+
     }
   };
 
