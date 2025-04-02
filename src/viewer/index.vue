@@ -14,14 +14,46 @@ body {
   display:flex;
   flex-direction: column;
   height:100vh;
+  container-type:inline-size;
+  container-name:ii-main;
 }
 .ii-side-pane {
   display:none;
 }
 .ii-side-pane.show {
   display: flex;
-  flex-direction: column;
-  min-width:350px;
+  flex-direction: row;
+  min-width: v-bind('sidepane_min_width + "px"');
+}
+.ii-side-pane .resizer {
+  width:5px;
+  background-color:#666;
+  display: flex;
+  justify-content: center;
+  align-items:center;
+  cursor:col-resize;
+}
+.ii-side-pane .resizer-handle {
+  background-color: #ccc;
+  width:3px;
+  height:20px;
+  border-radius:1px;
+}
+.ii-side-pane .ii-side-pane-main {
+  display:flex;
+  flex-direction:column;
+  flex-grow:1
+}
+.ii-side-pane .ii-side-pane-header {
+  background-color:#0B8BEE;
+  height:40px;
+  color:#fff;
+  padding-top:5px;
+}
+.ii-side-pane .ii-side-pane-content {
+  background-color:#fff;
+  overflow-y:scroll;
+  flex-grow:1;
 }
 
 @media screen and (max-width:480px) {
@@ -38,6 +70,9 @@ body {
     inset:5px;
     width:calc(100vw - 10px);
     border:1px solid #333;
+  }
+  .ii-side-pane .resizer {
+    display:none;
   }
 }
 
@@ -71,7 +106,7 @@ body {
   height:100%;
   gap:18px;
 }
-@media screen and (max-width:360px) {
+@container ii-main (width < 650px) {
   .ii-toolbar{
     height:90px;
   }
@@ -182,9 +217,7 @@ input[type=checkbox]:checked.togglebutton+span {
         <button ref="homebutton" title="reset zoom">🏠&#xFE0E;</button>
         <button ref="fullpagebutton" title="full screen">⛶</button>
         <button @click="show_header = !show_header" title="expand view">○</button>
-      </div>
-      <div>
-        <button title="refresh" @click="setPage">更新</button>
+        <button title="refresh" @click="setPage" style="margin-left:10px;width:auto">更新</button>
       </div>
       <div class="ii-page-control">
         <button :disabled="!this.nextPage" @click="this.currentPage=this.nextPage;setPage()">next</button>
@@ -224,15 +257,20 @@ input[type=checkbox]:checked.togglebutton+span {
     </div>
   </div>
 </div>
-<div class="ii-side-pane" :class="{show:is_sidepane_shown}" style="border-left:1px solid #666">
-  <div style="background-color:#0B8BEE;height:40px;color:#fff;padding-top:5px;">
-    <label role="button" aria-role="button" class="sidepane-opener" style="background-color: rgb(13, 104, 221);">
-      <input type="checkbox" v-model="is_sidepane_shown" style="display:none">
-      <span>&#x2716;</span>
-    </label>
+<div class="ii-side-pane" :class="{show:is_sidepane_shown}" :style="{ width: sidepane_width + 'px' }">
+  <div class="resizer" @pointermove="sidepane_resize($event)">
+    <div class="resizer-handle"></div>
   </div>
-  <div style="background-color:#fff;overflow-y:scroll;flex-grow:1">
+  <div class="ii-side-pane-main">
+    <div class="ii-side-pane-header">
+      <label role="button" aria-role="button" class="sidepane-opener" style="background-color: rgb(13, 104, 221);">
+        <input type="checkbox" v-model="is_sidepane_shown" style="display:none">
+        <span>&#x2716;</span>
+      </label>
+    </div>
+    <div class="ii-side-pane-content">
 
+    </div>
   </div>
 </div>
 </main>
@@ -262,6 +300,8 @@ input[type=checkbox]:checked.togglebutton+span {
         is_annotating:false,
         is_internal_routing:false,
         is_sidepane_shown:false,
+        sidepane_width:350,
+        sidepane_min_width:350,
         is_widget_simple_mode:false,
         show_annotation_list:false,
         currentPage:"",
@@ -485,6 +525,12 @@ input[type=checkbox]:checked.togglebutton+span {
         //const viewport_content = this.viewer.world.getItemAt(0).getContent();
         console.log("dimensions |", dimensions.x, dimensions.y);
         //console.log("viewport |", viewport_content.x, viewport_content.y);
+      },
+      sidepane_resize(e){
+        if(e.buttons < 1) return;
+        const new_width = this.sidepane_width - e.movementX;
+        this.sidepane_width = Math.max(this.sidepane_min_width, new_width);
+        e.target.setPointerCapture(e.pointerId);
       },
       async demo_openDefault(){// remove on production
         await this.annotStore.loadDefaultJSON();
