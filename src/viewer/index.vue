@@ -20,9 +20,44 @@ body {
 }
 .ii-side-pane.show {
   display: flex;
-  min-width:200px;
+  flex-direction: column;
+  min-width:350px;
 }
 
+@media screen and (max-width:480px) {
+  .ii-side-pane.show::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    width:100vw;
+    background-color: rgba(0,0,0,0.3);
+    z-index:-1;
+  }
+  .ii-side-pane.show{
+    position:fixed;
+    inset:5px;
+    width:calc(100vw - 10px);
+    border:1px solid #333;
+  }
+}
+
+.ii-header .side-menu{
+  display:flex;
+  height:100%;
+  align-items:center;
+}
+
+.sidepane-opener {
+	background-color: #0090ff;
+	padding: 5px;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	text-align: center;
+	line-height: 20px;
+	color: #fff;
+  margin:0 5px;  
+}
 
 .ii-toolbar {
   background-color:#0B8BEE;
@@ -36,6 +71,16 @@ body {
   height:100%;
   gap:18px;
 }
+@media screen and (max-width:360px) {
+  .ii-toolbar{
+    height:90px;
+  }
+  .ii-toolbar-controls{
+    flex-direction: column;
+    gap:3px;
+  }
+}
+
 .ii-toolbar-controls button{
   background-color:#0B8BEE;
   border: solid 1px #ccc;
@@ -99,7 +144,7 @@ input[type=checkbox]:checked.togglebutton+span {
 <main class="ii-root">
 <div class="ii-main-pane">
   <div class="ii-header" v-show="show_header">
-    <div style="float:left;padding:10px;"><RouterLink to="/"><strong>&lt;Home</strong></RouterLink></div>
+    <div class="side-menu" style="float:left;padding-left:10px;"><RouterLink to="/"><strong>&lt;Home</strong></RouterLink></div>
     <!--<div style="float:right;">
       <details>
         <summary><strong>…</strong></summary>
@@ -108,7 +153,7 @@ input[type=checkbox]:checked.togglebutton+span {
         </div>
       </details>
     </div>-->
-    <div style="float:right;display:flex;padding:10px;">
+    <div class="side-menu" style="float:right;display:flex;padding-right:10px;">
       <popmenu right>
           <li><label><input type="checkbox" v-model="is_widget_simple_mode"><small>Simple mode</small></label></li>
           <li @click="exportAnnotationToJSON">Export JSON</li>
@@ -121,7 +166,11 @@ input[type=checkbox]:checked.togglebutton+span {
           <li @click="saveTest">Save All</li>
           <li @click="authLogout">Logout</li>
       </popmenu>
-      <!--<input type="checkbox" v-model="is_sidepane_shown">-->
+      <label role="button" aria-role="button" class="sidepane-opener">
+        <input type="checkbox" v-model="is_sidepane_shown" style="display:none">
+        <span v-show="!is_sidepane_shown">&#x276E;</span>
+        <span v-show="is_sidepane_shown">&#x276F;</span>
+      </label>
     </div>
     <h1 style="text-align:center;font-size:large">{{ meta.title }}</h1>
   </div>
@@ -175,7 +224,17 @@ input[type=checkbox]:checked.togglebutton+span {
     </div>
   </div>
 </div>
-<div class="ii-side-pane" :class="{show:is_sidepane_shown}"></div>
+<div class="ii-side-pane" :class="{show:is_sidepane_shown}" style="border-left:1px solid #666">
+  <div style="background-color:#0B8BEE;height:40px;color:#fff;padding-top:5px;">
+    <label role="button" aria-role="button" class="sidepane-opener" style="background-color: rgb(13, 104, 221);">
+      <input type="checkbox" v-model="is_sidepane_shown" style="display:none">
+      <span>&#x2716;</span>
+    </label>
+  </div>
+  <div style="background-color:#fff;overflow-y:scroll;flex-grow:1">
+
+  </div>
+</div>
 </main>
 </template>
 <script>
