@@ -287,10 +287,10 @@ export const useAnnotationsStore = defineStore("annotations", ()=>{
     if(!bookid){
       throw new Error("bookid is invalid");
     }
-    console.log(bookid);
+    //console.log(bookid);
     const meta = metalist.list.find(m=>m.bookid==bookid);
     const url = meta.ocrtext;
-    console.log(url);
+    //console.log(url);
     if(!url) return;
     if(ocrloadedlist.has(url)){
       console.log(`ocr for ${bookid} is already loaded.`)
@@ -299,7 +299,7 @@ export const useAnnotationsStore = defineStore("annotations", ()=>{
     console.log("loading ocr for", bookid);
     const resp = await fetch(url);
     const manifest = await resp.text();
-    console.log(manifest);
+    //console.log(manifest);
     const json = ocrManifestConverter(JSON.parse(manifest), bookid);
     setOcrs(json, true);
     ocrloadedlist.add(url);

@@ -148,7 +148,7 @@ input[type=checkbox]:checked.togglebutton+span {
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_annotating" @change="startAnnotationMode()"><span>⌖索引の作成</span></label>
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_taggingmode" @change="startTagAnnotationMode()"><span>文書番号指定</span></label>
         
-        &nbsp;<label style="color:#fff;font-size:small;"><input type="checkbox" v-model="show_ocrs" @change="loadOcr">OCR結果を表示</label>
+        &nbsp;<label style="color:#fff;font-size:small;"><input type="checkbox" v-model="show_ocrs" @change="loadOcr" :disabled="!has_ocr">OCR結果を表示</label>
       </div>
     </div>
   </div>
@@ -267,6 +267,9 @@ input[type=checkbox]:checked.togglebutton+span {
         return this.annotations.filter(annotation=>{
           return this.isCurrentAnnotation(annotation);
         });
+      },
+      has_ocr(){
+        return !!this.meta.ocrtext;
       }
     },
     methods:{
@@ -388,8 +391,8 @@ input[type=checkbox]:checked.togglebutton+span {
         console.log("load ocr: ", this.show_ocrs);
         if(this.show_ocrs){
           await this.annotStore.loadAnnotations_onlyOCR(this.bookid);
-          this.setPage();
         }
+        this.setPage();
       },
       addAnnotation(annotation){
         if(annotation._type=="ocrtext") return;
@@ -449,6 +452,7 @@ input[type=checkbox]:checked.togglebutton+span {
           this.loadAnnotationFromDB().then(()=>this.setPage());
           this.currentPage = to.params.page||this.meta.pages[0];
           this.is_widget_simple_mode = this.meta.simplemode;
+          this.show_ocrs = this.meta.show_ocr && this.has_ocr;
       
         }
         this.setPage();
@@ -480,6 +484,7 @@ input[type=checkbox]:checked.togglebutton+span {
       }
 
       this.is_widget_simple_mode = this.meta.simplemode;
+      this.show_ocrs = this.meta.show_ocr && this.has_ocr;
 
       this.viewer = OpenSeadragon({
         element:this.$refs.osd_elm,
