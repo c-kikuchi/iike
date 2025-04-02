@@ -304,7 +304,6 @@ export default {
       "height_excep":[],
       "category":"松平昭休往復書翰留:原本",
       "ocrtext": "https://c-kikuchi.github.io/iiif/akiyasu8/manifest.json",
-      "simplemode": true,
       "show_ocr": true,
     },
     {
@@ -331,7 +330,6 @@ export default {
       "height_excep":[],
       "category":"松平昭休往復書翰留:原本",
       "ocrtext": "https://c-kikuchi.github.io/iiif/akiyasu9/manifest.json",
-      "simplemode": true,
       "show_ocr": true,
     },
     {
@@ -358,7 +356,6 @@ export default {
       "height_excep":[],
       "category":"松平昭休往復書翰留:原本",
       "ocrtext": "https://c-kikuchi.github.io/iiif/akiyasu10/manifest.json",
-      "simplemode": true,
       "show_ocr": true,
     },
     {
@@ -385,7 +382,6 @@ export default {
       "height_excep":[],
       "category":"松平昭休往復書翰留:原本",
       "ocrtext": "https://c-kikuchi.github.io/iiif/akiyasu11/manifest.json",
-      "simplemode": true,
       "show_ocr": true,
     },
     {
@@ -412,7 +408,6 @@ export default {
       "height_excep":[],
       "category":"松平昭休往復書翰留:原本",
       "ocrtext": "https://c-kikuchi.github.io/iiif/akiyasu12/manifest.json",
-      "simplemode": true,
       "show_ocr": true,
     },
     {
@@ -439,7 +434,6 @@ export default {
       "height_excep":[],
       "category":"松平昭休往復書翰留:原本",
       "ocrtext": "https://c-kikuchi.github.io/iiif/akiyasu13/manifest.json",
-      "simplemode": true,
       "show_ocr": true,
     },
     {
@@ -466,7 +460,6 @@ export default {
       "height_excep":[],
       "category":"松平昭休往復書翰留:原本",
       "ocrtext": "https://c-kikuchi.github.io/iiif/akiyasu14/manifest.json",
-      "simplemode": true,
       "show_ocr": true,
     },
     {
