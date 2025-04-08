@@ -42,18 +42,22 @@ body {
 .ii-side-pane .ii-side-pane-main {
   display:flex;
   flex-direction:column;
-  flex-grow:1
+  flex-grow:1;
+  width:100%;
 }
 .ii-side-pane .ii-side-pane-header {
   background-color:#0B8BEE;
   height:40px;
   color:#fff;
-  padding-top:5px;
+  display:flex;
+  flex-direction: row;
+  align-items:center;
 }
 .ii-side-pane .ii-side-pane-content {
   background-color:#fff;
   overflow-y:scroll;
   flex-grow:1;
+  padding:5px;
 }
 
 @media screen and (max-width:480px) {
@@ -93,6 +97,22 @@ body {
 	line-height: 20px;
 	color: #fff;
   margin:0 5px;  
+}
+
+.ii-side-pane-selector{
+  flex-grow:1;
+  text-align: center;
+}
+
+.ii-side-pane-selector-input {
+	background-color: #39f;
+	color: #fff;
+	font-size: medium;
+	border: none;
+	border-radius: 3px;
+	padding: 3px;
+	text-align: center;
+  cursor: pointer;
 }
 
 .ii-toolbar {
@@ -269,9 +289,29 @@ input[type=checkbox]:checked.togglebutton+span {
         <input type="checkbox" v-model="is_sidepane_shown" style="display:none">
         <span>&#x2716;</span>
       </label>
+      <div class="ii-side-pane-selector">
+        <select class="ii-side-pane-selector-input" v-model="sidepane_selected">
+          <option value="default">巻一覧</option>
+          <option value="annot_list">アノテーション一覧</option>
+          <option value="search_book">本巻内OCR検索</option>
+        </select>
+      </div>
     </div>
     <div class="ii-side-pane-content">
-
+      <div v-if="sidepane_selected=='annot_list'">
+        <currentAnnotationList
+         :currentAnnotations="currentAnnotations"
+         :show_title="false"
+         :all_length="annotations.length"
+         @select-annotation="selectAnnotation">
+        </currentAnnotationList>
+      </div>
+      <div v-if="sidepane_selected=='default'">
+        <iiNavigator @navigated="is_internal_routing=false"></iiNavigator>
+      </div>
+      <div v-if="sidepane_selected=='search_book'">
+        <h1>OCR検索</h1>
+      </div>
     </div>
   </div>
 </div>
@@ -287,6 +327,8 @@ input[type=checkbox]:checked.togglebutton+span {
   import manifestGenerator from "./components/generateManifest.js";
   import metalist from "../metalist.js";
   import popmenu from "../components/popmenu.vue";
+  import currentAnnotationList from "./components/currentAnnotationList.vue";
+  import iiNavigator from "./components/iiNavigator.vue";
   import {RouterLink} from "vue-router";
 
   
@@ -294,7 +336,9 @@ input[type=checkbox]:checked.togglebutton+span {
   export default {
     inject:["logout","loggedin", "annotStore", "isDev"],
     components:{
-      popmenu
+      popmenu,
+      currentAnnotationList,
+      iiNavigator
     },
     data(){
       return {
@@ -304,6 +348,7 @@ input[type=checkbox]:checked.togglebutton+span {
         is_sidepane_shown:false,
         sidepane_width:350,
         sidepane_min_width:350,
+        sidepane_selected:"default",
         is_mobile:false,
         is_widget_simple_mode:false,
         show_annotation_list:false,
@@ -459,14 +504,17 @@ input[type=checkbox]:checked.togglebutton+span {
         this.viewer.open(tilesource);
       },
       setPage(){
-        this.openViewer();
-        this.is_internal_routing = true;
-        this.$router.replace({path:`/viewer/${this.bookid}/${this.currentPage}`});
-        this.anno.setAnnotations(this.currentAnnotations);
+        return new Promise(resolve=>{
+          this.openViewer();
+          this.is_internal_routing = true;
+          this.$router.replace({path:`/viewer/${this.bookid}/${this.currentPage}`});
+          this.anno.setAnnotations(this.currentAnnotations);
+          resolve(true);
+        });
       },
       gotoPage(page){
         this.currentPage = page;
-        this.setPage();
+        return this.setPage();
       },
       getIdentifierFromAnnotation(annotation){
         return (new RegExp(`^${this.imageUrlBase}(.+?)${this.meta.imageUrl.suffix}`))
@@ -525,6 +573,24 @@ input[type=checkbox]:checked.togglebutton+span {
           //this.is_annotating = true;
           this.anno.setDrawingEnabled(true);
         }
+      },
+      async selectAnnotation(id="",overPage=false){
+        if(!id) return;
+        if(!this.currentAnnotations.some(annot=>annot.id==id)){
+          //console.log("!",id);
+          if(overPage){
+            const target = this.annotations.find(annot=>annot.id==id);
+            if(!target) return;
+            const target_page = target._page || ((new RegExp(`^${this.imageUrlRoot}(.+)${this.meta.imageUrl.extension}$`)).test(target.target.source)?RegExp.$1:"");
+            if(!target_page || target._bookid != this.meta.bookid) return;
+            await this.gotoPage(target_page);
+          }
+          else{
+            return;
+          }
+        }
+        //console.log(id);
+        this.anno.selectAnnotation(id);
       },
       authLogout(){
         this.logout();
