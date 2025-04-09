@@ -293,6 +293,7 @@ input[type=checkbox]:checked.togglebutton+span {
         <select class="ii-side-pane-selector-input" v-model="sidepane_selected">
           <option value="default">巻一覧</option>
           <option value="search_book">本巻内OCR検索</option>
+          <option value="search_akiyasu">松平昭休原本OCR検索</option>
           <option value="annot_list">アノテーション一覧</option>
         </select>
       </div>
@@ -317,6 +318,12 @@ input[type=checkbox]:checked.togglebutton+span {
           @navigate="is_internal_routing=false">
         </bookOcrSearch>
       </div>
+      <div v-if="sidepane_selected=='search_akiyasu'">
+        <akiyasuOcrSearch 
+          :show_ocr="show_ocrs" 
+          @navigate="is_internal_routing=false">
+        </akiyasuOcrSearch>
+      </div>
     </div>
   </div>
 </div>
@@ -335,6 +342,7 @@ input[type=checkbox]:checked.togglebutton+span {
   import currentAnnotationList from "./components/currentAnnotationList.vue";
   import iiNavigator from "./components/iiNavigator.vue";
   import bookOcrSearch from "./components/bookOcrSearch.vue";
+  import akiyasuOcrSearch from "./components/akiyasuOcrSearch.vue";
   import {RouterLink} from "vue-router";
 
   
@@ -345,7 +353,8 @@ input[type=checkbox]:checked.togglebutton+span {
       popmenu,
       currentAnnotationList,
       iiNavigator,
-      bookOcrSearch
+      bookOcrSearch,
+      akiyasuOcrSearch
     },
     data(){
       return {

@@ -13,6 +13,7 @@
 }
 .search-input {
   font-size:medium; background-color: #eee; border:none; width:280px; padding:5px;
+  margin-bottom:5px;
 }
 .result{
   border-bottom: 1px solid #666;
@@ -32,20 +33,15 @@
 </style>
 <template>
 <div>
-  <div v-if="!has_ocr">
-    <div class="caution-message">
-      [!] この巻にはOCRテキストがありません
-    </div>
-  </div>
-  <div v-else-if="!show_ocr">
+  <div v-if="!show_ocr">
     <div class="caution-message">
       [!] ［OCR結果を表示］にチェックしてください
     </div>
   </div>
   <div v-else>
     <div class="control">
+      <small>8-14冊が登録済みです</small><br>
       <input v-model="search_query" @input="exec_search" placeholder="検索語" class="search-input"><br>
-      <label><input type="checkbox" v-model="only_this_page" @change="exec_search"><small>このページのみ検索</small></label><br>
       <select v-model="sort_method" @change="exec_search">
         <option value="">関連度順</option>
         <option value="kan_page">巻・頁順</option>
@@ -68,35 +64,30 @@
 </div>
 </template>
 <script setup>
-import { ref, computed, inject } from "vue";
+import { ref, computed, inject, onMounted } from "vue";
 import {RouterLink} from "vue-router";
 import fuzzysort from "fuzzysort";
 import metalist from "../../metalist";
 
 const annotStore = inject("annotStore");
-const props = defineProps(["bookid", "show_ocr", "currentPage"]);
+const props = defineProps(["show_ocr"]);
 const emit = defineEmits(["navigate"]);
-const current_meta = computed(()=>{
-  return metalist.list.find(meta=>meta.bookid==props.bookid);
-});
-const imageUrlRoot = computed(()=>{
-  const meta = current_meta.value;
-  return meta.imageUrl.server+meta.imageUrl.prefix+meta.identifier+meta.imageUrl.suffix
-});
-const getpage_exp = computed(()=>{
-  return new RegExp(`^${imageUrlRoot.value}(.+)${current_meta.value.imageUrl.extension}$`)
-})
-const has_ocr = computed(()=>{
-  return !!current_meta.value.ocrtext;
-})
-const current_book_ocrs = computed(()=>{
-  return annotStore.ocrs.filter(annot=>annot["_bookid"]==props.bookid);
-});
-const current_ocrs = computed(()=>{
-  return only_this_page.value?current_book_ocrs.value.filter(annot=>get_page(annot)==props.currentPage):current_book_ocrs.value;
+
+const getpage_exps = new Map();
+metalist.list.forEach(meta=>{
+  const bookid = meta.bookid;
+  const imageUrlRoot = meta.imageUrl.server+meta.imageUrl.prefix+meta.identifier+meta.imageUrl.suffix;
+  const exp = new RegExp(`^${imageUrlRoot}(.+)${meta.imageUrl.extension}$`);
+  getpage_exps.set(bookid, exp);
 })
 
-const only_this_page = ref(false);
+const akiyasu_ocrs_ids = ref(metalist.list.filter(meta=>{
+    return meta.category == "松平昭休往復書翰留:原本" && !!meta.ocrtext;
+  }).map(meta=>meta.bookid));
+const current_ocrs = computed(()=>{
+  return annotStore.ocrs.filter(annot=>akiyasu_ocrs_ids.value.includes(annot["_bookid"]));
+})
+
 const search_query = ref("");
 const search_results = ref([]);
 const results_len = ref(0);
@@ -107,7 +98,8 @@ function get_page(annotation){
     return annotation._page;
   }
   else{
-    return getpage_exp.value.test(annotation.target.source)?RegExp.$1:"";
+    const getpage_exp = getpage_exps.get(annotation._bookid);
+    return getpage_exp.test(annotation.target.source)?RegExp.$1:"";
   }
 }
 
@@ -146,4 +138,10 @@ function exec_search(){
   search_results.value = sr;
 }
 
+
+onMounted(()=>{
+  akiyasu_ocrs_ids.value.forEach(bookid=>{
+    annotStore.loadAnnotations_onlyOCR(bookid);
+  });
+})
 </script>
