@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import { dbconnection } from "./firestoreconnection.js"
+import metalist from "@/metalist.js";
+import ocrManifestConverter from "@/viewer/components/ocrManifestConverter.js";
 
 export const useAnnotationsStore = defineStore("annotations", ()=>{
   console.log("initializing annotation store");
@@ -132,7 +134,7 @@ export const useAnnotationsStore = defineStore("annotations", ()=>{
         ocrs.value[index] = item;
       }
       else{
-        ocrs.push(item);
+        ocrs.value.push(item);
       }
     })
   }
@@ -206,6 +208,10 @@ export const useAnnotationsStore = defineStore("annotations", ()=>{
     return Promise.all(p);
   }
 
+  function loadAnnotations_onlyOCR(bookid=""){
+    return loadOcrsDB(bookid);
+  }
+
   const dbloadedlist = new Set();
   const dbdiffs = {};
   //const dbsetlist = new Set();
@@ -275,8 +281,29 @@ export const useAnnotationsStore = defineStore("annotations", ()=>{
       })
     }
   }
-  function loadOcrsDB(){
-    return Promise.resolve();
+
+  const ocrloadedlist = new Set();
+  async function loadOcrsDB(bookid){
+    if(!bookid){
+      throw new Error("bookid is invalid");
+    }
+    //console.log(bookid);
+    const meta = metalist.list.find(m=>m.bookid==bookid);
+    const url = meta.ocrtext;
+    //console.log(url);
+    if(!url) return;
+    if(ocrloadedlist.has(url)){
+      console.log(`ocr for ${bookid} is already loaded.`)
+      return;
+    }
+    console.log("loading ocr for", bookid);
+    const resp = await fetch(url);
+    const manifest = await resp.text();
+    //console.log(manifest);
+    const json = ocrManifestConverter(JSON.parse(manifest), bookid);
+    setOcrs(json, true);
+    ocrloadedlist.add(url);
+    return true;
   }
 
   return {
@@ -290,6 +317,7 @@ export const useAnnotationsStore = defineStore("annotations", ()=>{
     loadJSON,
     loadDefaultJSON,
     loadAnnotations,
+    loadAnnotations_onlyOCR,
     setOcrs,
     saveAll
   }

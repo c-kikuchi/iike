@@ -30,6 +30,9 @@ const router = createRouter({
       }
     },
     {
+      path: "/ocrtext"
+    },
+    {
       path: "/meta/:bookid",
       name: "meta",
       component: Meta

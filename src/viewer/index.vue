@@ -14,15 +14,107 @@ body {
   display:flex;
   flex-direction: column;
   height:100vh;
+  container-type:inline-size;
+  container-name:ii-main;
 }
 .ii-side-pane {
   display:none;
 }
 .ii-side-pane.show {
   display: flex;
-  min-width:200px;
+  flex-direction: row;
+  min-width: v-bind('sidepane_min_width + "px"');
+}
+.ii-side-pane .resizer {
+  width:5px;
+  background-color:#666;
+  display: flex;
+  justify-content: center;
+  align-items:center;
+  cursor:col-resize;
+}
+.ii-side-pane .resizer-handle {
+  background-color: #ccc;
+  width:3px;
+  height:20px;
+  border-radius:1px;
+}
+.ii-side-pane .ii-side-pane-main {
+  display:flex;
+  flex-direction:column;
+  flex-grow:1;
+  width:calc(100% - 5px);
+}
+.ii-side-pane .ii-side-pane-header {
+  background-color:#0B8BEE;
+  height:40px;
+  min-height:40px;
+  color:#fff;
+  display:flex;
+  flex-direction: row;
+  align-items:center;
+}
+.ii-side-pane .ii-side-pane-content {
+  background-color:#fff;
+  overflow-y:scroll;
+  flex-grow:1;
+  padding:5px;
 }
 
+@media screen and (max-width:480px) {
+  .ii-side-pane.show::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    width:100vw;
+    background-color: rgba(0,0,0,0.3);
+    z-index:-1;
+  }
+  .ii-side-pane.show{
+    position:fixed;
+    inset:5px;
+    width:calc(100vw - 10px);
+    border:1px solid #333;
+  }
+  .ii-side-pane .resizer {
+    width:0;
+    display:none;
+  }
+}
+
+.ii-header .side-menu{
+  display:flex;
+  height:100%;
+  align-items:center;
+}
+
+.sidepane-opener {
+	background-color: #0090ff;
+	padding: 5px;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	text-align: center;
+	line-height: 20px;
+	color: #fff;
+  margin:0 5px;  
+}
+
+.ii-side-pane-selector{
+  flex-grow:1;
+  text-align: center;
+}
+
+.ii-side-pane-selector-input {
+	background-color: #39f;
+	color: #fff;
+	font-size: medium;
+	border: none;
+	border-radius: 3px;
+	padding: 3px;
+	text-align: center;
+  cursor: pointer;
+}
 
 .ii-toolbar {
   background-color:#0B8BEE;
@@ -36,6 +128,16 @@ body {
   height:100%;
   gap:18px;
 }
+@container ii-main (width < 650px) {
+  .ii-toolbar{
+    height:90px;
+  }
+  .ii-toolbar-controls{
+    flex-direction: column;
+    gap:3px;
+  }
+}
+
 .ii-toolbar-controls button{
   background-color:#0B8BEE;
   border: solid 1px #ccc;
@@ -99,7 +201,7 @@ input[type=checkbox]:checked.togglebutton+span {
 <main class="ii-root">
 <div class="ii-main-pane">
   <div class="ii-header" v-show="show_header">
-    <div style="float:left;padding:10px;"><RouterLink to="/"><strong>&lt;Home</strong></RouterLink></div>
+    <div class="side-menu" style="float:left;padding-left:10px;"><RouterLink to="/"><strong>&lt;Home</strong></RouterLink></div>
     <!--<div style="float:right;">
       <details>
         <summary><strong>…</strong></summary>
@@ -108,10 +210,11 @@ input[type=checkbox]:checked.togglebutton+span {
         </div>
       </details>
     </div>-->
-    <div style="float:right;display:flex;padding:10px;">
+    <div class="side-menu" style="float:right;display:flex;padding-right:10px;">
       <popmenu right>
           <li><label><input type="checkbox" v-model="is_widget_simple_mode"><small>Simple mode</small></label></li>
           <li @click="exportAnnotationToJSON">Export JSON</li>
+          <li @click="exportAnnotationToJSON_onlyThisBook">Export JSON <small>(only this book)</small></li>
           <li @click="exportManifest">Export Manifest</li>
           <!--<li><button @click="openManifest">Show Manifest</button></li>-->
           <li><label><input type="file" style="display:none" @change="loadAnnotationFromJSON">Load JSON</label></li>
@@ -120,7 +223,11 @@ input[type=checkbox]:checked.togglebutton+span {
           <li @click="saveTest">Save All</li>
           <li @click="authLogout">Logout</li>
       </popmenu>
-      <!--<input type="checkbox" v-model="is_sidepane_shown">-->
+      <label role="button" aria-role="button" class="sidepane-opener">
+        <input type="checkbox" v-model="is_sidepane_shown" style="display:none">
+        <span v-show="!is_sidepane_shown">&#x276E;</span>
+        <span v-show="is_sidepane_shown">&#x276F;</span>
+      </label>
     </div>
     <h1 style="text-align:center;font-size:large">{{ meta.title }}</h1>
   </div>
@@ -132,9 +239,7 @@ input[type=checkbox]:checked.togglebutton+span {
         <button ref="homebutton" title="reset zoom">🏠&#xFE0E;</button>
         <button ref="fullpagebutton" title="full screen">⛶</button>
         <button @click="show_header = !show_header" title="expand view">○</button>
-      </div>
-      <div>
-        <button title="refresh" @click="setPage">更新</button>
+        <button title="refresh" @click="setPage" style="margin-left:10px;width:auto">更新</button>
       </div>
       <div class="ii-page-control">
         <button :disabled="!this.nextPage" @click="this.currentPage=this.nextPage;setPage()">next</button>
@@ -146,7 +251,8 @@ input[type=checkbox]:checked.togglebutton+span {
       <div class="ii-tag-control">
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_annotating" @change="startAnnotationMode()"><span>⌖索引の作成</span></label>
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_taggingmode" @change="startTagAnnotationMode()"><span>文書番号指定</span></label>
-        <!--&nbsp;<label style="color:#fff;font-size:small;"><input type="checkbox" v-model="show_ocrs" @change="setPage">OCR結果を表示</label>-->
+        
+        &nbsp;<label style="color:#fff;font-size:small;"><input type="checkbox" v-model="show_ocrs" @change="loadOcr" :disabled="!has_ocr">OCR結果を表示</label>
       </div>
     </div>
   </div>
@@ -159,6 +265,7 @@ input[type=checkbox]:checked.togglebutton+span {
   </div>-->
   <div style="padding:0 20px;" v-if="isDev">
     <div>
+      <span v-show="is_mobile">●</span>
       Annotations: {{this.annotations.length}} 
       (in this page: {{this.currentAnnotations.length}})
       <input type="checkbox" v-model="show_annotation_list">
@@ -173,7 +280,54 @@ input[type=checkbox]:checked.togglebutton+span {
     </div>
   </div>
 </div>
-<div class="ii-side-pane" :class="{show:is_sidepane_shown}"></div>
+<div class="ii-side-pane" :class="{show:is_sidepane_shown}" :style="{ width: sidepane_width_calc }">
+  <div class="resizer" @pointermove="sidepane_resize($event)">
+    <div class="resizer-handle"></div>
+  </div>
+  <div class="ii-side-pane-main">
+    <div class="ii-side-pane-header">
+      <label role="button" aria-role="button" class="sidepane-opener" style="background-color: rgb(13, 104, 221);">
+        <input type="checkbox" v-model="is_sidepane_shown" style="display:none">
+        <span>&#x2716;</span>
+      </label>
+      <div class="ii-side-pane-selector">
+        <select class="ii-side-pane-selector-input" v-model="sidepane_selected">
+          <option value="default">巻一覧</option>
+          <option value="search_book">本巻内OCR検索</option>
+          <option value="search_akiyasu">松平昭休原本OCR検索</option>
+          <option value="annot_list">アノテーション一覧</option>
+        </select>
+      </div>
+    </div>
+    <div class="ii-side-pane-content">
+      <div v-if="sidepane_selected=='annot_list'">
+        <currentAnnotationList
+         :currentAnnotations="currentAnnotations"
+         :show_title="false"
+         :all_length="annotations.length"
+         @select-annotation="selectAnnotation">
+        </currentAnnotationList>
+      </div>
+      <div v-if="sidepane_selected=='default'">
+        <iiNavigator @navigated="is_internal_routing=false"></iiNavigator>
+      </div>
+      <div v-if="sidepane_selected=='search_book'">
+        <bookOcrSearch 
+          :bookid="bookid" 
+          :show_ocr="show_ocrs" 
+          :currentPage="currentPage"
+          @navigate="is_internal_routing=false">
+        </bookOcrSearch>
+      </div>
+      <div v-if="sidepane_selected=='search_akiyasu'">
+        <akiyasuOcrSearch 
+          :show_ocr="show_ocrs" 
+          @navigate="is_internal_routing=false">
+        </akiyasuOcrSearch>
+      </div>
+    </div>
+  </div>
+</div>
 </main>
 </template>
 <script>
@@ -186,6 +340,10 @@ input[type=checkbox]:checked.togglebutton+span {
   import manifestGenerator from "./components/generateManifest.js";
   import metalist from "../metalist.js";
   import popmenu from "../components/popmenu.vue";
+  import currentAnnotationList from "./components/currentAnnotationList.vue";
+  import iiNavigator from "./components/iiNavigator.vue";
+  import bookOcrSearch from "./components/bookOcrSearch.vue";
+  import akiyasuOcrSearch from "./components/akiyasuOcrSearch.vue";
   import {RouterLink} from "vue-router";
 
   
@@ -193,7 +351,11 @@ input[type=checkbox]:checked.togglebutton+span {
   export default {
     inject:["logout","loggedin", "annotStore", "isDev"],
     components:{
-      popmenu
+      popmenu,
+      currentAnnotationList,
+      iiNavigator,
+      bookOcrSearch,
+      akiyasuOcrSearch
     },
     data(){
       return {
@@ -201,6 +363,10 @@ input[type=checkbox]:checked.togglebutton+span {
         is_annotating:false,
         is_internal_routing:false,
         is_sidepane_shown:false,
+        sidepane_width:350,
+        sidepane_min_width:350,
+        sidepane_selected:"default",
+        is_mobile:false,
         is_widget_simple_mode:false,
         show_annotation_list:false,
         currentPage:"",
@@ -265,7 +431,16 @@ input[type=checkbox]:checked.togglebutton+span {
         return this.annotations.filter(annotation=>{
           return this.isCurrentAnnotation(annotation);
         });
-      }
+      },
+      has_ocr(){
+        return !!this.meta.ocrtext;
+      },
+      sidepane_width_calc(){
+        if(this.is_mobile){
+          return "calc(100vw - 10px)";
+        }
+        return this.sidepane_width + "px";
+      },
     },
     methods:{
       isCurrentAnnotation(annotation){
@@ -283,6 +458,20 @@ input[type=checkbox]:checked.togglebutton+span {
         const blob = new Blob([JSON.stringify(this.annotations)], {type:"application/json"})
         const link = document.createElement("a");
         link.download = `annotation-${Date.now()}.json`;
+        link.href = URL.createObjectURL(blob);
+        link.click();
+        URL.revokeObjectURL(blob);
+      },
+      exportAnnotationToJSON_onlyThisBook(){
+        if(this.annotations.length<=0){
+          return;
+        }
+        const annot_thisbook = this.annotations.filter(annotation=>{
+          return annotation["_bookid"] == this.bookid;
+        })
+        const blob = new Blob([JSON.stringify(annot_thisbook)], {type:"application/json"})
+        const link = document.createElement("a");
+        link.download = `annotation-${this.bookid}-${Date.now()}.json`;
         link.href = URL.createObjectURL(blob);
         link.click();
         URL.revokeObjectURL(blob);
@@ -332,14 +521,25 @@ input[type=checkbox]:checked.togglebutton+span {
         this.viewer.open(tilesource);
       },
       setPage(){
-        this.openViewer();
-        this.is_internal_routing = true;
-        this.$router.replace({path:`/viewer/${this.bookid}/${this.currentPage}`});
-        this.anno.setAnnotations(this.currentAnnotations);
+        return new Promise(resolve=>{
+          let jump_id = "";
+          if(location.search){ 
+            const params = (new URL(document.location)).searchParams;
+            if(params.has("id")){
+              jump_id = params.get("id");
+            }
+          }
+          this.openViewer();
+          this.is_internal_routing = true;
+          this.$router.replace({path:`/viewer/${this.bookid}/${this.currentPage}`});
+          this.anno.setAnnotations(this.currentAnnotations);
+          if(jump_id) this.anno.selectAnnotation(jump_id);
+          resolve(true);
+        });
       },
       gotoPage(page){
         this.currentPage = page;
-        this.setPage();
+        return this.setPage();
       },
       getIdentifierFromAnnotation(annotation){
         return (new RegExp(`^${this.imageUrlBase}(.+?)${this.meta.imageUrl.suffix}`))
@@ -365,7 +565,15 @@ input[type=checkbox]:checked.togglebutton+span {
         }
       },
       loadAnnotationFromDB(){
-        return this.annotStore.loadAnnotations(this.bookid);
+        console.log("ocr: ", this.show_ocrs);
+        return this.annotStore.loadAnnotations(this.bookid,false,this.show_ocrs);
+      },
+      async loadOcr(){
+        console.log("load ocr: ", this.show_ocrs);
+        if(this.show_ocrs){
+          await this.annotStore.loadAnnotations_onlyOCR(this.bookid);
+        }
+        this.setPage();
       },
       addAnnotation(annotation){
         if(annotation._type=="ocrtext") return;
@@ -391,6 +599,24 @@ input[type=checkbox]:checked.togglebutton+span {
           this.anno.setDrawingEnabled(true);
         }
       },
+      async selectAnnotation(id="",overPage=false){
+        if(!id) return;
+        if(!this.currentAnnotations.some(annot=>annot.id==id)){
+          //console.log("!",id);
+          if(overPage){
+            const target = this.annotations.find(annot=>annot.id==id);
+            if(!target) return;
+            const target_page = target._page || ((new RegExp(`^${this.imageUrlRoot}(.+)${this.meta.imageUrl.extension}$`)).test(target.target.source)?RegExp.$1:"");
+            if(!target_page || target._bookid != this.meta.bookid) return;
+            await this.gotoPage(target_page);
+          }
+          else{
+            return;
+          }
+        }
+        //console.log(id);
+        this.anno.selectAnnotation(id);
+      },
       authLogout(){
         this.logout();
       },
@@ -399,6 +625,12 @@ input[type=checkbox]:checked.togglebutton+span {
         //const viewport_content = this.viewer.world.getItemAt(0).getContent();
         console.log("dimensions |", dimensions.x, dimensions.y);
         //console.log("viewport |", viewport_content.x, viewport_content.y);
+      },
+      sidepane_resize(e){
+        if(e.buttons < 1) return;
+        const new_width = this.sidepane_width - e.movementX;
+        this.sidepane_width = Math.max(this.sidepane_min_width, new_width);
+        e.target.setPointerCapture(e.pointerId);
       },
       async demo_openDefault(){// remove on production
         await this.annotStore.loadDefaultJSON();
@@ -425,6 +657,7 @@ input[type=checkbox]:checked.togglebutton+span {
           this.loadAnnotationFromDB().then(()=>this.setPage());
           this.currentPage = to.params.page||this.meta.pages[0];
           this.is_widget_simple_mode = this.meta.simplemode;
+          this.show_ocrs = this.meta.show_ocr && this.has_ocr;
       
         }
         this.setPage();
@@ -456,6 +689,7 @@ input[type=checkbox]:checked.togglebutton+span {
       }
 
       this.is_widget_simple_mode = this.meta.simplemode;
+      this.show_ocrs = this.meta.show_ocr && this.has_ocr;
 
       this.viewer = OpenSeadragon({
         element:this.$refs.osd_elm,
@@ -495,6 +729,13 @@ input[type=checkbox]:checked.togglebutton+span {
       });
       this.setPage();
       //window.app = this;
+
+      const mediaquery = window.matchMedia("(max-width: 480px)");
+      this.is_mobile = mediaquery.matches;
+            mediaquery.addEventListener("change", e=>{
+        this.is_mobile = e.matches;
+      })
+
     }
   };
 

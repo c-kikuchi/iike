@@ -432,6 +432,13 @@ function IIKanPageWidgetBuilder(bridge){
 
 function IILinkingWidget(obj){
   const container = document.createElement("div");
+  
+  const annot = obj.annotation.underlying;
+  if(annot["_type"]=="ocrtext"){
+    container.style.display = "none";
+    return container;
+  }
+
   container.style.cssText = `
     display:flex;
     flex-direction:row;
@@ -579,6 +586,10 @@ function create_candidate(obj){
 function candidateSelectorWidget(obj){
   const container = document.createElement("div");
   const annot = obj.annotation.underlying;
+  if(annot["_type"]=="ocrtext"){
+    container.style.display = "none";
+    return container;
+  }
   if(annot["_candidate"] && annot["_candidate"].length>0){
     annot["_candidate"].forEach(cand=>{
       const wrapper = document.createElement("div");
