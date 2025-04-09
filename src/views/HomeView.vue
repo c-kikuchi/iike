@@ -69,6 +69,9 @@ const metalist_categorized = ref(metalist.categories.map(cat=>{
     <!--<div style="margin-top:50px;" v-if="isDev">
       <RouterLink to="/storetest">storetest</RouterLink>
     </div>-->
+    <div style="margin-top:50px" v-if="isDev">
+      <RouterLink to="/akiyasu-search">松平昭休原本OCR検索</RouterLink>
+    </div>
     <div style="margin-top:50px;" v-if="loggedin">
       <button @click="logout">Log out</button>
     </div>
