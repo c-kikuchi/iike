@@ -48,6 +48,7 @@ body {
 .ii-side-pane .ii-side-pane-header {
   background-color:#0B8BEE;
   height:40px;
+  min-height:40px;
   color:#fff;
   display:flex;
   flex-direction: row;
