@@ -8,7 +8,7 @@
     <RouterLink to="/"><strong>&lt;Home</strong></RouterLink>
   </div>
   <akiyasuOcrSearch 
-    show_title="true" 
+    :show_title="true" 
     :search_word="search_word"
     @input="on_input"
   ></akiyasuOcrSearch>
@@ -17,14 +17,14 @@
 <script setup>
 import akiyasuOcrSearch from '@/viewer/components/akiyasuOcrSearch.vue';
 import { ref, onMounted } from "vue";
-import { RouterLink, useRoute, useRouter } from 'vue-router';
+import { RouterLink, useRoute, useRouter} from 'vue-router';
 
 const route = useRoute();
 const router = useRouter();
 const search_word = ref("");
 
 function on_input(query){
-  router.replace({path:"/akiyasu-search/"+query});
+  router.replace({name:"akiyasu", params:{word:query}});
 }
 
 onMounted(()=>{

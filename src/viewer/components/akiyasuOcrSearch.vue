@@ -58,7 +58,7 @@
 </div>
 </template>
 <script setup>
-import { ref, computed, inject, onMounted } from "vue";
+import { ref, computed, inject, onMounted, watch } from "vue";
 import {RouterLink} from "vue-router";
 import fuzzysort from "fuzzysort";
 import metalist from "../../metalist";
@@ -142,7 +142,14 @@ function exec_search(){
 }
 
 
+watch(()=>props.search_word, (new_word)=>{ 
+  //console.log(new_word);
+  search_query.value = new_word;
+  exec_search();
+})
+
 onMounted(()=>{
+  //console.log(props.search_word);
   if(props.search_word) search_query.value = props.search_word;
   akiyasu_ocrs_ids.value.forEach(bookid=>{
     annotStore.loadAnnotations_onlyOCR(bookid);
