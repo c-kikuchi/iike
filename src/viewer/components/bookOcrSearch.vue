@@ -1,12 +1,33 @@
 <style scoped>
 .caution-message{
   background-color: #f99;
-  color:#f00;
   border:solid 1px #f00;
   padding:10px;
   text-align:center;
   font-weight:bold;
 }
+.control{
+  border:1px solid #333;
+  padding:10px;
+  margin-bottom:10px;
+}
+.search-input {
+  font-size:medium; background-color: #eee; border:none; width:280px; padding:5px;
+}
+.result{
+  border-bottom: 1px solid #666;
+}
+.page-link {
+  color:#039;
+}
+.annot-link {
+  color:#333;
+  text-decoration: none;
+}
+.annot-link:hover {
+  text-decoration: underline;
+}
+
 
 </style>
 <template>
@@ -22,17 +43,17 @@
     </div>
   </div>
   <div v-else>
-    <div class="control" style="border:1px solid #333; padding:10px; margin-bottom:10px;">
-      <input v-model="search_query" @input="exec_search" placeholder="検索語" style="font-size:medium; background-color: #eee; border:none; width:280px; padding:5px;"><br>
+    <div class="control">
+      <input v-model="search_query" @input="exec_search" placeholder="検索語" class="search-input"><br>
       <label><input type="checkbox" v-model="only_this_page"><small>このページのみ検索</small></label><br>
       {{ results_len>0?(results_len + " / "):""}}{{ current_ocrs.length }} hits
     </div>
     <div class="results">
-      <div v-for="pg in search_results" class="result" style="border-bottom: 1px solid #666;">
-        <strong>『{{ pg.title }}』 <RouterLink :to="'/viewer/'+pg.bookid+'/'+pg.page" @click="$emit('navigate')">{{ pg.page }}</RouterLink></strong><br>
+      <div v-for="pg in search_results" class="result">
+        <strong>『{{ pg.title }}』 <RouterLink class="page-link" :to="'/viewer/'+pg.bookid+'/'+pg.page" @click="$emit('navigate')">{{ pg.page }}</RouterLink></strong><br>
         <ul style="margin-top:0;">
           <li v-for="result in pg.results">
-            <RouterLink :to="'/viewer/'+pg.bookid+'/'+pg.page+'?id='+result.obj.id" @click="$emit('navigate')">
+            <RouterLink class="annot-link" :to="'/viewer/'+pg.bookid+'/'+pg.page+'?id='+result.obj.id" @click="$emit('navigate')">
               <span v-html="result.highlight('<b>','</b>')"></span>
             </RouterLink>
           </li>

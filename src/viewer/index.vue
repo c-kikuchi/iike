@@ -292,8 +292,8 @@ input[type=checkbox]:checked.togglebutton+span {
       <div class="ii-side-pane-selector">
         <select class="ii-side-pane-selector-input" v-model="sidepane_selected">
           <option value="default">巻一覧</option>
-          <option value="annot_list">アノテーション一覧</option>
           <option value="search_book">本巻内OCR検索</option>
+          <option value="annot_list">アノテーション一覧</option>
         </select>
       </div>
     </div>
