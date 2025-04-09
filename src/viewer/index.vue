@@ -43,7 +43,7 @@ body {
   display:flex;
   flex-direction:column;
   flex-grow:1;
-  width:100%;
+  width:calc(100% - 5px);
 }
 .ii-side-pane .ii-side-pane-header {
   background-color:#0B8BEE;
@@ -310,7 +310,12 @@ input[type=checkbox]:checked.togglebutton+span {
         <iiNavigator @navigated="is_internal_routing=false"></iiNavigator>
       </div>
       <div v-if="sidepane_selected=='search_book'">
-        <h1>OCR検索</h1>
+        <bookOcrSearch 
+          :bookid="bookid" 
+          :show_ocr="show_ocrs" 
+          :currentPage="currentPage"
+          @navigate="is_internal_routing=false">
+        </bookOcrSearch>
       </div>
     </div>
   </div>
@@ -329,6 +334,7 @@ input[type=checkbox]:checked.togglebutton+span {
   import popmenu from "../components/popmenu.vue";
   import currentAnnotationList from "./components/currentAnnotationList.vue";
   import iiNavigator from "./components/iiNavigator.vue";
+  import bookOcrSearch from "./components/bookOcrSearch.vue";
   import {RouterLink} from "vue-router";
 
   
@@ -338,7 +344,8 @@ input[type=checkbox]:checked.togglebutton+span {
     components:{
       popmenu,
       currentAnnotationList,
-      iiNavigator
+      iiNavigator,
+      bookOcrSearch
     },
     data(){
       return {
@@ -505,10 +512,18 @@ input[type=checkbox]:checked.togglebutton+span {
       },
       setPage(){
         return new Promise(resolve=>{
+          let jump_id = "";
+          if(location.search){ 
+            const params = (new URL(document.location)).searchParams;
+            if(params.has("id")){
+              jump_id = params.get("id");
+            }
+          }
           this.openViewer();
           this.is_internal_routing = true;
           this.$router.replace({path:`/viewer/${this.bookid}/${this.currentPage}`});
           this.anno.setAnnotations(this.currentAnnotations);
+          if(jump_id) this.anno.selectAnnotation(jump_id);
           resolve(true);
         });
       },

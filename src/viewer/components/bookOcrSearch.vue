@@ -22,24 +22,37 @@
     </div>
   </div>
   <div v-else>
-    <div class="control">
-      <input v-model="search_query"><br>
+    <div class="control" style="border:1px solid #333; padding:10px; margin-bottom:10px;">
+      <input v-model="search_query" @input="exec_search" placeholder="検索語" style="font-size:medium; background-color: #eee; border:none; width:280px; padding:5px;"><br>
       <label><input type="checkbox" v-model="only_this_page"><small>このページのみ検索</small></label><br>
-      {{ current_ocrs.length }} Annotations
+      {{ results_len>0?(results_len + " / "):""}}{{ current_ocrs.length }} hits
     </div>
-
+    <div class="results">
+      <div v-for="pg in search_results" class="result" style="border-bottom: 1px solid #666;">
+        <strong>『{{ pg.title }}』 <RouterLink :to="'/viewer/'+pg.bookid+'/'+pg.page" @click="$emit('navigate')">{{ pg.page }}</RouterLink></strong><br>
+        <ul style="margin-top:0;">
+          <li v-for="result in pg.results">
+            <RouterLink :to="'/viewer/'+pg.bookid+'/'+pg.page+'?id='+result.obj.id" @click="$emit('navigate')">
+              <span v-html="result.highlight('<b>','</b>')"></span>
+            </RouterLink>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </div>
 </template>
 <script setup>
 import { ref, computed, inject } from "vue";
+import {RouterLink} from "vue-router";
+import fuzzysort from "fuzzysort";
 import metalist from "../../metalist";
 
 const annotStore = inject("annotStore");
 const props = defineProps(["bookid", "show_ocr", "currentPage"]);
 const emit = defineEmits(["navigate"]);
 const current_meta = computed(()=>{
-  return metalist.find(meta=>meta.bookid==props.bookid);
+  return metalist.list.find(meta=>meta.bookid==props.bookid);
 });
 const imageUrlRoot = computed(()=>{
   const meta = current_meta.value;
@@ -61,6 +74,7 @@ const current_ocrs = computed(()=>{
 const only_this_page = ref(false);
 const search_query = ref("");
 const search_results = ref([]);
+const results_len = ref(0);
 
 function get_page(annotation){
   if(annotation._page){
@@ -69,6 +83,33 @@ function get_page(annotation){
   else{
     return getpage_exp.value.test(annotation.target.source)?RegExp.$1:"";
   }
+}
+
+function exec_search(){
+  const query = search_query.value;
+  const search_target = current_ocrs.value.filter(()=>true).map(annot=>{
+    if(annot.body[0]){
+      annot.body = annot.body[0];
+    }
+    return annot;
+  })
+  const results = fuzzysort.go(query, search_target, {key:"body.value"});
+
+  const sr = [];
+  results_len.value = results.length;
+  results.forEach(result=>{
+    const bookid = result.obj._bookid;
+    const page = get_page(result.obj)||"-";
+    let pg = sr.find(r=>r.bookid==bookid && r.page==page);
+    if(!pg){
+      pg = { bookid, page, results:[], score:0, title:metalist.list.find(m=>m.bookid==bookid).title };
+      sr.push(pg);
+    }
+    pg.results.push(result);
+    if(pg.score < result.score) pg.score = result.score;
+  });
+  sr.sort((a,b)=>b.score - a.score);
+  search_results.value = sr;
 }
 
 </script>
