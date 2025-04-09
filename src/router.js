@@ -3,6 +3,7 @@ import HomeView from './views/HomeView.vue'
 import Viewer from "./viewer/index.vue"
 import Meta from "./views/metaView.vue"
 import Login from "./views/loginView.vue"
+import akiyasuOcrSearchView from './views/akiyasuOcrSearchView.vue'
 import Storetest from "./views/storetest.vue"
 
 const router = createRouter({
@@ -46,6 +47,11 @@ const router = createRouter({
       path: "/storetest",
       name:"storetest",
       component: Storetest
+    },
+    {
+      path: "/akiyasu-search/:word?",
+      name:"akiyasu",
+      component: akiyasuOcrSearchView
     }
   ]
 })

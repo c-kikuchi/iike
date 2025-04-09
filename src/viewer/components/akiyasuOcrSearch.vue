@@ -32,33 +32,27 @@
 
 </style>
 <template>
-<div>
-  <div v-if="!show_ocr">
-    <div class="caution-message">
-      [!] ［OCR結果を表示］にチェックしてください
-    </div>
+<div class="root">
+  <h1 v-show="show_title">松平昭休原本OCR検索</h1>
+  <div class="control">
+    <small>8-14冊が登録済みです</small><br>
+    <input v-model="search_query" @input="exec_search();$emit('input',search_query)" placeholder="検索語" class="search-input"><br>
+    <select v-model="sort_method" @change="exec_search">
+      <option value="">関連度順</option>
+      <option value="kan_page">巻・頁順</option>
+    </select>
+    {{ results_len }} / {{ current_ocrs.length }} hits
   </div>
-  <div v-else>
-    <div class="control">
-      <small>8-14冊が登録済みです</small><br>
-      <input v-model="search_query" @input="exec_search" placeholder="検索語" class="search-input"><br>
-      <select v-model="sort_method" @change="exec_search">
-        <option value="">関連度順</option>
-        <option value="kan_page">巻・頁順</option>
-      </select>
-      {{ results_len }} / {{ current_ocrs.length }} hits
-    </div>
-    <div class="results">
-      <div v-for="pg in search_results" class="result">
-        <strong>『{{ pg.title }}』 <RouterLink class="page-link" :to="'/viewer/'+pg.bookid+'/'+pg.page" @click="$emit('navigate')">{{ pg.page }}</RouterLink></strong><br>
-        <ul style="margin-top:0;">
-          <li v-for="result in pg.results">
-            <RouterLink class="annot-link" :to="'/viewer/'+pg.bookid+'/'+pg.page+'?id='+result.obj.id" @click="$emit('navigate')">
-              <span v-html="result.highlight('<b>','</b>')"></span>
-            </RouterLink>
-          </li>
-        </ul>
-      </div>
+  <div class="results">
+    <div v-for="pg in search_results" class="result">
+      <strong>『{{ pg.title }}』 <RouterLink class="page-link" :to="'/viewer/'+pg.bookid+'/'+pg.page" @click="$emit('navigate')">{{ pg.page }}</RouterLink></strong><br>
+      <ul style="margin-top:0;">
+        <li v-for="result in pg.results">
+          <RouterLink class="annot-link" :to="'/viewer/'+pg.bookid+'/'+pg.page+'?id='+result.obj.id" @click="$emit('navigate')">
+            <span v-html="result.highlight('<b>','</b>')"></span>
+          </RouterLink>
+        </li>
+      </ul>
     </div>
   </div>
 </div>
@@ -70,8 +64,17 @@ import fuzzysort from "fuzzysort";
 import metalist from "../../metalist";
 
 const annotStore = inject("annotStore");
-const props = defineProps(["show_ocr"]);
-const emit = defineEmits(["navigate"]);
+const props = defineProps({
+  show_title:{
+    type:Boolean,
+    default:true
+  },
+  search_word:{
+    type:String,
+    default:""
+  }
+});
+const emit = defineEmits(["navigate","input"]);
 
 const getpage_exps = new Map();
 metalist.list.forEach(meta=>{
@@ -140,6 +143,7 @@ function exec_search(){
 
 
 onMounted(()=>{
+  if(props.search_word) search_query.value = props.search_word;
   akiyasu_ocrs_ids.value.forEach(bookid=>{
     annotStore.loadAnnotations_onlyOCR(bookid);
   });
