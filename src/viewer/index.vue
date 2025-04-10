@@ -309,20 +309,21 @@ input[type=checkbox]:checked.togglebutton+span {
         </currentAnnotationList>
       </div>
       <div v-if="sidepane_selected=='default'">
-        <iiNavigator @navigated="is_internal_routing=false"></iiNavigator>
+        <iiNavigator @navigate="sidepane_close_if_mobile();is_internal_routing=false"></iiNavigator>
       </div>
       <div v-if="sidepane_selected=='search_book'">
         <bookOcrSearch 
           :bookid="bookid" 
           :show_ocr="show_ocrs" 
           :currentPage="currentPage"
-          @navigate="is_internal_routing=false">
+          @navigate="sidepane_close_if_mobile();is_internal_routing=false">
         </bookOcrSearch>
       </div>
       <div v-if="sidepane_selected=='search_akiyasu'">
         <akiyasuOcrSearch 
           :show_title="false" 
-          @navigate="is_internal_routing=false">
+          :bookid="bookid"
+          @navigate="sidepane_close_if_mobile();is_internal_routing=false">
         </akiyasuOcrSearch>
       </div>
     </div>
@@ -631,6 +632,11 @@ input[type=checkbox]:checked.togglebutton+span {
         const new_width = this.sidepane_width - e.movementX;
         this.sidepane_width = Math.max(this.sidepane_min_width, new_width);
         e.target.setPointerCapture(e.pointerId);
+      },
+      sidepane_close_if_mobile(){
+        if(this.is_mobile){
+          this.is_sidepane_shown = false;
+        }
       },
       async demo_openDefault(){// remove on production
         await this.annotStore.loadDefaultJSON();

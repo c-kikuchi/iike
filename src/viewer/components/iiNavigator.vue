@@ -20,7 +20,7 @@ h3::before {
   <div v-for="category in metalist_categorized">
     <h3>{{ category.name }}</h3>
     <div v-for="meta in category.list">
-      <RouterLink class="ii-link" :to="'/viewer/'+meta.bookid+'/'+meta.pages[0]" @click="$emit('navigated')">{{ meta.title }}</RouterLink>
+      <RouterLink class="ii-link" :to="'/viewer/'+meta.bookid+'/'+meta.pages[0]" @click="$emit('navigate')">{{ meta.title }}</RouterLink>
     </div>
   </div>
 </nav>
@@ -30,7 +30,7 @@ import { ref } from "vue";
 import { RouterLink } from "vue-router"
 import metalist from "../../metalist.js";
 
-const emit = defineEmits(["navigated"]);
+const emit = defineEmits(["navigate"]);
 
 const metalist_categorized = ref(metalist.categories.map(cat=>{
   return {

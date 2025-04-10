@@ -1,4 +1,8 @@
 <style scoped>
+h1 {
+  font-size:x-large;
+  text-align: center;
+}
 .caution-message{
   background-color: #f99;
   border:solid 1px #f00;
@@ -12,7 +16,11 @@
   margin-bottom:10px;
 }
 .search-input {
-  font-size:medium; background-color: #eee; border:none; width:280px; padding:5px;
+  font-size:medium;
+  background-color: #eee; 
+  border:none; 
+  width:calc(100% - 30px); 
+  padding:5px;
   margin-bottom:5px;
 }
 .result{
@@ -28,7 +36,14 @@
 .annot-link:hover {
   text-decoration: underline;
 }
-
+.reset-button {
+  color:#ccc;
+  cursor:pointer;
+  padding-left:3px;
+}
+.reset-button:hover {
+  color:#999;
+}
 
 </style>
 <template>
@@ -36,7 +51,9 @@
   <h1 v-show="show_title">松平昭休原本OCR検索</h1>
   <div class="control">
     <small>8-14冊が登録済みです</small><br>
-    <input v-model="search_query" @input="exec_search();$emit('input',search_query)" placeholder="検索語" class="search-input"><br>
+    <input v-model="search_query" @input="exec_search();$emit('input',search_query)" placeholder="検索語" class="search-input">
+    <span role="button" class="reset-button" title="clear input" @click="search_query=''">&#x1F5D9;</span><br>
+    <div v-show="is_this_akiyasu"><label><input type="checkbox" v-model="only_this_book" @change="exec_search"><small>この冊のみ検索</small></label></div>
     <select v-model="sort_method" @change="exec_search">
       <option value="">関連度順</option>
       <option value="kan_page">巻・頁順</option>
@@ -72,6 +89,10 @@ const props = defineProps({
   search_word:{
     type:String,
     default:""
+  },
+  bookid:{
+    type:String,
+    default:""
   }
 });
 const emit = defineEmits(["navigate","input"]);
@@ -95,6 +116,11 @@ const search_query = ref("");
 const search_results = ref([]);
 const results_len = ref(0);
 const sort_method = ref("");
+const only_this_book = ref(false);
+
+const is_this_akiyasu = computed(()=>{
+  return props.bookid && akiyasu_ocrs_ids.value.includes(props.bookid);
+})
 
 function get_page(annotation){
   if(annotation._page){
@@ -108,7 +134,12 @@ function get_page(annotation){
 
 function exec_search(){
   const query = search_query.value;
-  const search_target = current_ocrs.value.filter(()=>true).map(annot=>{
+  const search_target = current_ocrs.value.filter(annot=>{
+    if(is_this_akiyasu.value && only_this_book.value){
+      return annot._bookid == props.bookid;
+    }
+    return true;
+  }).map(annot=>{
     if(annot.body[0]){
       annot.body = annot.body[0];
     }

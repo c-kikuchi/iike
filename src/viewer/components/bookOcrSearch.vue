@@ -12,7 +12,11 @@
   margin-bottom:10px;
 }
 .search-input {
-  font-size:medium; background-color: #eee; border:none; width:280px; padding:5px;
+  font-size:medium; 
+  background-color: #eee; 
+  border:none;
+  width:calc(100% - 30px);
+  padding:5px;
 }
 .result{
   border-bottom: 1px solid #666;
@@ -27,7 +31,14 @@
 .annot-link:hover {
   text-decoration: underline;
 }
-
+.reset-button {
+  color:#ccc;
+  cursor:pointer;
+  padding-left:3px;
+}
+.reset-button:hover {
+  color:#999;
+}
 
 </style>
 <template>
@@ -44,7 +55,8 @@
   </div>
   <div v-else>
     <div class="control">
-      <input v-model="search_query" @input="exec_search" placeholder="検索語" class="search-input"><br>
+      <input v-model="search_query" @input="exec_search" placeholder="検索語" class="search-input">
+      <span role="button" class="reset-button" title="clear input" @click="search_query=''">&#x1F5D9;</span><br>
       <label><input type="checkbox" v-model="only_this_page" @change="exec_search"><small>このページのみ検索</small></label><br>
       <select v-model="sort_method" @change="exec_search">
         <option value="">関連度順</option>
