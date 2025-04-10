@@ -322,6 +322,7 @@ input[type=checkbox]:checked.togglebutton+span {
       <div v-if="sidepane_selected=='search_akiyasu'">
         <akiyasuOcrSearch 
           :show_title="false" 
+          :bookid="bookid"
           @navigate="is_internal_routing=false">
         </akiyasuOcrSearch>
       </div>
