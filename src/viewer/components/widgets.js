@@ -687,7 +687,7 @@ function IIWidgetsBuilder(bridge){
     hide_if_simplemode(IILinkingWidget,bridge),
     simpleCommentingWidget,
     hide_if_simplemode(candidateSelectorWidget,bridge)
-  ];
+  ].map(widget=>({widget:widget, force:"plainjs"}));
 }
 
 export default IIWidgetsBuilder
