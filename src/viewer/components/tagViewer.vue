@@ -95,6 +95,10 @@ const current_book_tags = computed(()=>{
 const tag_list = computed(()=>{
   const mp = new Map();
   current_book_tags.value.forEach(annot=>{
+    if(annot["_type"]!="tagging"){
+      console.log(JSON.stringify(annot,null, 2));
+      return;
+    }
     if(!annot.body)console.log(JSON.stringify(annot,null, 2));
     const body = annot.body.find(b=>b.purpose=="tagging");
     if(!body)console.log(JSON.stringify(annot,null, 2));
