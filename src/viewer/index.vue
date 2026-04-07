@@ -296,6 +296,7 @@ input[type=checkbox]:checked.togglebutton+span {
           <option value="search_book">本巻内OCR検索</option>
           <option value="search_akiyasu">松平昭休原本OCR検索</option>
           <option value="annot_list">アノテーション一覧</option>
+          <option value="tag_viewer">文書番号目次</option>
         </select>
       </div>
     </div>
@@ -326,6 +327,12 @@ input[type=checkbox]:checked.togglebutton+span {
           @navigate="sidepane_close_if_mobile();is_internal_routing=false">
         </akiyasuOcrSearch>
       </div>
+      <div v-if="sidepane_selected=='tag_viewer'">
+        <tagViewer
+          :bookid="bookid"
+          @navigate="sidepane_close_if_mobile();is_internal_routing=false">
+        </tagViewer>
+      </div>
     </div>
   </div>
 </div>
@@ -345,6 +352,7 @@ input[type=checkbox]:checked.togglebutton+span {
   import iiNavigator from "./components/iiNavigator.vue";
   import bookOcrSearch from "./components/bookOcrSearch.vue";
   import akiyasuOcrSearch from "./components/akiyasuOcrSearch.vue";
+  import tagViewer from "./components/tagViewer.vue";
   import {RouterLink} from "vue-router";
 
   
@@ -356,7 +364,8 @@ input[type=checkbox]:checked.togglebutton+span {
       currentAnnotationList,
       iiNavigator,
       bookOcrSearch,
-      akiyasuOcrSearch
+      akiyasuOcrSearch,
+      tagViewer
     },
     data(){
       return {
