@@ -99,9 +99,11 @@ const tag_list = computed(()=>{
       console.log(JSON.stringify(annot,null, 2));
       return;
     }
-    if(!annot.body)console.log(JSON.stringify(annot,null, 2));
     const body = annot.body.find(b=>b.purpose=="tagging");
-    if(!body)console.log(JSON.stringify(annot,null, 2));
+    if(!body){
+      console.log(JSON.stringify(annot,null, 2));
+      return;
+    }
     const value = body.value;
     const page = get_page(annot);
     if(!mp.has(value)){
