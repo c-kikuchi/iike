@@ -90,12 +90,13 @@ function parseIntLike(str){
 }
 
 const current_book_tags = computed(()=>{
-  return annotStore.annotations.filter(annot=>annot["_bookid"]==props.bookid);
+  return annotStore.annotations.filter(annot=>(annot["_bookid"]==props.bookid && annot["_type"]=="tagging"));
 });
 const tag_list = computed(()=>{
   const mp = new Map();
   current_book_tags.value.forEach(annot=>{
     const body = annot.body.find(b=>b.purpose=="tagging");
+    //if(!body)console.log(JSON.stringify(annot,null, 2));
     const value = body.value;
     const page = get_page(annot);
     if(!mp.has(value)){
