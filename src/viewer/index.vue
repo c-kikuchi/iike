@@ -251,6 +251,7 @@ input[type=checkbox]:checked.togglebutton+span {
       <div class="ii-tag-control">
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_annotating" @change="startAnnotationMode()"><span>⌖索引の作成</span></label>
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_taggingmode" @change="startTagAnnotationMode()"><span>文書番号指定</span></label>
+        <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_memomode" @change="startMemoAnnotationMode()"><span>メモ作成</span></label>
         
         &nbsp;<label style="color:#fff;font-size:small;"><input type="checkbox" v-model="show_ocrs" @change="loadOcr" :disabled="!has_ocr">OCR結果を表示</label>
       </div>
@@ -370,6 +371,7 @@ input[type=checkbox]:checked.togglebutton+span {
     data(){
       return {
         is_taggingmode:false,
+        is_memomode:false,
         is_annotating:false,
         is_internal_routing:false,
         is_sidepane_shown:false,
@@ -609,6 +611,11 @@ input[type=checkbox]:checked.togglebutton+span {
           this.anno.setDrawingEnabled(true);
         }
       },
+      startMemoAnnotationMode(){
+        if(this.is_memomode){
+          this.anno.setDrawingEnabled(true);
+        }
+      },
       async selectAnnotation(id="",overPage=false){
         if(!id) return;
         if(!this.currentAnnotations.some(annot=>annot.id==id)){
@@ -685,6 +692,9 @@ input[type=checkbox]:checked.togglebutton+span {
         get is_taggingmode(){
           return app.is_taggingmode;
         },
+        get is_memomode(){
+          return app.is_memomode;
+        },
         get currentAnnotations(){
           return app.currentAnnotations;
         },
@@ -725,6 +735,7 @@ input[type=checkbox]:checked.togglebutton+span {
         this.addAnnotation(annotation);
         this.is_annotating = false;
         this.is_taggingmode = false;
+        this.is_memomode = false;
       });
       anno.on("updateAnnotation", (annotation,previous)=>{
         this.updateAnnotation(annotation, previous);
@@ -736,6 +747,7 @@ input[type=checkbox]:checked.togglebutton+span {
       anno.on("cancelSelected", ()=>{
         this.is_annotating = false;
         this.is_taggingmode = false;
+        this.is_memomode = false;
       });
       
       this.anno = anno;

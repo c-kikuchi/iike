@@ -9,6 +9,7 @@ function IIFormatterBuilder(bridge){
     const annot = annotation.underlying;
     //console.log("formatter |", annotation)
     const is_ocrtext = annot["_type"]=="ocrtext";
+    const is_memo = annot["_type"]=="memo";
     let tag_value = "";
     const has_tag = !is_ocrtext && annotation.bodies.find(
         body=>body.purpose=="tagging"&&(tag_value=body.value)&&true
@@ -20,6 +21,12 @@ function IIFormatterBuilder(bridge){
         className:"ii-annotation-ocrtext",
         style:"stroke: #B0C5A4"
       };
+    }
+    else if(is_memo){
+      return {
+        className:"ii-annotation-memo",
+        style:"stroke: #0fa842"
+      }
     }
     else if(has_tag){
       const foreignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
