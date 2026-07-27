@@ -26,8 +26,8 @@ const dbconnection = {
     if(!annotation._bookid){
       throw new Error("_bookid is invalid");
     }
-    if(annotation._type != "describing" && annotation._type != "tagging"){
-      throw new Error("_type must be describing or tagging")
+    if(annotation._type != "describing" && annotation._type != "tagging" && annotation._type != "memo"){
+      throw new Error("_type must be describing, tagging or memo.");
     }
     const id = annotation.id || generateID();
     const coll = collection(db, annotationCollectionPath);
@@ -44,8 +44,8 @@ const dbconnection = {
         if(!item._bookid){
           throw new Error("_bookid is invalid");
         }
-        if(item._type != "describing" && item._type != "tagging"){
-          throw new Error("_type must be describing or tagging")
+        if(item._type != "describing" && item._type != "tagging" && item._type != "memo"){
+          throw new Error("_type must be describing, tagging or memo.");
         }
         const id = item.id || generateID();
         console.log("saving", id);
@@ -74,7 +74,8 @@ const dbconnection = {
         where("_bookid", "==", bookid),
         or(
           where("_type", "==", "describing"),
-          where("_type", "==", "tagging")
+          where("_type", "==", "tagging"),
+          where("_type", "==", "memo")
         )
       )
     );

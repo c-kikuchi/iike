@@ -18,13 +18,113 @@ const utils = {
 const describing_keys = ["見出し語","読み","原文表記","肩書き","メモ","巻","頁","番号","枝番","備考"];
 
 function simpleCommentingWidget(obj){
-  const elm = document.createElement("div");
-  obj.annotation.bodies.filter(body=>{
+  const container = document.createElement("div");
+  obj.annotation.bodies.forEach(body=>{
     if(body.purpose == "commenting" || body.purpose == "replying" || !body.purpose){
-      elm.insertAdjacentHTML("beforeend",`<p>${body.value}</p>`);
+      container.insertAdjacentHTML("beforeend",`<p>${body.value}</p>`);
     }
   })
-  return elm;
+  return container;
+}
+
+function commentingWidgetBuilder(bridge){
+  return function commentingWidget(obj){
+    const annot = obj.annotation.underlying;
+    const container = document.createElement("div");
+    container.className = "r6o-widget comment editable";
+    container.cssText = `
+      display:flex;
+      flex-direction:row;
+    `
+    const is_memo = annot["_type"]=="memo" || bridge.is_memomode;
+    if(annot["_type"]=="ocrtext" || !is_memo || bridge.is_taggingmode){
+      return simpleCommentingWidget(obj);
+    }
+
+    const label_elm = document.createElement("div");
+    label_elm.innerText = "メモを作成";
+    label_elm.style.cssText = `
+      background-color:#666;
+      color:#fff;
+    `;
+
+    const body_container = document.createElement("div");
+    body_container.style.cssText = `
+      display:flex;
+      flex-direction:column;
+    `;
+
+    function create_input_elm(body){
+      const create_new = !body;
+
+      const input_elm = document.createElement("textarea");
+      input_elm.className = "r6o-editable-text";
+      input_elm.style.cssText= `
+        display:block;
+        border-top: #ddd 1px solid;
+      `;
+      input_elm.rows = "1";
+      input_elm.value = create_new?"":body.value;
+      const textarea_default_height = function(el){
+        el.style.height = "46px";
+      };
+      const textarea_auto_height = function(el){
+        el.style.height = el.scrollHeight + "px"; 
+      };
+      input_elm.addEventListener("input", e=>textarea_auto_height(e.target));
+      input_elm.addEventListener("focus", e=>textarea_auto_height(e.target));
+      input_elm.addEventListener("blur", e=>textarea_default_height(e.target));
+      input_elm.addEventListener("keyup", e=>e.key=="Delete"&&e.stopPropagation());
+      textarea_default_height(input_elm);
+      input_elm.addEventListener("change", e=>{
+        if(create_new){
+          obj.onAppendBody({
+            "type": "TextualBody",
+            "purpose": "commenting",
+            "value": e.target.value
+          })          
+        }
+        else{
+          obj.onUpdateBody(body, {
+            "type": "TextualBody",
+            "purpose": body.purpose||"commenting",
+            "value": e.target.value
+        })
+        }
+      });
+      return input_elm;
+    }
+
+    let no_commenting = true;
+    obj.annotation.bodies.forEach(body=>{
+      if(body.purpose == "commenting" || body.purpose == "replying" || !body.purpose){
+        body_container.appendChild(create_input_elm(body));
+        no_commenting = false;
+      }
+    });
+    if(no_commenting){
+      body_container.appendChild(create_input_elm(null));
+    }
+
+    const button_container = document.createElement("div");
+    button_container.style.cssText = `
+      background-color:#fff;
+      text-align:right;
+    `;
+    const add_button = document.createElement("button");
+    add_button.innerText="メモ追加";
+    add_button.addEventListener("click", e=>{
+      obj.onAppendBody({
+        "type": "TextualBody",
+        "purpose": "commenting",
+        "value": e.target.value
+      })
+    })
+    button_container.appendChild(add_button);
+
+    container.append(label_elm, body_container, button_container);
+    return container;
+  }
 }
 
 function IDShowingWidget(obj){
@@ -125,7 +225,7 @@ function IIPageTaggingWidgetBuilder(bridge){
         (/.+?\-(.+)/.test(tag_value) ? RegExp.$1 : "")
       ) : "";
     
-    if(has_tag || (!has_describing && bridge.is_taggingmode) && annot["_type"]!="ocrtext"){
+    if(has_tag || (!has_describing && bridge.is_taggingmode) && annot["_type"]!="ocrtext" && annot["_type"]!="memo"){
       if(annot["_type"] != "tagging"){
         obj.onSetProperty("_type", "tagging");
       }
@@ -186,7 +286,12 @@ function IIPageTaggingWidgetBuilder(bridge){
     }
     else{
       if(!annot["_type"]){
-        obj.onSetProperty("_type", "describing");
+        if(bridge.is_memomode){
+          obj.onSetProperty("_type", "memo");
+        }
+        else{
+          obj.onSetProperty("_type", "describing");
+        }
       }
       container.style.display = "none";
     }
@@ -241,7 +346,7 @@ function LabeledCommentWidgetBuilder(_label, bridge){
     `;
 
     //if(has_tag || (!has_describing && bridge.is_taggingmode)){
-    if(has_tag || annot["_type"] == "ocrtext"){
+    if(has_tag || annot["_type"] == "ocrtext" || annot["_type"]=="memo" || bridge.is_memomode){  
       container.style.display = "none";
       return container;
     }
@@ -312,7 +417,7 @@ function MultiInputCommentingWidgetBuilder(labels, setDefaultValue=function(obj,
     const has_tag = !!obj.annotation && obj.annotation.bodies.some(body=>body.purpose == "tagging");
     const annot = obj.annotation.underlying;
     //let has_describing = false;
-    if(has_tag || annot["_type"]=="ocrtext"){
+    if(has_tag || annot["_type"]=="ocrtext" || annot["_type"]=="memo" || bridge.is_memomode){
       const c = document.createElement("div");
       c.style.display = "none";
       return c;
@@ -482,7 +587,7 @@ function IILinkingWidget(obj){
     }
   })
   const append_btn = document.createElement("button");
-  append_btn.innerText = "+";
+  append_btn.innerText = "+🔗";
   append_btn.addEventListener("click",e=>{
     let new_url = prompt("input new url");
     if(new_url){
@@ -586,7 +691,7 @@ function create_candidate(obj){
 function candidateSelectorWidget(obj){
   const container = document.createElement("div");
   const annot = obj.annotation.underlying;
-  if(annot["_type"]=="ocrtext"){
+  if(annot["_type"]=="ocrtext" || annot["_type"]=="memo"){
     container.style.display = "none";
     return container;
   }
@@ -684,8 +789,9 @@ function IIWidgetsBuilder(bridge){
     LabeledCommentWidgetBuilder("備考",bridge),
     IIBangoWidgetBuilder(bridge),
     IIKanPageWidgetBuilder(bridge),
+    //simpleCommentingWidget,
+    commentingWidgetBuilder(bridge),
     hide_if_simplemode(IILinkingWidget,bridge),
-    simpleCommentingWidget,
     hide_if_simplemode(candidateSelectorWidget,bridge)
   ].map(widget=>({widget:widget, force:"plainjs"}));
 }
