@@ -17,6 +17,8 @@ const utils = {
 
 const describing_keys = ["見出し語","読み","原文表記","肩書き","メモ","巻","頁","番号","枝番","備考"];
 
+//https://github.com/recogito/recogito-client-core/blob/main/src/editor/Editor.jsx
+
 function simpleCommentingWidget(obj){
   const container = document.createElement("div");
   obj.annotation.bodies.forEach(body=>{
@@ -76,22 +78,34 @@ function commentingWidgetBuilder(bridge){
       input_elm.addEventListener("blur", e=>textarea_default_height(e.target));
       input_elm.addEventListener("keyup", e=>e.key=="Delete"&&e.stopPropagation());
       textarea_default_height(input_elm);
-      input_elm.addEventListener("change", e=>{
+
+      let current_value = "";
+      input_elm.addEventListener("input", e=>{current_value = e.target.value});
+      function updateOrAppendBody(value, saveImmediately=false){
         if(create_new){
           obj.onAppendBody({
             "type": "TextualBody",
             "purpose": "commenting",
-            "value": e.target.value
-          })          
+            "value": value
+          },saveImmediately)          
         }
         else{
           obj.onUpdateBody(body, {
             "type": "TextualBody",
             "purpose": body.purpose||"commenting",
-            "value": e.target.value
-        })
+            "value": value
+          },saveImmediately)  
         }
+      }
+      input_elm.addEventListener("change", e=>{
+        updateOrAppendBody(e.target.value||current_value);
       });
+      input_elm.addEventListener("keydown", e=>{
+        if(e.key=="Enter" && e.ctrlKey){
+          console.log("save and close.", current_value);
+          updateOrAppendBody(current_value, true);
+        }
+      })
       return input_elm;
     }
 
@@ -118,7 +132,7 @@ function commentingWidgetBuilder(bridge){
       obj.onAppendBody({
         "type": "TextualBody",
         "purpose": "commenting",
-        "value": e.target.value
+        "value": ""
       })
     })
     button_container.appendChild(add_button);
