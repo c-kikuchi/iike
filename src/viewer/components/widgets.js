@@ -108,11 +108,12 @@ function commentingWidgetBuilder(bridge){
 
     const button_container = document.createElement("div");
     button_container.style.cssText = `
-      background-color:#fff;
+      float:right;
       text-align:right;
     `;
     const add_button = document.createElement("button");
-    add_button.innerText="メモ追加";
+    add_button.innerText="＋";
+    add_button.title="入力欄を追加"
     add_button.addEventListener("click", e=>{
       obj.onAppendBody({
         "type": "TextualBody",
@@ -122,7 +123,7 @@ function commentingWidgetBuilder(bridge){
     })
     button_container.appendChild(add_button);
 
-    container.append(label_elm, body_container, button_container);
+    container.append(button_container, label_elm, body_container);
     return container;
   }
 }
