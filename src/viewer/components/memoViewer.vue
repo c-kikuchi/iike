@@ -20,6 +20,7 @@
 }
 
 .memo-list-item {
+  margin-top: 3px;
   border-bottom: solid 1px #ddd;
 }
 .memo-list-item:last-child{
@@ -45,7 +46,8 @@
   <div class="memo-search">
     <input v-model="search_query" @input="exec_search" placeholder="検索語" class="search-input">
     <span role="button" class="reset-button" title="clear input" @click="search_query=''">&#x1F5D9;</span><br>
-    <label><input type="checkbox" v-model="only_this_page" @change="exec_search"><small>このページのみ</small></label>
+    <label><input type="checkbox" v-model="only_this_page" @change="exec_search"><small>現在のページのみ</small></label>
+    <span style="float:right; font-size:smaller; margin-top:3px">{{ is_searching?(results_len + " / "):"" }}{{ memo_len }} 件</span>
   </div>
   <div class="memo-search-results" v-if="is_searching">
     <div class="memo-list-item" v-for="result in search_results">

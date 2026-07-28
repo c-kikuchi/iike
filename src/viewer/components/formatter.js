@@ -30,7 +30,7 @@ function IIFormatterBuilder(bridge){
       return {
         element:title_elm,
         className:"ii-annotation-memo",
-        style:"stroke: #0fa842"
+        style:"stroke: #8403a9"//#0fa842"
       }
     }
     else if(has_tag){
