@@ -23,9 +23,14 @@ function IIFormatterBuilder(bridge){
       };
     }
     else if(is_memo){
+      const values = annotation.bodies.filter(body=>(body.purpose=="commenting"||body.purpose=="replying"||!body.purpose)).map(body=>body.value);
+      const title = values.join("\n");
+      const title_elm = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+      title_elm.textContent = title;
       return {
+        element:title_elm,
         className:"ii-annotation-memo",
-        style:"stroke: #0fa842"
+        style:"stroke: #8403a9"//#0fa842"
       }
     }
     else if(has_tag){

@@ -294,10 +294,11 @@ input[type=checkbox]:checked.togglebutton+span {
       <div class="ii-side-pane-selector">
         <select class="ii-side-pane-selector-input" v-model="sidepane_selected">
           <option value="default">巻一覧</option>
+          <option value="tag_viewer">文書番号目次</option>
+          <option value="memo_viewer">メモ一覧</option>
           <option value="search_book">本巻内OCR検索</option>
           <option value="search_akiyasu">松平昭休原本OCR検索</option>
           <option value="annot_list">アノテーション一覧</option>
-          <option value="tag_viewer">文書番号目次</option>
         </select>
       </div>
     </div>
@@ -334,6 +335,14 @@ input[type=checkbox]:checked.togglebutton+span {
           @navigate="sidepane_close_if_mobile();is_internal_routing=false">
         </tagViewer>
       </div>
+      <div v-if="sidepane_selected=='memo_viewer'">
+        <memoViewer
+          :bookid="bookid"
+          :currentPage="currentPage"
+          @navigate="sidepane_close_if_mobile();is_internal_routing=false"
+          @selectAnnotation="(id)=>id&&selectAnnotation(id,true)">
+        </memoViewer>
+      </div>
     </div>
   </div>
 </div>
@@ -354,6 +363,7 @@ input[type=checkbox]:checked.togglebutton+span {
   import bookOcrSearch from "./components/bookOcrSearch.vue";
   import akiyasuOcrSearch from "./components/akiyasuOcrSearch.vue";
   import tagViewer from "./components/tagViewer.vue";
+  import memoViewer from "./components/memoViewer.vue";
   import {RouterLink} from "vue-router";
 
   
@@ -366,7 +376,8 @@ input[type=checkbox]:checked.togglebutton+span {
       iiNavigator,
       bookOcrSearch,
       akiyasuOcrSearch,
-      tagViewer
+      tagViewer,
+      memoViewer
     },
     data(){
       return {
