@@ -100,6 +100,19 @@ body {
   margin:0 5px;  
 }
 
+.sidepane-opener-small {
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: solid 1px #fff;
+  color: #fff;
+  background-color: #0090ff;
+  cursor: pointer;
+}
+
 .ii-side-pane-selector{
   flex-grow:1;
   text-align: center;
@@ -248,20 +261,13 @@ input[type=checkbox]:checked.togglebutton+span {
           <li><label><input type="checkbox" v-model="show_ocrs" @change="loadOcr" :disabled="!has_ocr">OCR結果を表示</label></li>
         </popmenu>
       </div>
-      <div style="
-        position: absolute;
-        right: 0;
-        box-sizing: border-box;
-        width: 24px;
-        height: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: solid 1px #fff;
-        color: #fff;
-        background-color: #0090ff;
-        cursor: pointer;
-      " role="button" aria-role="button" title="サイドバーを開く" v-show="!show_header && !is_sidepane_shown" @click="is_sidepane_shown = true">&#x276E;</div>
+      <div class="sidepane-opener-small" 
+        style="position:absolute; right:0;" 
+        role="button" aria-role="button" title="サイドバーを開く" 
+        v-show="!show_header && !is_sidepane_shown" 
+        @click="is_sidepane_shown = true">
+        &#x276E;
+      </div>
     </div>
   </div>
   <div class="ii-image-viewer" ref="osd_elm"></div>
