@@ -17,7 +17,9 @@ const utils = {
 
 const describing_keys = ["見出し語","読み","原文表記","肩書き","メモ","巻","頁","番号","枝番","備考"];
 
+//Editor / widgetの仕様については以下を参照
 //https://github.com/recogito/recogito-client-core/blob/main/src/editor/Editor.jsx
+//https://github.com/recogito/recogito-client-core/blob/main/src/editor/widgets/index.jsx
 
 function simpleCommentingWidget(obj){
   const container = document.createElement("div");
@@ -62,7 +64,6 @@ function commentingWidgetBuilder(bridge){
       const input_elm = document.createElement("textarea");
       input_elm.className = "r6o-editable-text";
       input_elm.style.cssText= `
-        display:block;
         border-top: #ddd 1px solid;
       `;
       input_elm.rows = "1";
@@ -71,7 +72,7 @@ function commentingWidgetBuilder(bridge){
         el.style.height = "46px";
       };
       const textarea_auto_height = function(el){
-        el.style.height = el.scrollHeight + "px"; 
+        el.style.height = Math.max(el.scrollHeight, 46) + "px"; 
       };
       input_elm.addEventListener("input", e=>textarea_auto_height(e.target));
       input_elm.addEventListener("focus", e=>textarea_auto_height(e.target));
@@ -416,7 +417,6 @@ function LabeledCommentWidgetBuilder(_label, bridge){
       searcher_elm.append(searcher_btn);
       container.append(label_elm, input_elm, searcher_elm);
       
-      console.log("simple mode:", bridge.is_simplemode)
       if(bridge.is_simplemode){
         container.style.display="none";
       }

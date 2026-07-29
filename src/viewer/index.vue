@@ -213,7 +213,7 @@ input[type=checkbox]:checked.togglebutton+span {
           <li @click="saveTest">Save All</li>
           <li @click="authLogout">Logout</li>
       </popmenu>
-      <label role="button" aria-role="button" class="sidepane-opener">
+      <label role="button" aria-role="button" class="sidepane-opener" title="サイドバーを開く">
         <input type="checkbox" v-model="is_sidepane_shown" style="display:none">
         <span v-show="!is_sidepane_shown">&#x276E;</span>
         <span v-show="is_sidepane_shown">&#x276F;</span>
@@ -248,6 +248,20 @@ input[type=checkbox]:checked.togglebutton+span {
           <li><label><input type="checkbox" v-model="show_ocrs" @change="loadOcr" :disabled="!has_ocr">OCR結果を表示</label></li>
         </popmenu>
       </div>
+      <div style="
+        position: absolute;
+        right: 0;
+        box-sizing: border-box;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: solid 1px #fff;
+        color: #fff;
+        background-color: #0090ff;
+        cursor: pointer;
+      " role="button" aria-role="button" title="サイドバーを開く" v-show="!show_header && !is_sidepane_shown" @click="is_sidepane_shown = true">&#x276E;</div>
     </div>
   </div>
   <div class="ii-image-viewer" ref="osd_elm"></div>
@@ -726,9 +740,6 @@ input[type=checkbox]:checked.togglebutton+span {
         widgets:widgetBuilder(bridge),
         formatter:formatterBuilder(bridge)
       });
-      /*anno.on("createSelection", selection=>{
-        console.log(selection);
-      })*/
       anno.on("createAnnotation", annotation=>{
         this.addAnnotation(annotation);
         this.is_annotating = false;

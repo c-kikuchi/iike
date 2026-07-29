@@ -1,4 +1,11 @@
 <style scoped>
+.memo-search {
+  position:sticky;
+  top:0px;
+  background-color: rgba(255,255,255,0.8);
+  padding:5px;
+}
+
 .search-input {
   font-size:medium; 
   background-color: #eee; 
