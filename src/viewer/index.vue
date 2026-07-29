@@ -252,8 +252,11 @@ input[type=checkbox]:checked.togglebutton+span {
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_annotating" @change="startAnnotationMode()"><span>⌖索引の作成</span></label>
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_taggingmode" @change="startTagAnnotationMode()"><span>文書番号指定</span></label>
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_memomode" @change="startMemoAnnotationMode()"><span>メモ作成</span></label>
-        &nbsp;<label style="color:#fff;font-size:small;"><input type="checkbox" checked @change="e=>anno.setVisible(e.target.checked)">タグを表示</label>
-        &nbsp;<label style="color:#fff;font-size:small;"><input type="checkbox" v-model="show_ocrs" @change="loadOcr" :disabled="!has_ocr">OCR結果を表示</label>
+        &nbsp;
+        <popmenu right inline small border>
+          <li><label><input type="checkbox" checked @change="e=>anno.setVisible(e.target.checked)">タグを表示</label></li>
+          <li><label><input type="checkbox" v-model="show_ocrs" @change="loadOcr" :disabled="!has_ocr">OCR結果を表示</label></li>
+        </popmenu>
       </div>
     </div>
   </div>
