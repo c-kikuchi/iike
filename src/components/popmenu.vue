@@ -2,15 +2,29 @@
 .popmenuwrapper {
   position:relative;
 }
+.popmenuwrapper.inline {
+  display:inline-block;
+}
 .popmenuopener {
-	background-color: #0090ff;
+	display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 	padding: 5px;
-	display: inline-block;
-	width: 20px;
-	height: 20px;
-	text-align: center;
+	width: 30px;
+	height: 30px;
 	line-height: 20px;
+	background-color: #0090ff;
 	color: #fff;
+}
+.popmenuopener.small {
+  padding:3px;
+  width:20px;
+  height:20px;
+  line-height:14px;
+}
+.popmenuopener.border {
+  border:solid 1px #fff;
 }
 .popmenu {
   position:absolute;
@@ -44,8 +58,8 @@
 }
 </style>
 <template>
-<div class="popmenuwrapper">
-  <label class="popmenuopener">
+<div class="popmenuwrapper" :class="{'inline':inline}">
+  <label class="popmenuopener" :class="{'small':small,'border':border}">
     <input type="checkbox" v-model="showmenu" style="display:none;">…
   </label>
   <menu class="popmenu" v-show="showmenu" :class="{'right':right}">
@@ -59,7 +73,20 @@ const props = defineProps({
   "right":{
     type:Boolean, 
     default:false
+  },
+  "inline":{
+    type:Boolean,
+    default:false
+  },
+  "small":{
+    type:Boolean,
+    default:false
+  },
+  "border":{
+    type:Boolean,
+    default:false
   }
+
 })
 const showmenu = ref(false);
 

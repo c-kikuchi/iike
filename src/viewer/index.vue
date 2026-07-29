@@ -202,14 +202,6 @@ input[type=checkbox]:checked.togglebutton+span {
 <div class="ii-main-pane">
   <div class="ii-header" v-show="show_header">
     <div class="side-menu" style="float:left;padding-left:10px;"><RouterLink to="/"><strong>&lt;Home</strong></RouterLink></div>
-    <!--<div style="float:right;">
-      <details>
-        <summary><strong>…</strong></summary>
-        <div v-for="item in metalist.list">
-          <RouterLink :to="'/viewer/'+item.bookid">{{ item.title }}</RouterLink>
-        </div>
-      </details>
-    </div>-->
     <div class="side-menu" style="float:right;display:flex;padding-right:10px;">
       <popmenu right>
           <li><label><input type="checkbox" v-model="is_widget_simple_mode"><small>Simple mode</small></label></li>
@@ -218,8 +210,6 @@ input[type=checkbox]:checked.togglebutton+span {
           <li @click="exportManifest">Export Manifest</li>
           <!--<li><button @click="openManifest">Show Manifest</button></li>-->
           <li><label><input type="file" style="display:none" @change="loadAnnotationFromJSON">Load JSON</label></li>
-          <!--<li><button @click="getPageDimension">page size</button></li>-->
-          <!--<li><button @click="demo_openDefault">(DEMO)load demo json</button></li>-->
           <li @click="saveTest">Save All</li>
           <li @click="authLogout">Logout</li>
       </popmenu>
@@ -252,18 +242,15 @@ input[type=checkbox]:checked.togglebutton+span {
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_annotating" @change="startAnnotationMode()"><span>⌖索引の作成</span></label>
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_taggingmode" @change="startTagAnnotationMode()"><span>文書番号指定</span></label>
         <label role="button" aria-role="button"><input class="togglebutton" type="checkbox" v-model="is_memomode" @change="startMemoAnnotationMode()"><span>メモ作成</span></label>
-        
-        &nbsp;<label style="color:#fff;font-size:small;"><input type="checkbox" v-model="show_ocrs" @change="loadOcr" :disabled="!has_ocr">OCR結果を表示</label>
+        &nbsp;
+        <popmenu right inline small border>
+          <li><label><input type="checkbox" checked @change="e=>anno.setVisible(e.target.checked)">タグを表示</label></li>
+          <li><label><input type="checkbox" v-model="show_ocrs" @change="loadOcr" :disabled="!has_ocr">OCR結果を表示</label></li>
+        </popmenu>
       </div>
     </div>
   </div>
   <div class="ii-image-viewer" ref="osd_elm"></div>
-  <!--<div>
-    <div>
-      {{ currentPageUrl }}<br>
-      {{ currentImageUrl }}
-    </div>
-  </div>-->
   <div style="padding:0 20px;" v-if="isDev">
     <div>
       <span v-show="is_mobile">●</span>
