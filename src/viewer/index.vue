@@ -100,6 +100,19 @@ body {
   margin:0 5px;  
 }
 
+.sidepane-opener-small {
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: solid 1px #fff;
+  color: #fff;
+  background-color: #0090ff;
+  cursor: pointer;
+}
+
 .ii-side-pane-selector{
   flex-grow:1;
   text-align: center;
@@ -182,7 +195,7 @@ input[type=checkbox].togglebutton+span {
   border-radius:3px;
   color:#fff;
   margin-left:5px;
-  padding:3px;
+  padding:1px 3px;
 
 }
 input[type=checkbox]:not(:checked).togglebutton+span {
@@ -213,7 +226,7 @@ input[type=checkbox]:checked.togglebutton+span {
           <li @click="saveTest">Save All</li>
           <li @click="authLogout">Logout</li>
       </popmenu>
-      <label role="button" aria-role="button" class="sidepane-opener">
+      <label role="button" aria-role="button" class="sidepane-opener" title="サイドバーを開く">
         <input type="checkbox" v-model="is_sidepane_shown" style="display:none">
         <span v-show="!is_sidepane_shown">&#x276E;</span>
         <span v-show="is_sidepane_shown">&#x276F;</span>
@@ -223,7 +236,7 @@ input[type=checkbox]:checked.togglebutton+span {
   </div>
   <div ref="toolbar_elm" class="ii-toolbar">
     <div class="ii-toolbar-controls">
-      <div class="ii-zoom-control">
+      <div class="ii-zoom-control" style="display:flex;">
         <button ref="zoominbutton" title="zoom in">＋</button>
         <button ref="zoomoutbutton" title="zoom out">－</button>
         <button ref="homebutton" title="reset zoom">🏠&#xFE0E;</button>
@@ -231,7 +244,7 @@ input[type=checkbox]:checked.togglebutton+span {
         <button @click="show_header = !show_header" title="expand view">○</button>
         <button title="refresh" @click="setPage" style="margin-left:10px;width:auto">更新</button>
       </div>
-      <div class="ii-page-control">
+      <div class="ii-page-control" style="display:flex;">
         <button :disabled="!this.nextPage" @click="this.currentPage=this.nextPage;setPage()">next</button>
         <select v-model="currentPage" @change="setPage()">
           <option v-for="jsonurl in meta.pages">{{jsonurl}}</option>
@@ -247,6 +260,13 @@ input[type=checkbox]:checked.togglebutton+span {
           <li><label><input type="checkbox" checked @change="e=>anno.setVisible(e.target.checked)">タグを表示</label></li>
           <li><label><input type="checkbox" v-model="show_ocrs" @change="loadOcr" :disabled="!has_ocr">OCR結果を表示</label></li>
         </popmenu>
+      </div>
+      <div class="sidepane-opener-small" 
+        style="position:absolute; right:0;" 
+        role="button" aria-role="button" title="サイドバーを開く" 
+        v-show="!show_header && !is_sidepane_shown" 
+        @click="is_sidepane_shown = true">
+        &#x276E;
       </div>
     </div>
   </div>
@@ -299,34 +319,34 @@ input[type=checkbox]:checked.togglebutton+span {
         </currentAnnotationList>
       </div>
       <div v-if="sidepane_selected=='default'">
-        <iiNavigator @navigate="sidepane_close_if_mobile();is_internal_routing=false"></iiNavigator>
+        <iiNavigator @navigate="sidepane_navigate"></iiNavigator>
       </div>
       <div v-if="sidepane_selected=='search_book'">
         <bookOcrSearch 
           :bookid="bookid" 
           :show_ocr="show_ocrs" 
           :currentPage="currentPage"
-          @navigate="sidepane_close_if_mobile();is_internal_routing=false">
+          @navigate="sidepane_navigate">
         </bookOcrSearch>
       </div>
       <div v-if="sidepane_selected=='search_akiyasu'">
         <akiyasuOcrSearch 
           :show_title="false" 
           :bookid="bookid"
-          @navigate="sidepane_close_if_mobile();is_internal_routing=false">
+          @navigate="sidepane_navigate">
         </akiyasuOcrSearch>
       </div>
       <div v-if="sidepane_selected=='tag_viewer'">
         <tagViewer
           :bookid="bookid"
-          @navigate="sidepane_close_if_mobile();is_internal_routing=false">
+          @navigate="sidepane_navigate">
         </tagViewer>
       </div>
       <div v-if="sidepane_selected=='memo_viewer'">
         <memoViewer
           :bookid="bookid"
           :currentPage="currentPage"
-          @navigate="sidepane_close_if_mobile();is_internal_routing=false"
+          @navigate="sidepane_navigate"
           @selectAnnotation="(id)=>id&&selectAnnotation(id,true)">
         </memoViewer>
       </div>
@@ -652,6 +672,10 @@ input[type=checkbox]:checked.togglebutton+span {
           this.is_sidepane_shown = false;
         }
       },
+      sidepane_navigate(){
+        this.sidepane_close_if_mobile();
+        this.is_internal_routing = false;
+      },
       async demo_openDefault(){// remove on production
         await this.annotStore.loadDefaultJSON();
         this.setPage();
@@ -726,9 +750,6 @@ input[type=checkbox]:checked.togglebutton+span {
         widgets:widgetBuilder(bridge),
         formatter:formatterBuilder(bridge)
       });
-      /*anno.on("createSelection", selection=>{
-        console.log(selection);
-      })*/
       anno.on("createAnnotation", annotation=>{
         this.addAnnotation(annotation);
         this.is_annotating = false;

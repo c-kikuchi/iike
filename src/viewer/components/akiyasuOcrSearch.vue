@@ -14,6 +14,9 @@ h1 {
   border:1px solid #333;
   padding:10px;
   margin-bottom:10px;
+  position: sticky;
+  top: 0px;
+  background-color: #fff;
 }
 .search-input {
   font-size:medium;
