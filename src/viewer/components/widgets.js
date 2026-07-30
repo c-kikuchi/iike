@@ -46,6 +46,7 @@ function commentingWidgetBuilder(bridge){
     }
 
     const label_elm = document.createElement("div");
+    label_elm.className = "r6o-draggable"
     label_elm.innerText = "メモを作成";
     label_elm.style.cssText = `
       background-color:#666;
@@ -169,6 +170,7 @@ function IDShowingWidget(obj){
     })
 
     elm.append("ID: ", ipt, btn);
+    //elm.className = "r6o-draggable";
     elm.style.cssText = `
       font-size:small;
       color:#333;
@@ -273,6 +275,7 @@ function IIPageTaggingWidgetBuilder(bridge){
 
 
       const label_elm = document.createElement("div");
+      label_elm.className = "r6o-draggable";
       label_elm.innerText = "文書番号を指定";
       label_elm.style.cssText = `
         background-color:#666;
@@ -368,6 +371,7 @@ function LabeledCommentWidgetBuilder(_label, bridge){
     }
     else{
       const label_elm = document.createElement("div");
+      label_elm.className = "r6o-draggable";
       label_elm.innerText = label;
       label_elm.style.cssText = `
         width:80px;
