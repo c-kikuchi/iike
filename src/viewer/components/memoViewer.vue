@@ -54,7 +54,13 @@
     <input v-model="search_query" @input="exec_search" placeholder="検索語" class="search-input">
     <span role="button" class="reset-button" title="clear input" @click="search_query=''">&#x1F5D9;</span><br>
     <label><input type="checkbox" v-model="only_this_page" @change="exec_search"><small>現在のページのみ</small></label>
-    <span style="float:right; font-size:smaller; margin-top:3px">{{ is_searching?(results_len + " / "):"" }}{{ memo_len }} 件</span>
+    <span style="float:right; font-size:smaller; margin-top:3px">
+      <select v-model="sort_method" @change="exec_search" v-show="is_searching">
+        <option value="score">関連度順</option>
+        <option value="page">ページ順</option>
+      </select>
+      {{ is_searching?(results_len + " / "):"" }}{{ memo_len }} 件
+    </span>
   </div>
   <div class="memo-search-results" v-if="is_searching">
     <div class="memo-list-item" v-for="result in search_results">
@@ -143,11 +149,20 @@ function parseIntLike(str){
   }
   return num;
 }
+function sort_by_page(page_a, page_b){
+  const idx_a = current_meta.value.pages.indexOf(page_a);
+  const idx_b = current_meta.value.pages.indexOf(page_b);
+  if(idx_a==-1 || idx_b==-1){
+    return sort_intlike(page_a, page_b);
+  }
+  return idx_a - idx_b;
+}
 
 const search_query = ref("");
 const search_results = ref([]);
 const only_this_page = ref(false);
 const is_searching = computed(()=>search_query.value!="");
+const sort_method = ref("score");
 
 const current_book_memos = computed(()=>{
   return annotStore.annotations.filter(annot=>(annot["_bookid"]==props.bookid && annot["_type"]=="memo"));
@@ -169,7 +184,7 @@ const memo_list_filtered = computed(()=>{
 const memo_list_sorted = computed(()=>{
   const list = memo_list_filtered.value;
   return only_this_page.value?list:list.toSorted((a,b)=>{
-    return sort_intlike(a.page, b.page);
+    return sort_by_page(a.page, b.page);
   })
 });
 const memo_len = computed(()=>{
@@ -190,6 +205,16 @@ function exec_search(){
   })();
   const results = fuzzysort.go(query, search_target, {key:"value"});
   results_len.value = results.length;
+
+  if(sort_method.value != "score"){
+    const sort_funcs = {
+      page(a,b){
+        return sort_by_page(a.obj.page, b.obj.page)
+      }
+    };
+    results.sort(sort_funcs[sort_method.value]);
+  }
+
   search_results.value = results;
 }
 
