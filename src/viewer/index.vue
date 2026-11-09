@@ -306,6 +306,7 @@ input[type=checkbox]:checked.togglebutton+span {
           <option value="search_book">本巻内OCR検索</option>
           <option value="search_akiyasu">松平昭休原本OCR検索</option>
           <option value="annot_list">アノテーション一覧</option>
+          <option value="whiteboard">ホワイトボード</option>
         </select>
       </div>
     </div>
@@ -350,6 +351,9 @@ input[type=checkbox]:checked.togglebutton+span {
           @selectAnnotation="(id)=>id&&selectAnnotation(id,true)">
         </memoViewer>
       </div>
+      <KeepAlive>
+        <whiteBoard v-if="sidepane_selected=='whiteboard'"></whiteBoard>
+      </KeepAlive>
     </div>
   </div>
 </div>
@@ -371,6 +375,7 @@ input[type=checkbox]:checked.togglebutton+span {
   import akiyasuOcrSearch from "./components/akiyasuOcrSearch.vue";
   import tagViewer from "./components/tagViewer.vue";
   import memoViewer from "./components/memoViewer.vue";
+  import whiteBoard from "./components/whiteBoard.vue";
   import {RouterLink} from "vue-router";
 
   
@@ -384,7 +389,8 @@ input[type=checkbox]:checked.togglebutton+span {
       bookOcrSearch,
       akiyasuOcrSearch,
       tagViewer,
-      memoViewer
+      memoViewer,
+      whiteBoard
     },
     data(){
       return {
